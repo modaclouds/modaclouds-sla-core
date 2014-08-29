@@ -1,0 +1,170 @@
+package eu.atos.sla.datamodel.bean;
+
+import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+
+import eu.atos.sla.datamodel.IBusinessValueList;
+import eu.atos.sla.datamodel.IGuaranteeTerm;
+import eu.atos.sla.datamodel.IPolicy;
+import eu.atos.sla.datamodel.IViolation;
+
+/**
+ * A POJO Object that stores all the information from a GuaranteeTerm
+ * 
+ * @author Pedro Rey - Atos
+ */
+
+@Entity
+@Table(name = "guarantee_term")
+@NamedQueries({ @NamedQuery(name = "GuaranteeTerm.findAll", query = "SELECT p FROM GuaranteeTerm p") })
+public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
+
+	private static final long serialVersionUID = -8140757088864002129L;
+	private Long id;
+	private String name;
+	private String serviceName;
+	private String serviceScope;
+	private String kpiName;
+	private String serviceLevel;
+	private List<IViolation> violations;
+	private List<IPolicy> policies;
+	private GuaranteeTermStatusEnum status;
+	private IBusinessValueList businessValueList;
+
+	public GuaranteeTerm() {
+
+		this.status = GuaranteeTermStatusEnum.NON_DETERMINED;
+	}
+
+	@Override
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", unique = true, nullable = false)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Override
+	@Column(name = "name")
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	@Column(name = "service_name")
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	@Override
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	@Override
+	@Column(name = "service_scope")
+	public String getServiceScope() {
+		return serviceScope;
+	}
+
+	@Override
+	public void setServiceScope(String serviceScope) {
+		this.serviceScope = serviceScope;
+	}
+
+	@Override
+	@Column(name = "kpi_name")
+	public String getKpiName() {
+		return kpiName;
+	}
+
+	@Override
+	public void setKpiName(String kpiName) {
+		this.kpiName = kpiName;
+	}
+
+	@Override
+	@Column(name = "service_level")
+	public String getServiceLevel() {
+		return serviceLevel;
+	}
+
+	@Override
+	public void setServiceLevel(String serviceLevel) {
+		this.serviceLevel = serviceLevel;
+	}
+
+	@Override
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@OneToMany(targetEntity = Policy.class, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "guarantee_term_id", referencedColumnName = "id", nullable = true)
+	public List<IPolicy> getPolicies() {
+		return policies;
+	}
+
+	@Override
+	public void setPolicies(List<IPolicy> policies) {
+		this.policies = policies;
+	}
+
+	@Override
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@OneToMany(targetEntity = Violation.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "guarantee_term_id", referencedColumnName = "id", nullable = true)
+	public List<IViolation> getViolations() {
+		return violations;
+	}
+
+	@Override
+	public void setViolations(List<IViolation> violations) {
+		this.violations = violations;
+	}
+
+	@Override
+	@Column(name = "status", nullable = false)
+	public GuaranteeTermStatusEnum getStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(GuaranteeTermStatusEnum status) {
+		this.status = status;
+	}
+
+	@Override
+	@OneToOne(targetEntity = BusinessValueList.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "business_value_id")
+	public IBusinessValueList getBusinessValueList() {
+		return businessValueList;
+	}
+
+	@Override
+	public void setBusinessValueList(IBusinessValueList businessValueList) {
+		this.businessValueList = businessValueList;
+	}
+}
