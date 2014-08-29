@@ -1,0 +1,67 @@
+package eu.modaclouds.sla.service.rest;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.atos.sla.dao.IAgreementDAO;
+import eu.atos.sla.datamodel.IAgreement;
+import eu.atos.sla.datamodel.IGuaranteeTerm;
+import eu.atos.sla.enforcement.IEnforcementService;
+import eu.atos.sla.monitoring.IMonitoringMetric;
+
+@Path("/metrics")
+@Component
+@Scope("request")
+@Transactional
+public class MetricsReceiverRest extends AbstractSLARest {
+	private static Logger logger = Logger.getLogger(MetricsReceiverRest.class);
+
+	@Autowired
+	private IEnforcementService enforcementService;
+	
+	@Autowired
+	private IAgreementDAO agreementDao;
+	
+	@Autowired
+	private ModacloudsTranslator translator;
+	
+	@GET
+	public Response getRoot() {
+	
+		return buildResponse(HttpStatus.NOT_FOUND, "Valid method is POST /{agreementId}");
+	}
+	
+	@POST
+	@Path("/{agreementId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response receiveModacloudsMetrics(
+			@PathParam("agreementId") String agreementId, 
+			final String metrics) {
+
+		logger.debug("receiveMetrics(agreementId=" + agreementId + ", data=" + metrics.toString());
+		IAgreement agreement = agreementDao.getByAgreementId(agreementId);
+		logger.debug("agreement=" + agreement.getAgreementId());
+		
+		Map<IGuaranteeTerm, List<IMonitoringMetric>> metricsMap = translator.translate(agreement, metrics);
+		enforcementService.doEnforcement(agreement, metricsMap);
+		return buildResponse(HttpStatus.ACCEPTED, "Metrics received");
+	}
+	
+}

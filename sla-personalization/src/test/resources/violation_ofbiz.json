@@ -1,0 +1,27 @@
+{
+  "head": {
+    "vars": [ "target" , "metric" , "value" , "timestamp" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "target": { "type": "uri" , "value": "http://www.modaclouds.eu/rdfs/1.0/monitoring/WinVM1" } ,
+        "metric": { "type": "uri" , "value": "qosConstraint_c1_Violated" } ,
+        "value": { "datatype": "http://www.w3.org/2001/XMLSchema#double" , "type": "typed-literal" , "value": "0.0994758059111746e0" } ,
+        "timestamp": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "1404468767912" }
+      } ,
+      {
+        "target": { "type": "uri" , "value": "http://www.modaclouds.eu/rdfs/1.0/monitoring/WinVM1" } ,
+        "metric": { "type": "uri" , "value": "qosConstraint_c1_Violated" } ,
+        "value": { "datatype": "http://www.w3.org/2001/XMLSchema#double" , "type": "typed-literal" , "value": "0.0875758059111746e0" } ,
+        "timestamp": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "1404468769212" }
+      } ,
+      {
+        "target": { "type": "uri" , "value": "http://www.modaclouds.eu/rdfs/1.0/monitoring/WinVM1" } ,
+        "metric": { "type": "uri" , "value": "qosConstraint_c1_Violated" } ,
+        "value": { "datatype": "http://www.w3.org/2001/XMLSchema#double" , "type": "typed-literal" , "value": "0.0775758059111746e0" } ,
+        "timestamp": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "1404468772212" }
+      }
+    ]
+  }
+}
