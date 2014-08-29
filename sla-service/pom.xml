@@ -2,7 +2,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>eu.atos.sla</groupId>
+		<groupId>eu.modaclouds.sla.core</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.1.1-SNAPSHOT</version>
 	</parent>
@@ -389,12 +389,12 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-management</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-management</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 			<type>test-jar</type>
@@ -402,31 +402,31 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository-database</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository-database</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-serializers</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-serializers</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>eu.atos.sla</groupId>
+			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-personalization</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
