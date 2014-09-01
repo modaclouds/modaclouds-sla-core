@@ -6,7 +6,7 @@
 		<groupId>eu.modaclouds.sla.core</groupId>
 		<artifactId>parent</artifactId>
 		<version>0.1.1-SNAPSHOT</version>
-		<relativePath>../pom.xml</relativePath>		
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>sla-personalization</artifactId>
 	<packaging>jar</packaging>  
@@ -41,7 +41,7 @@
 
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
-			<artifactId>sla-serializers</artifactId>
+			<artifactId>sla-tools</artifactId>
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 
