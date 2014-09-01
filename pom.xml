@@ -9,7 +9,7 @@
 
 	<modules>
 		<module>sla-repository</module>
-		<module>sla-serializers</module>
+		<module>sla-tools</module>
 		<module>sla-management</module>
 		<module>sla-personalization</module>
 		<module>sla-service</module>
