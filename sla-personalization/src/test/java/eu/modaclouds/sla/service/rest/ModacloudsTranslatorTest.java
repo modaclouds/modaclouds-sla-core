@@ -43,7 +43,7 @@ public class ModacloudsTranslatorTest {
 
 	@Test
 	public void testTranslate() throws IOException {
-		String json = readFile("/violation.json");
+		String json = readFile("/violation_2.0.1.json");
 		IConstraintEvaluator constraintEvaluator = new SimpleConstraintEvaluator();
 		
 		ModacloudsTranslator translator = new ModacloudsTranslator(constraintEvaluator);
@@ -61,7 +61,7 @@ public class ModacloudsTranslatorTest {
 	
 	@Test
 	public void testTranslateWrongAgreement() throws IOException {
-		String json = readFile("/violation_ofbiz.json");
+		String json = readFile("/violation_ofbiz_2.0.1.json");
 		IConstraintEvaluator constraintEvaluator = new SimpleConstraintEvaluator();
 		
 		ModacloudsTranslator translator = new ModacloudsTranslator(constraintEvaluator);

@@ -1,9 +1,7 @@
 package eu.modaclouds.sla.service.rest;
 
-import it.polimi.modaclouds.monitoring.metrics_observer.model.Sparql_json_results;
-import it.polimi.modaclouds.monitoring.metrics_observer.model.Variable;
-
-import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -12,9 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
@@ -47,35 +46,25 @@ public class ModacloudsTranslator implements IMetricTranslator<String>{
 		MultivaluedMapWrapper<IGuaranteeTerm, IMonitoringMetric> resultWrapper = 
 				new MultivaluedMapWrapper<IGuaranteeTerm, IMonitoringMetric>();
 		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			final Sparql_json_results json = 
-					mapper.readValue(data, Sparql_json_results.class);
-			
-			final MultivaluedMapWrapper<String, IGuaranteeTerm> metric2terms = initTermsMap(agreement);
-			
-			for (Map<String, Variable> item : json.getResults().getBindings()) {
-				BindingHelper var = new BindingHelper(item);
-				List<IGuaranteeTerm> terms = metric2terms.get(var.key);
+		Gson gson = new Gson();
+		JsonReader reader = null;
+		Type type = new TypeToken<Map<String,Map<String,List<Map<String,String>>>>>(){}.getType();
+		reader = new JsonReader(new StringReader(data));
+		final Map<String,Map<String,List<Map<String,String>>>> json = gson.fromJson(reader, type);
+		
+		final MultivaluedMapWrapper<String, IGuaranteeTerm> metric2terms = initTermsMap(agreement);
+		
+		for (Map<String,List<Map<String,String>>> item : json.values()) {
+			BindingHelper var = new BindingHelper(item);
+			List<IGuaranteeTerm> terms = metric2terms.get(var.key);
 
-				if (terms == null) {
-					logger.warn("List of terms handling " + var.key + " is empty");
-				}
-				
-				resultWrapper.addToKeys(terms, newMetric(var));
+			if (terms == null) {
+				logger.warn("List of terms handling " + var.key + " is empty");
 			}
-			return resultWrapper.getMap();
-		} catch (JsonParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			resultWrapper.addToKeys(terms, newMetric(var));
 		}
-		return null;
+		return resultWrapper.getMap();
 	}
 
 	private IMonitoringMetric newMetric(final BindingHelper binding) {
@@ -198,13 +187,35 @@ public class ModacloudsTranslator implements IMetricTranslator<String>{
 		private final String key;
 		private final String value;
 		private final Date date;
+//		private final String resourceId;
 		
-		public BindingHelper(Map<String, Variable> binding) {
-			key = binding.get("metric").getValue();
-			value = binding.get("value").getValue();
-			date = new Date(Long.parseLong(binding.get("timestamp").getValue()));
+		public BindingHelper(Map<String,List<Map<String,String>>> binding) {
+			key = getItem(binding, "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#metric");
+			value = getItem(binding, "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#value");
+			String dateStr = getItem(binding, "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#timestamp");
+			date = new Date(Long.parseLong(dateStr));
+//			resourceId = getItem(binding, "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#resourceId");
 		}
+
+		private String getItem(Map<String,List<Map<String,String>>> binding, String ns) {
+			String item= nullable(binding.get(ns)).get(0).get("value");
+			
+			return item;
+		}
+		private List<Map<String, String>> nullable(List<Map<String, String>> list) {
+			if (list != null)
+				return list;
+			else {
+				List<Map<String, String>> emptyValueList = new ArrayList<Map<String, String>>();
+				Map<String, String> emptyValueMap = new HashMap<String, String>();
+				emptyValueMap.put("value", "");
+				emptyValueList.add(emptyValueMap);
+				return emptyValueList;
+			}
+		}
+		
 	}
+	
 //	public static class ModaCloudsMonitoringMetric {
 //		private ModaCloudsMonitoringMetric.Head head;
 //		private ModaCloudsMonitoringMetric.Result results;

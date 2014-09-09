@@ -45,13 +45,11 @@
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- polimi dependencies -->
 		<dependency>
-			<groupId>it.polimi.modaclouds.monitoring</groupId>
-			<artifactId>metrics-observer</artifactId>
-			<version>1.0.1</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.3</version>
 		</dependency>
-		
 	</dependencies>
 	
 	<build>
