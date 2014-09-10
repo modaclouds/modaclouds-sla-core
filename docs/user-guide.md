@@ -1,4 +1,4 @@
-F# SLA Core User Guide #
+# SLA Core User Guide #
 
 * [API Introduction](#rest)
 * [Generic operations](#operations)

@@ -26,28 +26,14 @@ _configuration.properties_ file)
 
 ###1. <a name="download"> Download the project </a> ###
 
-Download the project using a subversion client from 
-[sla core repository](http://atossla.atosresearch.eu/svn/atossla)
+Download the project using a git client from 
+[sla core repository](https://github.com/modaclouds/modaclouds-sla-core)
 
-	$ svn co http://atossla.atosresearch.eu/svn/atossla
+	$ git clone https://github.com/modaclouds/modaclouds-sla-core.git
 	
-The directories follow the standard convention in subversion repositories:
-	
-	atossla/
-		trunk/
-		branches/
-			branch1/
-			...
-		tags/
-			0.0.1/
-			0.0.2/
-			0.1.0/
-
-It is recommended to checkout the latest released version 
-if developing for a specific project. So, if 0.1.0 version wants to be checked out:
-
-	$ svn co http://atossla.atosresearch.eu/svn/atossla/tags/0.1.0
-
+It is recommended to use the master branch as it is always the latest released 
+version.
+ 
 ###2. <a name="database"> Creating the mysql database </a> ###
 
 From mysql command tool, create a database (with a user with sufficient 
@@ -61,6 +47,7 @@ Create a user:
 
 	mysql> CREATE USER atossla@localhost IDENTIFIED BY '_atossla_';
 	mysql> GRANT ALL PRIVILEGES ON atossla.* TO atossla@localhost; --* optional WITH GRANT OPTION;
+	
 From command prompt, create needed tables:
 
 	$ mvn compile exec:java -f sla-repository/pom.xml
@@ -86,7 +73,7 @@ files executing this:
 
 The previous command is going to generate the eclipse project files: 
 .settings, .classpath, and .project. Again, please never upload those 
-files to the svn, it is going to deconfigure the eclipse of other 
+files to the repository, it is going to deconfigure the eclipse of other 
 developers (it is easy to fix, just an annoying waste of time).
 
 After it, from your eclipse you can import the project. Go to 
@@ -100,10 +87,8 @@ The project is made up of five main modules:
 - SLA Repository
 - SLA Management
 - SLA Service
-- SLA Serializers
+- SLA Tools
 - SLA Personalization
-
-![Directory layout](img/directory-layout.png)
 
 A _configuration.properties.sample_ that is placed in the parent directory 
 has to be copied to *configuration.properties*.
