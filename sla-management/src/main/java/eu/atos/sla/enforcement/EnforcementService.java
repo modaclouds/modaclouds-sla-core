@@ -173,6 +173,8 @@ public class EnforcementService implements IEnforcementService {
 		IEnforcementJob job = getEnforcementJobByAgreementId(agreement.getAgreementId());
 		job.setLastExecuted(new Date());
 		enforcementJobDAO.save(job);
+		if (job.getFirstExecuted() == null) job.setFirstExecuted(job.getLastExecuted());
+		enforcementJobDAO.save(job);
 		logger.info("saved enforcement result(agreement=" + agreement.getAgreementId());
 	}
 	
