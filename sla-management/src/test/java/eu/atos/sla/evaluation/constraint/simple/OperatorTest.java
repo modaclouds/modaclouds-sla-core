@@ -71,7 +71,7 @@ public class OperatorTest  {
 		/*
 		 * Tests not exists (right operand is don't care)
 		 */
-		assertFalse(Operator.FAILS.eval(0, new double[] {}));
+		assertFalse(Operator.NOT_EXISTS.eval(0, new double[] {}));
 	}
 
 }

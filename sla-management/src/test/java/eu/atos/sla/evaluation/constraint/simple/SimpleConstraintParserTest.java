@@ -76,7 +76,7 @@ public class SimpleConstraintParserTest{
 		/*
 		 * Not exists 
 		 */
-		check(parser.parse("val FAILS"), "val", Operator.FAILS, "");
+		check(parser.parse("val NOT_EXISTS"), "val", Operator.NOT_EXISTS, "");
 
 		/*
 		 * Remove spaces
@@ -87,7 +87,7 @@ public class SimpleConstraintParserTest{
 		check(parser.parse("val BETWEEN 1, 2"), "val", Operator.BETWEEN, "1,2");
 		check(parser.parse("val IN  1 , 2 , 3 "), "val", Operator.IN, "1,2,3");
 		check(parser.parse("val EXISTS  "), "val", Operator.EXISTS, "");		
-		check(parser.parse("val FAILS "), "val", Operator.FAILS, "");
+		check(parser.parse("val NOT_EXISTS "), "val", Operator.NOT_EXISTS, "");
 	}
 	
 	@Test
@@ -104,9 +104,9 @@ public class SimpleConstraintParserTest{
 		checkException(parser, "val EXISTS (1)");
 		checkException(parser, "val EXISTS ()");
 		checkException(parser, "val EXISTS (1, 2)");
-		checkException(parser, "val FAILS (1)");
-		checkException(parser, "val FAILS ()");
-		checkException(parser, "val FAILS (1, 2)");
+		checkException(parser, "val NOT_EXISTS (1)");
+		checkException(parser, "val NOT_EXISTS ()");
+		checkException(parser, "val NOT_EXISTS (1, 2)");
 	}
 
 }

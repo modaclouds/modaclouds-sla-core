@@ -109,7 +109,7 @@ enum Operator {
 		}
 	}),
 	
-	FAILS(new IEvaluator() {
+	NOT_EXISTS(new IEvaluator() {
 		
 		@Override
 		public boolean eval(double left, double[] right) {
