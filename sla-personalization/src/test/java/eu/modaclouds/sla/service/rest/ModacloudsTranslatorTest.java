@@ -51,7 +51,7 @@ public class ModacloudsTranslatorTest {
 		GuaranteeTerm term = new GuaranteeTerm();
 		term.setKpiName("responsetime");
 		term.setName("rt");
-		term.setServiceLevel("WinVMCPUUtilization FAILS");
+		term.setServiceLevel("WinVMCPUUtilization NOT_EXISTS");
 		agreement.setGuaranteeTerms(Arrays.asList(new IGuaranteeTerm[] { term}));
 		
 		Map<IGuaranteeTerm, List<IMonitoringMetric>> map = translator.translate(agreement, json);
@@ -69,7 +69,7 @@ public class ModacloudsTranslatorTest {
 		GuaranteeTerm term = new GuaranteeTerm();
 		term.setKpiName("responsetime");
 		term.setName("rt");
-		term.setServiceLevel("WinVMCPUUtilization FAILS");
+		term.setServiceLevel("WinVMCPUUtilization NOT_EXISTS");
 		agreement.setGuaranteeTerms(Arrays.asList(new IGuaranteeTerm[] { term}));
 		
 		Map<IGuaranteeTerm, List<IMonitoringMetric>> map = translator.translate(agreement, json);
