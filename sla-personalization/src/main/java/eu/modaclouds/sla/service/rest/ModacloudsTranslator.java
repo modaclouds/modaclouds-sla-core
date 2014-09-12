@@ -64,6 +64,7 @@ public class ModacloudsTranslator implements IMetricTranslator<String>{
 			
 			resultWrapper.addToKeys(terms, newMetric(var));
 		}
+		logger.debug("Output metricsmap = " + resultWrapper.getMap());
 		return resultWrapper.getMap();
 	}
 

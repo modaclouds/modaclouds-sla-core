@@ -18,7 +18,9 @@
 	<import resource="classpath*:ord-context.xml"/>
 	<import resource="classpath*:enforcement-context.xml"/>
 	<import resource="classpath*:personalization-context.xml"/>
+	<!--
 	<import resource="classpath*:security-context.xml"/>
+	-->
 	
 	
 	

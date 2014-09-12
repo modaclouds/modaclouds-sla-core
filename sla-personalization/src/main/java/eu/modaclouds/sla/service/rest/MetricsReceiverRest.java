@@ -49,7 +49,6 @@ public class MetricsReceiverRest extends AbstractSLARest {
 	
 	@POST
 	@Path("/{agreementId}")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response receiveModacloudsMetrics(
 			@PathParam("agreementId") String agreementId, 
