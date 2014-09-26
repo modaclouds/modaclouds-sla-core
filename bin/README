@@ -14,6 +14,8 @@ Some utility scripts. All must be executed from project root (i.e. bin/<script>)
 			starts tomcat server
 * copySLACoreToFolder.sh, copySLACoreToFolder.bat
 			copy source tree to another directory
+* make-dist.sh
+			Generates a .tar.gz with needed files to run the service.
 
 If a table/column is added/modified, it is recommended the following procedure:
 * dropTables.sh
