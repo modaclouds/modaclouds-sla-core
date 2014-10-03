@@ -1,5 +1,6 @@
 package eu.atos.sla.datamodel;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,6 +55,8 @@ public interface IGuaranteeTerm {
 	public static enum GuaranteeTermStatusEnum {
 		FULFILLED, VIOLATED, NON_DETERMINED
 	}
+	
+	public static int ENFORCED_AT_END = -1;
 
 	/*
 	 * Internal generated ID
@@ -130,5 +133,19 @@ public interface IGuaranteeTerm {
 	IBusinessValueList getBusinessValueList();
 	
 	void setBusinessValueList(IBusinessValueList businessValueList);
+	
+	
+	/**
+	 * LastSampledDate: date when the variable was read.
+	 */
+	public Date getLastSampledDate() ;
+	public void setLastSampledDate(Date lastSampledDate) ;
+
+	/**
+	 * Desired sampling period: multiple of the sampling configuration.
+	 * it should be a integer 
+	 */	
+	public Integer getSamplingPeriodFactor() ;
+	public void setSamplingPeriodFactor(Integer samplingPeriodFactor) ;
 	
 }

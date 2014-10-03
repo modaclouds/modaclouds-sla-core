@@ -39,8 +39,7 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 	@Override
 	public List<IEnforcementJob> getNotExecuted(Date since) {
 
-		TypedQuery<IEnforcementJob> query = entityManager.createNamedQuery(
-				EnforcementJob.QUERY_FIND_NOT_EXECUTED, IEnforcementJob.class);
+		TypedQuery<IEnforcementJob> query = entityManager.createNamedQuery(EnforcementJob.QUERY_FIND_NOT_EXECUTED, IEnforcementJob.class);
 		query.setParameter("since", since);
 		List<IEnforcementJob> list = query.getResultList();
 
@@ -57,9 +56,7 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 	@Override
 	public EnforcementJob getByAgreementId(String agreementId) {
 
-		TypedQuery<EnforcementJob> query = entityManager
-				.createNamedQuery(EnforcementJob.QUERY_FIND_BY_AGREEMENT_ID,
-						EnforcementJob.class);
+		TypedQuery<EnforcementJob> query = entityManager.createNamedQuery(EnforcementJob.QUERY_FIND_BY_AGREEMENT_ID,EnforcementJob.class);
 		query.setParameter("agreementId", agreementId);
 
 		EnforcementJob result;
@@ -67,7 +64,7 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 			result = query.getSingleResult();
 
 		} catch (NoResultException e) {
-			logger.debug("No Result found: " + e);
+			logger.debug("Null will returned due to no Result found: " + e);
 			return null;
 		}
 
@@ -85,8 +82,7 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 
 	@Override
 	public List<IEnforcementJob> getAll() {
-		TypedQuery<IEnforcementJob> query = entityManager.createNamedQuery(
-				"EnforcementJob.findAll", IEnforcementJob.class);
+		TypedQuery<IEnforcementJob> query = entityManager.createNamedQuery(	"EnforcementJob.findAll", IEnforcementJob.class);
 
 		List<IEnforcementJob> enforcementJob = new ArrayList<IEnforcementJob>();
 		enforcementJob = query.getResultList();
@@ -98,13 +94,6 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 		}
 
 		return enforcementJob;
-	}
-
-	@Override
-	public boolean update(IEnforcementJob enforcementJob) {
-		entityManager.merge(enforcementJob);
-		entityManager.flush();
-		return true;
 	}
 
 	@Override

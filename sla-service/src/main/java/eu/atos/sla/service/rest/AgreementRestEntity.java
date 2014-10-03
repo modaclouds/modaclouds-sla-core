@@ -177,6 +177,7 @@ public class AgreementRestEntity extends AbstractSLARest{
 		AgreementHelperE agreementRestHelper = getAgreementHelper();
 		IAgreement agreement =  agreementRestHelper.getAgreementByID(agreementId);
 		if (agreement==null){
+			logger.info("getAgreementById NotFoundException: There is no agreement with id " + agreementId + " in the SLA Repository Database");			
 			throw new NotFoundException("There is no agreement with id " + agreementId + " in the SLA Repository Database");		
 		}
 		logger.debug("EndOf getAgreementById"); 
@@ -220,10 +221,11 @@ public class AgreementRestEntity extends AbstractSLARest{
 		try {
 			context = agreementRestHelper.getAgreementContextByID(agreementId);
 		} catch (InternalHelperException e) {
-			logger.fatal("Exception in getAgreementContextById", e); 			
+			logger.fatal("getAgreementContextById InternalException", e); 			
 			throw new InternalException(e.getMessage());
 		}
 		if (context==null){
+			logger.info("getAgreementContextById NotFoundException: There is no agreement with id " + agreementId + " in the SLA Repository Database");						
 			throw new NotFoundException("There is no agreement with id " + agreementId + " in the SLA Repository Database");
 		}
 		logger.debug("EndOf getAgreementContextById"); 
@@ -271,16 +273,16 @@ public class AgreementRestEntity extends AbstractSLARest{
 			AgreementHelperE agreementRestHelper = getAgreementHelper();
 			location = agreementRestHelper.createAgreement(uriInfo.getAbsolutePath().toString(), agrementParam.getAgreement(), agrementParam.getOriginalSerialzedAgreement());
 		} catch (DBMissingHelperException e) {
-			logger.info("createAgreement exception", e);
-			throw new NotFoundException(e.getMessage());
+			logger.info("createAgreement ConflictException"+ e.getMessage());
+			throw new ConflictException(e.getMessage());
 		} catch (DBExistsHelperException e) {
-			logger.info("createAgreement exception", e);
+			logger.info("createAgreement ConflictException"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
 		} catch (InternalHelperException e) {
-			logger.info("createAgreement exception", e);
+			logger.info("createAgreement InternalException", e);
 			throw new InternalException(e.getMessage());
 		} catch (ParserHelperException e) {
-			logger.info("createAgreement exception", e);
+			logger.info("createAgreement InternalException", e);
 			throw new InternalException(e.getMessage());
 		}
 		logger.debug("EndOf createAgreement");
@@ -342,10 +344,12 @@ public class AgreementRestEntity extends AbstractSLARest{
 			return buildResponse(HttpStatus.OK, /*egarrido it was returned HttpStatus.NO_CONTENT, I don't know why */
 					"The enforcement job with agreement id " + agreementId
 							+ "was deleted successfully");
-		else
+		else{
+			logger.info("getAgreementContextById NotFoundException: There is no agreement with id " + agreementId + " in the SLA Repository Database");						
 			return buildResponse(HttpStatus.NOT_FOUND, 
 					printError(HttpStatus.NOT_FOUND, "There is no agreement with id "
 							+ agreementId + " in the SLA Repository Database"));
+		}
 		
 	}
 
@@ -400,7 +404,7 @@ public class AgreementRestEntity extends AbstractSLARest{
 			AgreementHelperE agreementRestHelper = getAgreementHelper();
 			guaranteeTermsStatus =  agreementRestHelper.getAgreementStatus(agreementId);
 		} catch (DBMissingHelperException e) {
-			logger.info("getStatusAgreement exception:"+e.getMessage());
+			logger.info("getStatusAgreement NotFoundException:"+e.getMessage());
 			throw new NotFoundException(e.getMessage()); 
 		}
 		logger.debug("EndOf getStatusAgreement");

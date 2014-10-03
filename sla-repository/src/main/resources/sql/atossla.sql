@@ -27,8 +27,8 @@ CREATE TABLE `agreement` (
   `agreement_id` varchar(255) DEFAULT NULL,
   `consumer` varchar(255) DEFAULT NULL,
   `expiration_time` datetime DEFAULT NULL,
+  `metrics_eval_end` tinyint(1) DEFAULT NULL,
   `service_id` varchar(255) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
   `text` longtext,
   `provider_id` bigint(20) NOT NULL,
   `template_id` bigint(20) NOT NULL,
@@ -105,7 +105,9 @@ DROP TABLE IF EXISTS `guarantee_term`;
 CREATE TABLE `guarantee_term` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `kpi_name` varchar(255) DEFAULT NULL,
+  `lastSampledDate` datetime DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `samplingPeriodFactor` int(11) DEFAULT NULL,
   `service_level` varchar(255) DEFAULT NULL,
   `service_name` varchar(255) DEFAULT NULL,
   `service_scope` varchar(255) DEFAULT NULL,
@@ -117,6 +119,25 @@ CREATE TABLE `guarantee_term` (
   KEY `FK_pufedjn479knv894hyqrlfpgx` (`agreement_id`),
   CONSTRAINT `FK_pufedjn479knv894hyqrlfpgx` FOREIGN KEY (`agreement_id`) REFERENCES `agreement` (`id`),
   CONSTRAINT `FK_7vtc6h6w1len3s3xrol2rma8o` FOREIGN KEY (`business_value_id`) REFERENCES `business_value_list` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `penalty`
+--
+
+DROP TABLE IF EXISTS `penalty`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `penalty` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `agreement_id` varchar(255) DEFAULT NULL,
+  `datetime` datetime DEFAULT NULL,
+  `uuid` varchar(255) DEFAULT NULL,
+  `definition_id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_s4japyqgwxvss8e63ejryo4js` (`definition_id`),
+  CONSTRAINT `FK_s4japyqgwxvss8e63ejryo4js` FOREIGN KEY (`definition_id`) REFERENCES `penaltydefinition` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -269,4 +290,4 @@ CREATE TABLE `violation` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-06-18 14:40:20
+-- Dump completed on 2014-09-30 16:53:44

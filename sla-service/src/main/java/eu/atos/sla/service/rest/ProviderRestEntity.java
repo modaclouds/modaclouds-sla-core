@@ -100,7 +100,7 @@ public class ProviderRestEntity  extends AbstractSLARest {
 		try {
 			providerList = providerRestHelper.getProviders();
 		} catch (HelperException e) {
-			logger.info("getProviders exception:"+e.getMessage());
+			logger.info("getProviders HelperException:"+e.getMessage());
 		}
 		logger.debug("EndOf getProviders");
 		return providerList;
@@ -200,10 +200,10 @@ public class ProviderRestEntity  extends AbstractSLARest {
 		try {
 			location = providerRestHelper.createProvider(uriInfo.getAbsolutePath().toString(), provider);
 		} catch (DBExistsHelperException e) {
-			logger.info("createProvider exception"+ e.getMessage());
+			logger.info("createProvider ConflictException:"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
 		} catch (InternalHelperException e) {
-			logger.info("createProvider exception", e);
+			logger.info("createProvider InternalException", e);
 			throw new InternalException(e.getMessage());
 		} catch (Throwable t){
 			logger.info("createProvider throwable", t);			
@@ -227,14 +227,17 @@ public class ProviderRestEntity  extends AbstractSLARest {
 			 boolean deleted = providerRestHelper.deleteByProviderUUID(providerUUID);
 			 if (deleted)
 				 return buildResponse(HttpStatus.OK, 
-						 "The provider with uuid " + providerUUID
-						 + "was deleted successfully");
-			else
+						 "The provider with uuid " + providerUUID + "was deleted successfully");
+			else{
+				logger.info("deleteProvider NotFoundException: There is no provider with uuid "
+								+ providerUUID + " in the SLA Repository Database");
 				return buildResponse(HttpStatus.NOT_FOUND, 
 						printError(HttpStatus.NOT_FOUND, "There is no provider with uuid "
 								+ providerUUID + " in the SLA Repository Database"));
-		 }catch(DBExistsHelperException exception){
-			 throw new ConflictException(exception.getMessage());
+			}
+		 }catch(DBExistsHelperException e){
+			logger.info("deleteProvider ConflictException:"+ e.getMessage());
+			 throw new ConflictException(e.getMessage());
 		 }
 	  
 	}

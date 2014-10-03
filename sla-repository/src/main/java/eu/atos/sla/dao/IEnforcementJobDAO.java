@@ -53,13 +53,6 @@ public interface IEnforcementJobDAO {
 	 */
 	public boolean delete(IEnforcementJob enforcementJob);
 
-	/**
-	 * Updates an EnforcementJob from the database
-	 * 
-	 * @param EnforcementJob
-	 *            to be deleted
-	 * @return <code>true</code> if the EnforcementJob was updated correctly
-	 */
-	public boolean update(IEnforcementJob enforcementJob);
+
 
 }

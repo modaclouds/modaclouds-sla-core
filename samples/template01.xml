@@ -2,7 +2,7 @@
 <!-- 
 From http://serviceqos.wikispaces.com/WSAgExample
  -->
-<wsag:Template xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement" xmlns:sla="http://sla.atos.eu" wsag:TemplateId="template012">
+<wsag:Template xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement" xmlns:sla="http://sla.atos.eu" wsag:TemplateId="template01">
    <wsag:Name>ExampleTemplate</wsag:Name>
    <wsag:Context>
       <wsag:AgreementInitiator>provider02</wsag:AgreementInitiator>

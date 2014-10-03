@@ -41,7 +41,6 @@ public class ModelConversion implements IModelConverter {
 	public static class ServiceLevelParser {
 
 		public static class Result {
-			JsonNode root;
 			String constraint;
 			
 			protected String getConstraint() {
@@ -62,7 +61,6 @@ public class ModelConversion implements IModelConverter {
 
 				if (constraint==null) throw new ModelConversionException(serviceLevel+" didn't contain the constraint keyword");
 				Result result = new Result();
-				result.root = rootNode;
 				result.constraint = constraint;
 				
 				return result;
@@ -91,6 +89,69 @@ public class ModelConversion implements IModelConverter {
 				}
 			}
 			return constraint;
+		}
+		
+	}
+
+	public static class QualifyingConditionParser {
+		static private final String AT_END = "AT_END";
+		static private final String SCHEDULEx = "SCHEDULEx";
+		public static class Result {
+			int samplingperiodFactor;
+			
+			protected int getSamplingPeriodFactor() {
+				return samplingperiodFactor;
+			}
+		}
+		
+		protected static Result parse(String qualifyingCondition) throws ModelConversionException {
+			ObjectMapper mapper = new ObjectMapper();
+			
+			JsonNode rootNode = null;
+			try {
+				rootNode = mapper.readTree(qualifyingCondition);
+				JsonNode samplingperiodNode = rootNode.path("samplingperiodfactor");
+				logger.fatal("samplingperiodNode "+samplingperiodNode);
+				
+				String samplingperiodfactor = textOrJson(samplingperiodNode);
+
+				if (samplingperiodfactor==null) throw new ModelConversionException(qualifyingCondition+" didn't contain the samplingperiodfactor keyword");
+				Result result = new Result();
+				if ((samplingperiodfactor.startsWith(SCHEDULEx)) || (samplingperiodfactor.startsWith(AT_END))){
+					if (samplingperiodfactor.startsWith(SCHEDULEx)){ 
+						try{
+							result.samplingperiodFactor = Integer.valueOf(samplingperiodfactor.substring(SCHEDULEx.length()).trim());
+						}catch (NumberFormatException e){
+							throw new ModelConversionException(qualifyingCondition+" "+SCHEDULEx+" must be followed by a decimal");
+						}
+					}
+					if (samplingperiodfactor.startsWith(AT_END)){ 
+						result.samplingperiodFactor = IGuaranteeTerm.ENFORCED_AT_END;
+					}
+				}else
+					throw new ModelConversionException(qualifyingCondition+" must be a multiple from schedule or be executed at the end. Make sure the value starts with "+SCHEDULEx+" or has the word "+AT_END);
+				
+				return result;
+			} catch (JsonProcessingException e) {
+				logger.fatal("Error parsing "+qualifyingCondition, e);
+				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
+			} catch (IOException e) {
+				logger.fatal("Error parsing "+qualifyingCondition, e);
+				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
+			}
+		}
+
+		
+		private static String textOrJson(JsonNode samplingperiodNode) {
+			String value = null;
+			
+			if (!samplingperiodNode.isMissingNode()) {
+				value = samplingperiodNode.getTextValue();
+				if (value == null) {
+					value = samplingperiodNode.toString();
+				}
+			}
+			return value;
 		}
 		
 	}
@@ -188,17 +249,14 @@ public class ModelConversion implements IModelConverter {
 
 			if (servicePropertiesXML.getName() != null) {
 				serviceProperties.setName(servicePropertiesXML.getName());
-
 			}
 
 			if (servicePropertiesXML.getServiceName() != null) {
 				serviceProperties.setServiceName(servicePropertiesXML.getServiceName());
-
 			}
 
 			if (servicePropertiesXML != null) {
 				serviceProperties.setServiceName(servicePropertiesXML.getServiceName());
-
 			}
 
 			// VariableSet
@@ -226,12 +284,9 @@ public class ModelConversion implements IModelConverter {
 
 					}
 					serviceProperties.setVariableSet(variables);
-
 				}
-
 			}
 			servicePropertiesList.add(serviceProperties);
-
 		}
 
 		agreement.setServiceProperties(servicePropertiesList);
@@ -249,30 +304,28 @@ public class ModelConversion implements IModelConverter {
 		for (GuaranteeTerm guaranteeTermXML : guaranteeTermsXML) {
 
 			IGuaranteeTerm guaranteeTerm = new eu.atos.sla.datamodel.bean.GuaranteeTerm();
-			if (guaranteeTermXML.getServiceScope()!=null)
-				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName:"+guaranteeTermXML.getServiceScope().getServiceName()+ " - servicesopeValue:"+guaranteeTermXML.getServiceScope().getValue());
-			else
-				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName: serviceScope is null - servicesopeValue: serviceScope is null");
 
 			if (guaranteeTermXML.getName() != null) {
 				guaranteeTerm.setName(guaranteeTermXML.getName());
 			}
 
 			if (guaranteeTermXML.getServiceScope() != null) {
+				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName:"+guaranteeTermXML.getServiceScope().getServiceName()+ " - servicesopeValue:"+guaranteeTermXML.getServiceScope().getValue());
+				guaranteeTerm.setServiceScope(guaranteeTermXML.getServiceScope().getValue());
+				guaranteeTerm.setServiceName( guaranteeTermXML.getServiceScope().getServiceName());
+			}else
+				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName: serviceScope is null - servicesopeValue: serviceScope is null");
 
-				if (guaranteeTermXML.getServiceScope().getValue() != null) {
-
-					guaranteeTerm.setServiceScope(guaranteeTermXML
-							.getServiceScope().getValue());
-				}
-
-				if (guaranteeTermXML.getServiceScope().getServiceName() != null) {
-
-					guaranteeTerm.setServiceName(guaranteeTermXML
-							.getServiceScope().getServiceName());
+			// qualifying condition
+			if (guaranteeTermXML.getQualifyingCondition()!= null){
+				logger.debug("qualifying confition informed with:"+guaranteeTermXML.getQualifyingCondition());
+				String qc = guaranteeTermXML.getQualifyingCondition();
+				if (qc != null) {
+					QualifyingConditionParser.Result parsedQc = QualifyingConditionParser.parse(qc);
+					guaranteeTerm.setSamplingPeriodFactor(parsedQc.getSamplingPeriodFactor());
+					if (parsedQc.getSamplingPeriodFactor() == IGuaranteeTerm.ENFORCED_AT_END) agreement.setHasGTermToBEEvaluatedAtEndOfEnformcement(true);
 				}
 			}
-
 			ServiceLevelObjective slo  =guaranteeTermXML.getServiceLevelObjetive();
 			if (slo.getKpitarget() != null) {
 				if (slo.getKpitarget().getKpiName() != null) {
@@ -281,8 +334,7 @@ public class ModelConversion implements IModelConverter {
 					logger.debug("guaranteeTerm  with kpiname:"+slo.getKpitarget().getKpiName()+ " --  getCustomServiceLevel: "+csl);
 					if (csl != null) {
 						ServiceLevelParser.Result parsedSlo = ServiceLevelParser.parse(csl);
-						String serviceLevelString = parsedSlo.getConstraint();
-						guaranteeTerm.setServiceLevel(serviceLevelString);
+						guaranteeTerm.setServiceLevel(parsedSlo.getConstraint());
 					}
 				}
 			}

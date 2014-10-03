@@ -112,7 +112,7 @@ The job of each class is the following:
 
 ###Metrics Retriever###
 
-It’s very likely that the monitoring system is independent from the SLA module.
+It's very likely that the monitoring system is independent from the SLA module.
 For this reason, the ServiceProvider has to implement an adapter in order to 
 the SLA retrieve the metrics needed to do the enforcement.
 
@@ -257,12 +257,12 @@ A policy is compound by:
 * a number of occurrences
 
 The objective of a policy is specify when to raise a violation. Instead of 
-raise a violation on every constraint breach, it’s raised when a number of 
+raise a violation on every constraint breach, it's raised when a number of 
 breaches are found within the specified interval.
 
 WS-Agreement does not make room to define something like a policy in a 
 ServiceLevelObjective, so we are going to define the policy in the 
-CustomServiceLevel, along with the constraint definition. So, it’s proposed 
+CustomServiceLevel, along with the constraint definition. So, it's proposed 
 to define the CustomServiceLevel like this:
 
 	{ 
@@ -273,6 +273,77 @@ to define the CustomServiceLevel like this:
 So, if a service provider wants to offer policies in their SLA, they have to 
 be compliant with this format. The constraint string is still totally domain 
 defined.
+
+## Project personalization ##
+It is possible to program some plugins that can be injected in the code and that will personalize the behavior of 
+the SLA software. 
+
+As it has been commented in the installation guide, several parameters can be configured through the 
+configuration.properties. From these parameters we emphasize the following:
+
+- *enforcement.constraintEvaluator.class*: a class that must implement 
+	eu.atos.sla.evaluation.constraint.IConstraintEvaluator
+- *enforcement.metricsRetriever.class*: a class that must implement 
+	eu.atos.sla.monitoring.IMetricsRetriever
+- *parser.json.agreement.class*: a class that must implement 
+	eu.atos.sla.parser.IParser<eu.atos.sla.parser.data.wsag.Agreement> 
+- *parser.json.template.class*: a class that must implement 
+	eu.atos.sla.parser.IParser<eu.atos.sla.parser.data.wsag.Template> 
+- *parser.xml.agreement.class*: a class that must implement 
+	eu.atos.sla.parser.IParser<eu.atos.sla.parser.data.wsag.Agreement>
+- *parser.xml.template.class*: a class that must implement 
+	eu.atos.sla.parser.IParser<eu.atos.sla.parser.data.wsag.Template>
+
+These classes are used for the enforcement and for parsing the serialized string into something wsag compliant.
+
+The implementation of these classes should be done in the sla-personalization project. It is an empty code project 
+that already imports the sla-enforcement, sla-repository and sla-tools, and is included in the war the has to be 
+deployed. The pom.xml should be touched when a library is used that is not initially contemplated.
+ 
+###Enforcement###
+
+TODO roman
+
+###Parsing###
+
+To implement a new parser, it doesn't matter if it's for and Template, an Agreement, for JSON or XML format, the class 
+must extend from the *eu.atos.sla.parser.IParser*.
+
+	public interface IParser <T> {
+  		/*
+	   	* getWsagObject receives in serializedData the object information in an xml, json or any other format 
+	   	* and must return the T object (eu.atos.sla.parser.data.wsag.Agreement or an 
+   		* eu.atos.sla.parser.data.wsag.Template)
+   		*/
+   		public T getWsagObject(String serializedData) throws ParserException;
+	
+   		/*
+    	* getWsagAsSerializedData receives in serializedData the object information in an xml, json or any other 
+    	* format and  must return information following and xml in wsag standard.
+    	*/	
+   		public String getWsagAsSerializedData(String serializedData) throws ParserException;
+	
+	   /*
+	    * getSerializedData receives in wsagSerialized the information in wsag standard as it was generated with 
+    	* the getWsagAsSerializedData method and returns it in a xml, json or any other format
+    	*/
+   		public String getSerializedData(String wsagSerialized) throws ParserException;
+	}
+
+Depending if it is configured in **parser.json** or **parser.xml** the serializedData variable from the methods 
+will be in json or in xml format.
+
+
+###Build the code###
+To build the source code:
+
+- open a command window
+- go to the root directory (the same level where you have the configuration.properties.sample file)
+- type: **mvn -Dmaven.test.skip clean install**
+
+The war file should be copied automatically to the tomcat.directory folder defined in the *configuration.properties* 
+file.
+
 
 ## Appendix 1: Sequence diagrams source ##
 

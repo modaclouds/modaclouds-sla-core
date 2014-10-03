@@ -166,7 +166,7 @@ public class ViolationRestEntity extends AbstractSLARest {
 		try{
 			violations = violationRestHelper.getViolations(agreementId, guaranteeTerm, providerUuid, dBegin, dEnd);
 		} catch (ParserHelperException e) {
-			logger.info("getViolationsXML exception:"+e.getMessage());
+			logger.info("getViolationsXML InternalException:", e);
 			throw new InternalException(e.getMessage());
 		}
 		logger.debug("EndOf getViolations");

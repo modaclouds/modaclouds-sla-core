@@ -18,8 +18,8 @@ copy README.md %DESTINATION%
 %SYNC_COMMAND% -d "%ORIGIN%\samples" "%DESTINATION%\samples"
 %SYNC_COMMAND% -d "%ORIGIN%\bin" "%DESTINATION%\bin"
 
-%SYNC_COMMAND% -d "%ORIGIN%\sla-management\src" "%DESTINATION%\sla-management\src"
-copy "%ORIGIN%\sla-management\pom.xml" "%DESTINATION%\sla-management\" 
+%SYNC_COMMAND% -d "%ORIGIN%\sla-enforcement\src" "%DESTINATION%\sla-enforcement\src"
+copy "%ORIGIN%\sla-enforcement\pom.xml" "%DESTINATION%\sla-enforcement\" 
 
 IF not exist "%DESTINATION%\sla-personalization\src" (mkdir "%DESTINATION%\sla-personalization\src")
 IF not exist "%DESTINATION%\sla-personalization\pom.xml" (copy "%ORIGIN%\sla-personalization\pom.xml" "%DESTINATION%\sla-personalization\")

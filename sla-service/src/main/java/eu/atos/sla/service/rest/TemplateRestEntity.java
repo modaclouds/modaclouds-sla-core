@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -108,10 +109,10 @@ public class TemplateRestEntity extends AbstractSLARest{
 	 * host information, etc.
 	 * 
 	 * <pre>
-	 *   GET /templates 
+	 *   GET /templates
 	 *   
 	 *   Request:
-	 *   	GET /templates HTTP/1.1
+	 *   	GET /templates{?serviceId} HTTP/1.1
 	 *   
 	 *   Response:
 	 *   
@@ -129,19 +130,18 @@ public class TemplateRestEntity extends AbstractSLARest{
 	 * </pre>
 	 * 
 	 * Example: <li>curl http://localhost:8080/sla-service/templates</li>
-	 * 
+	 * 			<li>curl http://localhost:8080/sla-service/templates?serviceId=service02</li>
 	 * @return XML information with the different details and urls of the
 	 *         templates
 	 * 
 	 */
 	@GET
-	public List<ITemplate> getTemplates()  {
+	public List<ITemplate> getTemplates(@QueryParam("serviceId") String serviceId)  {
 		logger.debug("StartOf getTemplates - REQUEST for /templates");
 		TemplateHelperE templateRestHelper = getTemplateHelper();
-		List<ITemplate> templates =  templateRestHelper.getTemplates();
+		List<ITemplate> templates =  templateRestHelper.getTemplates(serviceId);
 		logger.debug("EndOf getTemplates");
 		return templates;
-			
 	}
 
 	/**
@@ -180,6 +180,7 @@ public class TemplateRestEntity extends AbstractSLARest{
 		TemplateHelperE templateRestHelper = getTemplateHelper();
 		ITemplate template = templateRestHelper.getTemplateByUUID(templateId);
 		if (template==null){
+			logger.info("getTemplateByUuid NotFoundException: There is no template with id " + templateId + " in the SLA Repository Database");			
 			throw new NotFoundException("There is no template with id " + templateId + " in the SLA Repository Database");		
 		}			
 		return template;
@@ -222,14 +223,13 @@ public class TemplateRestEntity extends AbstractSLARest{
 			deleted = templateRestHelper.deleteTemplateByUuid(uuid);
 			if (deleted)
 				return buildResponse(HttpStatus.OK, /*egarrido it was returned HttpStatus.NO_CONTENT, I don't know why */
-						"Template with uuid" + uuid
-								+ "was deleted successfully");
+						"Template with uuid" + uuid + "was deleted successfully");
 			else
 				return buildResponse(HttpStatus.NOT_FOUND, 
 						printError(HttpStatus.NOT_FOUND, "There is no template with uuid "
 								+ uuid + " in the SLA Repository Database"));
 		} catch (DBExistsHelperException e) {
-			logger.info("deleteTemplate exception:"+e.getMessage());
+			logger.info("deleteTemplate Conflict:"+e.getMessage());
 			return buildResponse(HttpStatus.CONFLICT, printError(HttpStatus.CONFLICT, e.getMessage()));
 		}
 	}
@@ -275,16 +275,16 @@ public class TemplateRestEntity extends AbstractSLARest{
 		try {
 			location = templateRestHelper.createTemplate(uriInfo.getAbsolutePath().toString(), templateParam.getTemplate(), templateParam.getOriginalSerialzedTemplate());
 		} catch (DBMissingHelperException e) {
-			logger.info("createTemplate exception", e);
-			throw new NotFoundException(e.getMessage());
+			logger.info("createTemplate ConflictException"+ e.getMessage());
+			throw new ConflictException(e.getMessage());
 		} catch (DBExistsHelperException e) {
-			logger.info("createTemplate exception", e);
+			logger.info("createTemplate ConflictException"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
 		} catch (InternalHelperException e) {
-			logger.info("createTemplate exception", e);
+			logger.info("createTemplate InternalException", e);
 			throw new InternalException(e.getMessage());
 		} catch (ParserHelperException e) {
-			logger.info("createTemplate exception", e);
+			logger.info("createTemplate ParserHelperException", e);
 			throw new InternalException(e.getMessage());
 		}
 		logger.debug("EndOf createTemplate");
@@ -336,9 +336,17 @@ public class TemplateRestEntity extends AbstractSLARest{
 			logger.info("updateTemplate exception", e);
 			throw new InternalException(e.getMessage());
 		} catch (InternalHelperException e) {
-			logger.info("updateTemplate conflictexception", e);
+			logger.info("updateTemplate ConflictException:"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
+		} catch (DBMissingHelperException e) {
+			logger.info("updateTemplate ConflictException: "+ e.getMessage());
+			throw new ConflictException(e.getMessage());
+		} catch (DBExistsHelperException e){
+			logger.info("updateTemplate ConflictException: "+ e.getMessage());
+			throw new ConflictException(e.getMessage());		
 		}
+		
+		
 		if (updatedTemplate==null){
 			logger.info("updateTemplate: Couldn't update template, "+templateParam.getTemplate().getTemplateId()+ ",please check that it exists in database");
 			throw new NotFoundException("Couldn't update template, "+templateParam.getTemplate().getTemplateId()+ ",please check that it exists in database");
@@ -348,6 +356,9 @@ public class TemplateRestEntity extends AbstractSLARest{
 		return updatedTemplate;
 	}
 	
+	
+	
+
 	
 	private TemplateHelperE getTemplateHelper() {
 		return helper;

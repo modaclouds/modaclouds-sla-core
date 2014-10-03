@@ -7,6 +7,37 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="location" value="classpath:datasource.properties"/>
+	</bean>
+	
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<property name="persistenceUnitName" value="slarepositoryDB" />
+		<property name="jpaVendorAdapter" ref="jpaAdapter" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${DB_DRIVER}" />
+		<property name="url" value="${DB_URL}" />
+		<property name="username" value="${DB_USERNAME}" />
+		<property name="password" value="${DB_PASSWORD}" />
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="jpaAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+		p:database="MYSQL" p:showSql="${DB_SHOWSQL}"/>
+
+<!-- 
 	<bean id="pum"
 		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
 		<property name="persistenceXmlLocations">
@@ -14,7 +45,7 @@
 				<value>classpath*:META-INF/persistence.xml</value>
 			</list>
 		</property>
-		<!-- comment dataSourceLooup to use jndi -->
+		<!- - comment dataSourceLooup to use jndi - ->
 		<property name="dataSourceLookup">
 			<bean
 				class="org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup" />
@@ -60,4 +91,5 @@
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
 		p:database="MYSQL" p:showSql="${db.showSQL}"/>
 
+  -->
 </beans>

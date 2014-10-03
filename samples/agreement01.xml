@@ -6,7 +6,7 @@
 		<wsag:AgreementInitiator>RandomClient</wsag:AgreementInitiator>
 		<wsag:AgreementResponder>provider03</wsag:AgreementResponder>
 		<wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
-		<wsag:TemplateId>template04</wsag:TemplateId>
+		<wsag:TemplateId>template01</wsag:TemplateId>
 		<sla:Service>service01</sla:Service>		
 	</wsag:Context>
 	<wsag:Terms>
@@ -26,10 +26,11 @@
 				</wsag:Variables>
 			</wsag:ServiceProperties>
 			<wsag:GuaranteeTerm wsag:Name="GT_ResponseTime">
-				<wsag:ServiceScope wsag:ServiceName="ServiceName" />
+				<wsag:ServiceScope wsag:ServiceName="ServiceName">ScopeNameContent</wsag:ServiceScope>
 				<!-- The qualifying conditions that must be met before the guarantee 
 					is evaluated -->
-				<!-- <wsag:QualifyingCondition>state EQ 'ready'</wsag:QualifyingCondition> -->
+				<!--wsag:QualifyingCondition>{"samplingperiodfactor":"SCHEDULEx3"}</wsag:QualifyingCondition-->
+				<wsag:QualifyingCondition>{"samplingperiodfactor":"AT_END"}</wsag:QualifyingCondition>
 				<wsag:ServiceLevelObjective>
 					<wsag:KPITarget>
 						<wsag:KPIName>ResponseTime</wsag:KPIName> <!-- same name as property for the moment -->

@@ -12,8 +12,10 @@ Some utility scripts. All must be executed from project root (i.e. bin/<script>)
 			drop tables and recreate tables from sla-repository/trunk/src/main/resources/sql
 * runserver.sh
 			starts tomcat server
-* copySLACoreToFolder.sh, copySLACoreToFolder.bat
+* copySLACoreToFolder.sh, syncSLACoreToFolder.bat
 			copy source tree to another directory
+* generate-appendix.sh
+			automatically generates markdown appendix of calls to server.
 
 If a table/column is added/modified, it is recommended the following procedure:
 * dropTables.sh

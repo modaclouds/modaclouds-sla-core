@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.io.StringWriter;
 
 public class NotFoundException extends Exception implements Serializable {
-
 	private static final long serialVersionUID = 4445376691179333371L;
 
 	public NotFoundException(String s, Throwable t){
