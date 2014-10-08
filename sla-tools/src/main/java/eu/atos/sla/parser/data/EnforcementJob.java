@@ -31,7 +31,7 @@ public class EnforcementJob {
 	private boolean enabled;
 	@JsonSerialize(using=DateTimeSerializerJSON.class)
 	@JsonDeserialize(using=DateTimeDeserializerJSON.class)
-	@XmlElement(name = "last_executed")
+	@XmlElement(name = "last_executed", nillable=true)
 	private Date lastExecuted;
 
 	public Long getId() {

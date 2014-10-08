@@ -50,7 +50,7 @@ Create a user:
 	
 From command prompt, create needed tables:
 
-	$ mvn compile exec:java -f sla-repository/pom.xml
+	$ mvn test exec:java -f sla-repository/pom.xml
 	
 Another option to create the database is execute a sql file from the 
 project root directory:
@@ -85,7 +85,7 @@ see the "ATOSSLA" project ready to be imported in your Eclipse.
 The project is made up of five main modules:
 
 - SLA Repository
-- SLA Management
+- SLA Enforcement
 - SLA Service
 - SLA Tools
 - SLA Personalization
@@ -96,16 +96,16 @@ has to be copied to *configuration.properties*.
 Several parameters can be configured through this file.
 
 1. tomcat.directory when building, war will be automatically copied to this directory,
-1. db.\* allows to configure the database username, password and name in 
-   case it has been changed from the proposed one in the section 
-   [Creating the mysql database](#database). It can be selected if queries 
-   from hibernate must be shown or not,
+1. db.\* allows to configure the database username, password and name in case it has been changed from the proposed 
+   one in the section [Creating the mysql database](#database). It can be selected if queries from hibernate must be 
+   shown or not. These parameters can be overriden at deployment time through the use of environment variables 
+   (see section [Running](#running)),
 1. log.\* allows to configure the log files to be generated 
    and the level of information,
-1. manager.enforcement.\* several parameters from the enforcement can be customized,
+1. enforcement.\* several parameters from the enforcement can be customized,
 1. service.basicsecurity.\* basic security is enabled
-   These parameters can be used to set the user name and password to 
-   access to the rest services.
+   These parameters can be used to set the user name and password to access to the rest services.
+1.   ''parser.*'' different parsers can be implemented for the agreement and template. By default, wsag standard parsers are have been implemented and configured in the file. Also dateformat can be configured.
 
 ## <a name="compiling"> Compiling </a> ##
 	
@@ -131,6 +131,23 @@ that is just a shortcut for:
 
 	$ mvn tomcat:run -f sla-service/pom.xml
 	
+	
+Some configuration parameters can be overriden using environment variables or jdk variables. The list of
+parameters overridable is:
+
+* `DB_DRIVER`; default value is `com.mysql.jdbc.Driver`
+* `DB_URL`; default value is `jdbc:mysql://${db.host}:${db.port}/${db.name}`
+* `DB_USERNAME`; default value is `${db.username}`
+* `DB_PASSWORD`; default value is `${db.password}`
+* `DB_SHOWSQL`; default value is `${db.showSQL}`
+
+F.e., to use a different database configuration:
+
+	$ export DB_URL=http://localhost:8080/sla
+	$ export DB_USERNAME=sla
+	$ export DB_PASSWORD=<secret>
+	$ bin/runserver.sh 
+
 ## <a name="testing"> Testing </a> ##
 
 Check that everything is working:

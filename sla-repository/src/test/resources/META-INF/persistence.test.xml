@@ -5,6 +5,7 @@
 
 	<persistence-unit name="slarepositoryDB"
 		transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>		
 		<class>eu.atos.sla.datamodel.bean.Violation</class>
 		<class>eu.atos.sla.datamodel.bean.Template</class>
 		<class>eu.atos.sla.datamodel.bean.Policy</class>
@@ -25,7 +26,7 @@
 			<property name="hibernate.connection.password" value="" />
 			<property name="hibernate.connection.url" value="jdbc:hsqldb:mem:atossla;sql.syntax_mys=true" />
 			<property name="hibernate.connection.username" value="sa" />
-			<property name="hibernate.hbm2ddl.auto" value="create" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
 		</properties>
 	</persistence-unit>

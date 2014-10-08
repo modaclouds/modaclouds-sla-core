@@ -25,10 +25,11 @@ import eu.atos.sla.service.rest.exception.InternalException;
 import eu.atos.sla.service.rest.exception.NotFoundException;
 import eu.atos.sla.service.rest.helpers.EnforcementJobHelperE;
 import eu.atos.sla.service.rest.helpers.exception.DBExistsHelperException;
+import eu.atos.sla.service.rest.helpers.exception.DBMissingHelperException;
 import eu.atos.sla.service.rest.helpers.exception.InternalHelperException;
 
 /**
- * Rest Service that exposes stored information from SLA management
+ * Rest Service that exposes stored information from SLA enforcement
  * 
  * @author @author Elena Garrido
  */
@@ -131,6 +132,7 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 		EnforcementJobHelperE enforcementJobService = getHelper();
 		EnforcementJob enforcementJob= enforcementJobService.getEnforcementJobByUUID(agreementUUID);
 		if (enforcementJob==null){
+			logger.info("getEnforcementJobByAgreementId NotFoundException: There is no agreement with uuid " + agreementUUID + " in the SLA Repository Database");									
 			throw new NotFoundException("There is no enforcement job associated to the agreement with uuid " + agreementUUID + " in the SLA Repository Database");
 		}
 		logger.debug("EndOf getEnforcementJobByAgreementId");
@@ -174,13 +176,16 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 			return buildResponse(HttpStatus.ACCEPTED,
 					"The enforcement job with agreement-uuid " + agreementId
 							+ " has started");
-		else
+		else{
+			logger.info("startEnforcementJob ForbiddenException: There has not been possible to start the enforcementJob with agreementId : "
+					+ agreementId + " in the SLA Repository Database");									
 			return buildResponse(
 					HttpStatus.FORBIDDEN,
 					printError(HttpStatus.FORBIDDEN,
 							"There has not been possible to start the enforcementJob with agreementId : "
 									+ agreementId
 									+ " in the SLA Repository Database"));
+		}
 
 	}
 
@@ -224,14 +229,17 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 			return buildResponse(HttpStatus.OK,
 					"The enforcement job with agreement-uuid " + agreementId
 							+ " has stopped");
-		else
+		else{
+			logger.info("stopEnforcementJob ForbiddenException: There has not been possible to stop the enforcementJob with agreementId : "
+					+ agreementId + " in the SLA Repository Database");									
 			return buildResponse(
 					HttpStatus.FORBIDDEN,
 					printError(HttpStatus.FORBIDDEN,
-							"There has not been possible to start the enforcementJob with uuid : "
+							"There has not been possible to stop the enforcementJob with uuid : "
 									+ agreementId
 									+ " in the SLA Repository Database"));
 
+		}
 	}
 
 	/**
@@ -261,7 +269,7 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 	 * @return XML information with the different details of the agreement
 	 */
 	@POST
-	public Response createEnforcementJob(@Context UriInfo uriInfo, @RequestBody EnforcementJob enforcementJob) throws ConflictException, InternalException{
+	public Response createEnforcementJob(@Context UriInfo uriInfo, @RequestBody EnforcementJob enforcementJob) throws ConflictException, InternalException, NotFoundException{
 		logger.debug("StartOf createEnforcementJob - REQUEST Insert /enforcement");
 		
 		EnforcementJobHelperE enforcementJobHelper = getHelper();
@@ -269,11 +277,14 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 		try {
 			location = enforcementJobHelper.createEnforcementJob(uriInfo.getAbsolutePath().toString(), enforcementJob);
 		} catch (DBExistsHelperException e) {
-			logger.info("createEnforcementJob exception", e);
+			logger.info("createEnforcementJob ConflictException:"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
 		} catch (InternalHelperException e) {
-			logger.info("createEnforcementJob exception", e);
+			logger.info("createEnforcementJob InternalException:", e);
 			throw new InternalException(e.getMessage());
+		} catch (DBMissingHelperException e){
+			logger.info("createEnforcementJob DBMissingHelperException:"+ e.getMessage());
+			throw new NotFoundException(e.getMessage());			
 		}
 		logger.debug("EndOf createEnforcementJob");
 		return buildResponsePOST(

@@ -66,9 +66,13 @@ public class TemplateHelperE  {
 	}
 	
 
-	public List<ITemplate> getTemplates(){
+	public List<ITemplate> getTemplates(String serviceId){
 		logger.debug("StartOf getTemplates");
-		List<ITemplate> templates = templateDAO.getAll();
+		List<ITemplate> templates = null;
+		if (serviceId == null)
+			templates = templateDAO.getAll();
+		else
+			templates = templateDAO.getByServiceId(serviceId);
 		logger.debug("EndOf getTemplates");
 		return templates;
 	}
@@ -131,9 +135,7 @@ public class TemplateHelperE  {
 					if (provider==null) throw new DBMissingHelperException("Provider with UUID "+providerUUID+" doesn't exist in the database");
 
 					ITemplate template = modelConverter.getTemplateFromTemplateXML(templateXML, originalSerializedTemplate);
-					logger.info("Template uuid is"+template.getUuid());
-					logger.info("Template id is"+template.getId());
-					logger.info("Template text is"+template.getText());
+					logger.info("Template uuid is"+template.getUuid()+" - Template id is"+template.getId()+ " - Template text is"+template.getText());
 					templateStored = templateDAO.save(template);
 					provider.addTemplate(templateStored);
 					providerDAO.update(provider);
@@ -158,19 +160,50 @@ public class TemplateHelperE  {
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)	
-	public ITemplate updateTemplate(String uuid, Template templateXML, String originalSerializedTemplate) throws ParserHelperException, InternalHelperException {
+	public ITemplate updateTemplate(String uuid, Template templateXML, String originalSerializedTemplate) throws ParserHelperException, InternalHelperException, DBMissingHelperException, DBExistsHelperException {
+		// TODO  correct method, check that everything is properly updated
+		// provider can be incorrect and software doesn't return any error
+		
 		logger.debug("StartOf updateTemplate with uuid: "+uuid+" payload:"+originalSerializedTemplate);
 		try{
 			if (uuid==null) throw new InternalHelperException("TemplateUuid has not been informed, cannot do and update");
+
+			if (templateXML.getTemplateId()==null) templateXML.setTemplateId(uuid); 
 			ITemplate template = modelConverter.getTemplateFromTemplateXML(templateXML, originalSerializedTemplate);
+			logger.debug("uuid: "+uuid+" templateXML.getTemplateId():"+templateXML.getTemplateId()+ " template.getUuid:"+template.getUuid());
 			if (!template.getUuid().equals(uuid)) throw new InternalHelperException("TemplateUuid in file has been informed and doesn't match with the parameter. Remove the one from the file or send the same.");
+			
+			List<IAgreement> agreementList = agreementDAO.getByTemplate(uuid);
+			if (agreementList != null){
+				logger.debug("agreements list not null");
+				if (agreementList.size() > 0) throw new DBExistsHelperException("Template with "+uuid+" has agreements associated. It cannot be changed");
+			}
+			
+			String providerUUID = null;
+			try {
+				ServiceProvider ctxProvider = ServiceProvider.fromString(templateXML.getContext().getServiceProvider());
+
+				switch (ctxProvider) {
+				case AGREEMENT_RESPONDER: providerUUID = templateXML.getContext().getAgreementResponder(); break;
+				case AGREEMENT_INITIATOR: providerUUID = templateXML.getContext().getAgreementInitiator(); break;
+				}
+			} catch (IllegalArgumentException e) {
+				throw new ModelConversionException("The Context/ServiceProvider field must match with the word "+ServiceProvider.AGREEMENT_RESPONDER+ " or "+ServiceProvider.AGREEMENT_INITIATOR);
+			}
+			IProvider provider = getProviderPerUUIDFromDatabase(providerUUID);
+			if (provider==null) throw new DBMissingHelperException("Provider with UUID "+providerUUID+" doesn't exist in the database");
+			
+		
 			template.setUuid(uuid);
 			boolean templateStored = templateDAO.update(uuid, template);
 			ITemplate templateFromDatabase = null;
 	
 			if (templateStored) {
 				templateFromDatabase = this.templateDAO.getByUuid(uuid);
-			} 
+			}
+			provider.addTemplate(templateFromDatabase);			
+			providerDAO.update(provider);
+			
 			logger.debug("EndOf updateTemplate");
 			return templateFromDatabase;
 			

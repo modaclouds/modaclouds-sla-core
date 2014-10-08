@@ -72,6 +72,7 @@ public class Agreement implements IAgreement, Serializable {
 	private List<IServiceProperties> serviceProperties;
 	private List<IGuaranteeTerm> guaranteeTerms;
 	private String serviceId;
+	private Boolean hasGTermToBEEvaluatedAtEndOfEnformcement;
 							
 	public Agreement() {
 	}
@@ -192,4 +193,18 @@ public class Agreement implements IAgreement, Serializable {
 		this.serviceId = serviceId;
 	}
 
+
+	@Override
+	@Column(name = "metrics_eval_end")
+	public Boolean getHasGTermToBEEvaluatedAtEndOfEnformcement() {
+		return hasGTermToBEEvaluatedAtEndOfEnformcement;
+	}
+
+	@Override
+	public void setHasGTermToBEEvaluatedAtEndOfEnformcement(
+			Boolean hasGTermToBEEvaluatedAtEndOfEnformcement) {
+		this.hasGTermToBEEvaluatedAtEndOfEnformcement = hasGTermToBEEvaluatedAtEndOfEnformcement;
+	}
+
+	
 }

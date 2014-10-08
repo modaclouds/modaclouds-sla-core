@@ -1,6 +1,7 @@
 package eu.atos.sla.datamodel.bean;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -34,7 +35,7 @@ import eu.atos.sla.datamodel.IViolation;
 @Table(name = "guarantee_term")
 @NamedQueries({ @NamedQuery(name = "GuaranteeTerm.findAll", query = "SELECT p FROM GuaranteeTerm p") })
 public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
-
+	
 	private static final long serialVersionUID = -8140757088864002129L;
 	private Long id;
 	private String name;
@@ -47,6 +48,9 @@ public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
 	private GuaranteeTermStatusEnum status;
 	private IBusinessValueList businessValueList;
 
+	private Date lastSampledDate;
+	private Integer  samplingPeriodFactor;
+	
 	public GuaranteeTerm() {
 
 		this.status = GuaranteeTermStatusEnum.NON_DETERMINED;
@@ -167,4 +171,28 @@ public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
 	public void setBusinessValueList(IBusinessValueList businessValueList) {
 		this.businessValueList = businessValueList;
 	}
+
+	@Override
+	@Column(name = "lastSampledDate", nullable = true)
+	public Date getLastSampledDate() {
+		return lastSampledDate;
+	}
+
+	@Override
+	public void setLastSampledDate(Date lastSampledDate) {
+		this.lastSampledDate = lastSampledDate;
+	}
+
+	@Override
+	@Column(name = "samplingPeriodFactor", nullable = true)
+	public Integer getSamplingPeriodFactor() {
+		return samplingPeriodFactor;
+	}
+
+	@Override
+	public void setSamplingPeriodFactor(Integer samplingPeriodFactor) {
+		this.samplingPeriodFactor = samplingPeriodFactor;
+	}
+	
+	
 }

@@ -10,7 +10,7 @@
 	<modules>
 		<module>sla-repository</module>
 		<module>sla-tools</module>
-		<module>sla-management</module>
+		<module>sla-enforcement</module>
 		<module>sla-personalization</module>
 		<module>sla-service</module>
 	</modules>

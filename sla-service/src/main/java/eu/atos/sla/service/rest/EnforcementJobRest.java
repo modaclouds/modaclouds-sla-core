@@ -24,7 +24,7 @@ import eu.atos.sla.service.rest.helpers.EnforcementJobHelper;
 import eu.atos.sla.service.rest.helpers.exception.HelperException;
 
 /**
- * Rest Service that exposes stored information from SLA management
+ * Rest Service that exposes stored information from SLA enforcement
  * 
  * @author Pedro Rey
  */

@@ -134,4 +134,13 @@ public interface IAgreement {
 	
 	public void setServiceProperties(List<IServiceProperties> serviceProperties);
 	
+	
+	/**
+	 * some of the GuaranteeTerms should just measured and evaluated at the end of the execution of 
+	 * the enforcementJob. This variable indicates if it has to be executed or not. 
+	 */
+	public Boolean getHasGTermToBEEvaluatedAtEndOfEnformcement();
+
+	public void setHasGTermToBEEvaluatedAtEndOfEnformcement(Boolean hasGTermToBEEvaluatedAtEndOfEnformcement);
+
 }

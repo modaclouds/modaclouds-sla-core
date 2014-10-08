@@ -9,7 +9,7 @@
 		<version>0.1.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
-	<artifactId>sla-repository-database</artifactId>
+	<artifactId>sla-repository</artifactId>
 	<packaging>jar</packaging>
 	<name>SLA repository database</name>
 
@@ -23,12 +23,19 @@
 
 	<build>
 		<filters>
-			<filter>..\configuration.properties</filter>
+			<filter>../configuration.properties</filter>
 		</filters>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
 				<includes>
 					<include>**/*.xml</include>
 				</includes>
@@ -105,25 +112,6 @@
 						<format>true</format>
 					</componentProperties>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<formats>
-						<format>html</format>
-						<format>xml</format>
-					</formats>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>cobertura</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -263,6 +251,13 @@
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+		
+		<!-- for the entityManagerHelper -->
+		<dependency>
+    		<groupId>org.hibernate</groupId>
+    		<artifactId>hibernate-entitymanager</artifactId>
+    		<version>4.2.6.Final</version>
 		</dependency>
 
 		<!-- Jersey + Spring -->

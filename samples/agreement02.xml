@@ -37,7 +37,7 @@
 				</wsag:VariableSet>
 			</wsag:ServiceProperties>
 			<wsag:GuaranteeTerm wsag:Name="GT_ResponseTime">
-				<wsag:ServiceScope wsag:ServiceName="ServiceName"/>
+				<wsag:ServiceScope wsag:ServiceName="ServiceName">ScopeName1</wsag:ServiceScope>
 				<!-- The qualifying conditions that must be met before the guarantee is evaluated -->
 				<!-- 
 				<wsag:QualifyingCondition>state EQ 'ready'</wsag:QualifyingCondition>
@@ -50,7 +50,7 @@
 				</wsag:ServiceLevelObjective>
 			</wsag:GuaranteeTerm>
 			<wsag:GuaranteeTerm wsag:Name="GT_Performance">
-				<wsag:ServiceScope wsag:ServiceName="ServiceName"/>
+				<wsag:ServiceScope wsag:ServiceName="ServiceName">ScopeName2</wsag:ServiceScope>
 				<wsag:ServiceLevelObjective>
 					<wsag:KPITarget>
 						<wsag:KPIName>Performance</wsag:KPIName> <!--  same name as property for the moment -->

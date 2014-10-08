@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.atos.sla.dao.IAgreementDAO;
 import eu.atos.sla.dao.IEnforcementJobDAO;
+import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IEnforcementJob;
 import eu.atos.sla.enforcement.IEnforcementService;
 import eu.atos.sla.parser.data.EnforcementJob;
 import eu.atos.sla.service.rest.helpers.exception.DBExistsHelperException;
+import eu.atos.sla.service.rest.helpers.exception.DBMissingHelperException;
 import eu.atos.sla.service.rest.helpers.exception.InternalHelperException;
 import eu.atos.sla.util.IModelConverter;
 import eu.atos.sla.util.ModelConversionException;
@@ -26,6 +29,10 @@ import eu.atos.sla.util.ModelConversionException;
 @Transactional
 public class EnforcementJobHelperE{
 	private static Logger logger = Logger.getLogger(EnforcementJobHelperE.class);
+
+	
+	@Autowired
+	private IAgreementDAO agreementDAO;
 
 	@Autowired
 	private IEnforcementJobDAO enforcementJobDAO;
@@ -59,7 +66,8 @@ public class EnforcementJobHelperE{
 		logger.debug("StartOf getEnforcementJobByUUID uuid:"+agreementUUID);
 		EnforcementJob enforcementJob = null;
 		IEnforcementJob storedEnforcementJob = this.enforcementJobDAO.getByAgreementId(agreementUUID);
-		enforcementJob  = modelConverter.getEnforcementJobXML(storedEnforcementJob);
+		if (storedEnforcementJob!=null)
+			enforcementJob  = modelConverter.getEnforcementJobXML(storedEnforcementJob);
 		logger.debug("EndOf getEnforcementJobByUUID");
 		return enforcementJob;
 	}
@@ -76,7 +84,7 @@ public class EnforcementJobHelperE{
 	}
 
 	public String createEnforcementJob(String collectionUri, EnforcementJob enforcementJobXML)
-			throws DBExistsHelperException, InternalHelperException {
+			throws DBExistsHelperException, InternalHelperException, DBMissingHelperException {
 		logger.debug("StartOf createEnforcementJob");
 		IEnforcementJob enforcementJob = null;
 		IEnforcementJob stored = null;
@@ -86,7 +94,12 @@ public class EnforcementJobHelperE{
 			if (enforcementJobXML != null) {
 				if (!doesEnforcementExistInRepository(enforcementJobXML.getAgreementId())) {
 					// the enforcement doesn't eist
-						enforcementJob = modelConverter.getEnforcementJobFromEnforcementJobXML(enforcementJobXML);
+					enforcementJob = modelConverter.getEnforcementJobFromEnforcementJobXML(enforcementJobXML);
+					IAgreement agreement = agreementDAO.getByAgreementId(enforcementJobXML.getAgreementId());
+					if (agreement == null)
+						throw new DBMissingHelperException("Agreement with id:"
+								+ enforcementJobXML.getAgreementId()
+								+ " doesn't exists in the SLA Repository Database. No enforcement job could be started");
 					stored = enforcementService.createEnforcementJob(enforcementJob);
 				} else {
 					throw new DBExistsHelperException("Enforcement with id:"

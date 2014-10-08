@@ -7,7 +7,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 /**
- * Rest Service that exposes stored information from SLA management
+ * Rest Service that exposes stored information from SLA enforcement
  * 
  * @author Pedro Rey
  */

@@ -16,7 +16,6 @@ public class InternalException extends Exception implements Serializable {
 		t.printStackTrace(new PrintWriter(errors));
 		return errors.toString();
 	}
-
 	
 	public InternalException(String msg) {
         super(msg);

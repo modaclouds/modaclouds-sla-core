@@ -16,6 +16,8 @@ public class GuaranteeTerm {
 	private ServiceScope serviceScope;
 	@XmlElement(name = "ServiceLevelObjective")
 	private ServiceLevelObjective serviceLevelObjective;
+	@XmlElement(name = "QualifyingCondition")
+	private String qualifyingCondition;
 
 	public GuaranteeTerm() {
 	}
@@ -45,4 +47,13 @@ public class GuaranteeTerm {
 		this.serviceLevelObjective = serviceLevelObjetive;
 	}
 
+	public String getQualifyingCondition() {
+		return qualifyingCondition;
+	}
+
+	public void setQualifyingCondition(String qualifyingCondition) {
+		this.qualifyingCondition = qualifyingCondition;
+	}
+
+	
 }

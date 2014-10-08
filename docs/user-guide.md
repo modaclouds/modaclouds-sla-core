@@ -99,7 +99,7 @@ Search the resources that fulfills the params. All resources are returned if the
 	curl [-X GET] -H "Accept: application/json" localhost:8080/sla-service/resources?name=res-name
 
 ### POST /resources <a name="create"></a>###
-Create a new resource. The created resource will be accessed by its uuid.
+Create a new resource. The created resource will be accessed by its uuid. A message will be the usual response.
 
 **Request in XML**
 
@@ -115,21 +115,6 @@ Create a new resource. The created resource will be accessed by its uuid.
 
 	{...}
 
-**Response in XML** 
-
-	HTTP/1.1 201 Created
-	Content-type: application/xml
-	Location: /sla-service/resources/{uuid}
-	
-	<?xml version="1.0" encoding="UTF-8"?>
-	<message code="xxx" message="..."/>
-
-**Request in JSON**
-
-	POST /resources?param1=value1 HTTP/1.1
-	Content-type: application/json
-
-	{"code":"xxx", "message": ...}
 
 **Usage (for JSON and XML)**
 
@@ -195,6 +180,21 @@ Deletes an existing resource.
 
 	curl -H "Accept: application/xml" -X DELETE localhost:8080/sla-service/resources/fc923960-03fe-41
 	curl -H "Accept: application/json" -X DELETE localhost:8080/sla-service/resources/fc923960-03fe-41
+### Messages
+Some of the above mentioned methods might return a message. Messages can be returned as XML or JSON.
+
+**Message Response in XML** 
+
+	Content-type: application/xml
+	
+	<?xml version="1.0" encoding="UTF-8"?>
+	<message code="xxx" message="..."/>
+
+**Message Request in JSON**
+
+	Content-type: application/json
+
+	{"code":"xxx", "message": ...}
 
 ---
 
@@ -218,14 +218,25 @@ A provider is serialized in JSON as:
 ###GET /providers/{uuid}###
 Retrieves a specific provider identified by uuid
 
+Error message: 
+* 404 is returned when the uuid doesn't exist in the database.
+
 ###GET /providers###
 Retrieves the list of all providers
 
 ###POST /providers###
 Creates a provider. The uuid is in the file beeing send
 
+Error message:
+* 409 is returned when the uuid or name already exists in the database.
+
 ###DELETE /providers/{uuid}###
 Removes the provider identified by uuid.
+
+Error message: 
+
+* 404 is returned when the uuid doesn't exist in the database.
+* 409 is returned when the provider code is used.
 
 ---
 
@@ -233,8 +244,7 @@ Removes the provider identified by uuid.
 * Templates collection URI: /templates
 * Template URI: /templates/{TemplateId}
 
-The TemplateId matches the TemplateId attribute of wsag:Template element when the template is created. A template is 
-serialized in XML as defined by ws-agreement.
+The TemplateId matches the TemplateId attribute of wsag:Template element when the template is created. A template is serialized in XML as defined by ws-agreement.
 
 An example of template in XML is:
 
@@ -343,19 +353,42 @@ An example of template in JSON is:
 ###GET /templates/{TemplateId}###
 Retrieves a template identified by TemplateId.
 
-###GET /templates###
-Retrieves the list of all templates.
+Error message: 
+
+* 404 is returned when the uuid doesn't exist in the database.
+
+###GET /templates{?serviceId}###
+
+The parameter is:
+
+* serviceId: id of service that is associated to the template 
 
 ###POST /templates###
-Creates a new template. The file might include a TemplateId or not. In case of not beeing included, a uuid will be 
-assigned.
+Creates a new template. The file might include a TemplateId or not. In case of not beeing included, a uuid will be assigned.
+
+Error message:
+ 
+* 409 is returned when the uuid already exists in the database.
+* 409 is returned when the provider uuid specified in the template doesn't exist in the database.
+* 500 when incorrect data has been suplied
+
 
 ###PUT /templates/{TemplateId}###
-Updates the template identified by TemplateId. The body might include a TemplateId or not. In case of including a 
-TemplateId in the file, it must match with the one from the url.
+Updates the template identified by TemplateId. The body might include a TemplateId or not. In case of including a TemplateId in the file, it must match with the one from the url.
+ 
+Error message:
+
+* 409 when the uuid from the url doesn't match with the one from the file or when the system has already an agreement associated 
+* 409 when template has agreements associated.  
+* 409 provider doesn't exist
+* 500 when incorrect data has been suplied
 
 ###DELETE /templates/{TemplateId}###
 Removes the template identified by TemplateId.
+
+Error message:
+* 409 when agreements are still associated to the template
+* 404 is returned when the uuid doesn't exist in the database.
 
 ---
 
@@ -476,6 +509,11 @@ An example of agreement in JSON is:
 ###GET /agreements/{AgreementId}###
 Retrieves an agreement identified by AgreementId.
 
+Error message: 
+
+* 404 is returned when the uuid doesn't exist in the database.
+
+
 ###GET /agreements/###
 Retrieves the list of all agreements.
 
@@ -483,24 +521,39 @@ Retrieves the list of all agreements.
 
 The parameters are:
 
-* consumerId: uuid of the consumer (value of Context/AgreementInitiator if Context/ServiceProvider 
-  equals "AgreementResponder"). 
-* providerId: uuid of the provider (value of Context/AgreementResponder if Context/ServiceProvider 
-  equals "AgreementResponder")
+* consumerId: uuid of the consumer (value of Context/AgreementInitiator if Context/ServiceProvider equals "AgreementResponder"). 
+* providerId: uuid of the provider (value of Context/AgreementResponder if Context/ServiceProvider equals "AgreementResponder")
 * active: boolean value (value in {1,true,0,false}); if true, agreements currently enforced are returned.
   
 ###POST /agreements###
-Creates a new agreement. The body might include a AgreementId or not. In case of not being included, 
-a uuid will be assigned. A disabled enforcement job is automatically created.
+Creates a new agreement. The body might include a AgreementId or not. In case of not being included, a uuid will be assigned. A disabled enforcement job is automatically created.
+
+Error message:
+
+* 409 is returned when the uuid already exists in the database
+* 409 is returned when the provider uuid specified in the agreement doesn't exist in the database
+* 409 is returned when the template uuid specified in the agreement doesn't exist in the database
+* 500 when incorrect data has been suplied.
 
 ###DELETE /agreements/{AgreementId}###
 Removes the agreement identified by AgreementId.
+
+Error message:
+
+* 404 is returned when the uuid doesn't exist in the database
+
+
 
 ###GET /agreements/active###
 Returns the list of active agreements.
 
 ###GET /agreements/{AgreementId}/context###
 Only the context from the agreement identified by AgreementId is returned.
+
+Error message:
+
+* 404 is returned when the uuid doesn't exist in the database
+* 500 when the data agreement was recorded incorrectly and the data cannot be supplied
 
 **Request in XML**
 
@@ -535,6 +588,7 @@ Only the context from the agreement identified by AgreementId is returned.
 	 "TemplateId":"template02",
 	 "Service":"service02"}
 
+
 **Usage (for JSON and XML)**
 
     curl -H "Accept: application/xml" http://localhost:8080/sla-service/agreements/agreement01/context
@@ -543,6 +597,11 @@ Only the context from the agreement identified by AgreementId is returned.
 
 ###GET /agreements/{AgreementId}/guaranteestatus###
 Gets the information of the status of the different Guarantee Terms of an agreement.
+
+Error message:
+
+* 404 is returned when the uuid doesn't exist in the database
+
 
 **Request in XML**
 
@@ -577,6 +636,7 @@ Gets the information of the status of the different Guarantee Terms of an agreem
 
     curl -H "Accept: application/xml" http://localhost:8080/sla-service/agreements/agreement01/guaranteestatus
     curl -H "Accept: application/json" http://localhost:8080/sla-service/agreements/agreement01/guaranteestatus
+
 ---
 
 ## <a name="enforcement-jobs">Enforcement Jobs</a> ##
@@ -605,6 +665,11 @@ An enforcement job is serialized in JSON as:
 ###GET /enforcements/{AgreementId}###
 Retrieves an enforcement job identified by AgreementId.
 
+Error message:
+
+* 404 is returned when the uuid doesn't exist in the database
+
+
 ###GET /enforcements###
 Retrieves the list of all enforcement job.
 
@@ -612,8 +677,18 @@ Retrieves the list of all enforcement job.
 Creates and enforcement job. Not required anymore. The enforcement job is automatically generated when an agreement 
 is created. 
 
+Error message:
+
+* 409 is returned when an enforcement with that uuid already exists in the database
+* 404 is returnes when no agreement with uuid exists in the database
+
 ###PUT /enforcements/{AgreementId}/start###
 Starts an enforcement job.
+
+Error message:
+
+* 403 is returned when it was not possible to start the job
+
 
 **Request**
 
@@ -634,6 +709,11 @@ Starts an enforcement job.
 
 ###PUT /enforcements/{AgreementId}/stop###
 Stops an enforcement job
+
+Error message:
+
+* 403 is returned when it was not possible to start the job 
+
 
 **Request**
 
@@ -691,3 +771,7 @@ Parameters:
 * providerId: if specified, search the violations raised by this provider.
 * begin: if specified, set a lower limit of date of violations to search,
 * end: if specified, set an upper limit of date of violations to search.
+
+Error message:
+
+* 404 when erroneous data is provided in the call 
