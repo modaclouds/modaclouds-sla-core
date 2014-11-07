@@ -55,46 +55,15 @@ public class TemplateDAOJpa implements ITemplateDAO {
 		}
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public List<ITemplate> getByProvider(String providerUuid) {
-		try {
-			TypedQuery<ITemplate> query = entityManager.createNamedQuery(
-					Template.QUERY_FIND_BY_PROVIDER, ITemplate.class);
-			query.setParameter("providerUuid", providerUuid);
-			List<ITemplate> templates = new ArrayList<ITemplate>();
-			templates = (List<ITemplate>) query.getResultList();
-			return templates;
-		} catch (NoResultException e) {
-			logger.debug("No Result found: " + e);
-			return null;
-		}
-
-	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public List<ITemplate> getByServiceIds(String []serviceIds) {
-
+	public List<ITemplate> search(String providerId, String []serviceIds) {
 		TypedQuery<ITemplate> query = entityManager.createNamedQuery(
-				Template.QUERY_FIND_BY_SERVICEIDS, ITemplate.class);
-		query.setParameter("serviceIds", Arrays.asList(serviceIds));
-		List<ITemplate> templates = new ArrayList<ITemplate>();
-		templates = (List<ITemplate>) query.getResultList();
-
-		if (templates != null) {
-			logger.debug("Number of templates:" + templates.size());
-		} else {
-			logger.debug("No Result found.");
-		}
-
-		return templates;
-	}
-
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)
-	public List<ITemplate> getByProviderAndServiceIds(String providerUuid, String []serviceIds) {
-		TypedQuery<ITemplate> query = entityManager.createNamedQuery(
-				Template.QUERY_FIND_BY_PROVIDER_AND_SERVICEIDS, ITemplate.class);
-		query.setParameter("providerUuid", providerUuid);
-		query.setParameter("serviceIds", Arrays.asList(serviceIds));
+				Template.QUERY_SEARCH, ITemplate.class);
+		query.setParameter("providerId", providerId);
+		query.setParameter("serviceIds", (serviceIds!=null)?Arrays.asList(serviceIds):null);
+		query.setParameter("flagServiceIds", (serviceIds!=null)?"flag":null);
+		logger.debug("providerId:{} - serviceIds:{}" , providerId, (serviceIds!=null)?Arrays.asList(serviceIds):null);
 		List<ITemplate> templates = new ArrayList<ITemplate>();
 		templates = (List<ITemplate>) query.getResultList();
 

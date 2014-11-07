@@ -19,15 +19,10 @@ import eu.atos.sla.datamodel.ITemplate;
 @NamedQueries({
 		@NamedQuery(name = Template.QUERY_FIND_ALL, query = "SELECT p FROM Template p"),
 		@NamedQuery(name = Template.QUERY_FIND_BY_UUID, query = "SELECT p FROM Template p WHERE p.uuid = :uuid"),
-		@NamedQuery(name = Template.QUERY_FIND_BY_PROVIDER, query = "SELECT t from Provider p "
+		@NamedQuery(name = Template.QUERY_SEARCH, query = "SELECT t FROM Provider p "
 				+ "INNER JOIN p.templates t "
-				+ "WHERE p.uuid = :providerUuid"),
-		@NamedQuery(name = Template.QUERY_FIND_BY_SERVICEIDS, query = "SELECT t FROM Template t "
-				+ "WHERE t.serviceId in (:serviceIds)"),
-		@NamedQuery(name = Template.QUERY_FIND_BY_PROVIDER_AND_SERVICEIDS, query = "SELECT t FROM Provider p "
-				+ "INNER JOIN p.templates t "
-				+ "WHERE p.uuid = :providerUuid "
-				+ "AND (t.serviceId in (:serviceIds))"),
+				+ "WHERE (:providerId is null or p.uuid = :providerId) "
+				+ "AND (:flagServiceIds is null or t.serviceId in (:serviceIds))"),
 		@NamedQuery(name = Template.QUERY_FIND_BY_AGREEMENT, query = "SELECT a.template FROM Agreement a "
 				+ "WHERE a.agreementId = :agreementId"),
 		})
@@ -35,9 +30,7 @@ public class Template implements ITemplate, Serializable {
 
 	public final static String QUERY_FIND_ALL = "Template.findAll";
 	public final static String QUERY_FIND_BY_UUID = "Template.getByUuid";
-	public final static String QUERY_FIND_BY_PROVIDER = "Template.getByProvider";
-	public final static String QUERY_FIND_BY_SERVICEIDS = "Template.getByServiceIds";
-	public final static String QUERY_FIND_BY_PROVIDER_AND_SERVICEIDS = "Template.getByProviderAndServiceId";
+	public final static String QUERY_SEARCH = "Template.search";
 	public final static String QUERY_FIND_BY_AGREEMENT = "Template.getByAgreement";
 	
 
