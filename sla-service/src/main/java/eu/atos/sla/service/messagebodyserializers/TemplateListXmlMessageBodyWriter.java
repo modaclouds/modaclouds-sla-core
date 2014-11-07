@@ -15,7 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.datamodel.ITemplate;
@@ -35,7 +36,7 @@ import eu.atos.sla.parser.xml.TemplateParser;
 @Provider
 @Produces(MediaType.APPLICATION_XML)
 public class TemplateListXmlMessageBodyWriter implements MessageBodyWriter<List<ITemplate>> {
-	private static Logger logger = Logger.getLogger(TemplateListXmlMessageBodyWriter.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateListXmlMessageBodyWriter.class);
 	static final String HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
 	byte[] serializedData = null;
 	Throwable catchedException = null;
@@ -58,7 +59,8 @@ public class TemplateListXmlMessageBodyWriter implements MessageBodyWriter<List<
 			isUsed = genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_XML);
 		
 		if (isUsed)
-			logger.debug("isWriteable "+isUsed+"--> type "+type+ " genericType"+genericType+ " mediaType:"+mediaType+ " with parser:"+xmlParser);		
+			logger.debug("isWritable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",
+				isUsed, type, genericType, mediaType, xmlParser);
 		return isUsed;
 	}
 	
@@ -69,7 +71,9 @@ public class TemplateListXmlMessageBodyWriter implements MessageBodyWriter<List<
 		tmp.append("<templates>");
 		try {
 			for (ITemplate template:templates){
-				String agreementData = (xmlParser==null)?defaultParser.getSerializedData(template.getText()):xmlParser.getSerializedData(template.getText()); 
+				String agreementData = (xmlParser==null)?
+						defaultParser.getSerializedData(template.getText()):
+							xmlParser.getSerializedData(template.getText()); 
 				tmp.append(agreementData);
 			}
 		} catch (ParserException e) {

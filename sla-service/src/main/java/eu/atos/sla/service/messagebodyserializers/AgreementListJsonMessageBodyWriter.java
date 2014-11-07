@@ -15,7 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.datamodel.IAgreement;
@@ -34,7 +35,7 @@ import eu.atos.sla.parser.data.wsag.Agreement;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 public class AgreementListJsonMessageBodyWriter implements MessageBodyWriter<List<IAgreement>> {
-	private static Logger logger = Logger.getLogger(AgreementListJsonMessageBodyWriter.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementListJsonMessageBodyWriter.class);
 	byte[] serializedData = null;
 	Throwable catchedException = null;
 
@@ -51,9 +52,12 @@ public class AgreementListJsonMessageBodyWriter implements MessageBodyWriter<Lis
 		boolean isUsed = false;
 		initParser();
 		if (genericType!=null)
-			isUsed = (genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
+			isUsed = (genericType.toString().equals(className) && 
+					mediaType.toString().equals(MediaType.APPLICATION_JSON)) && 
+					jsonParser!=null ;
 		if (isUsed)
-			logger.debug("isWriteable:"+isUsed +"--> type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType+ " with parser:"+jsonParser);
+			logger.debug("isWriteable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
+					isUsed, type, genericType, mediaType, jsonParser);
 		return isUsed;
 	}
 	
@@ -88,7 +92,7 @@ public class AgreementListJsonMessageBodyWriter implements MessageBodyWriter<Lis
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> multivaluedMap, OutputStream entityStream)
 			throws IOException, WebApplicationException {
-		logger.info("writeTo");
+		logger.debug("writeTo");
 
 		if (catchedException!=null) 
 			throw new WebApplicationException(catchedException, Response.Status.INTERNAL_SERVER_ERROR);

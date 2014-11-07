@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -61,7 +62,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
  * @author rsosa
  */
 public class AgreementEnforcement  {
-	private static Logger logger = Logger.getLogger(AgreementEnforcement.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementEnforcement.class);
 	private static final String POLL_INTERVAL = "eu.atos.sla.enforcement.poll.interval.mseconds";
 
 	/**
@@ -95,7 +96,7 @@ public class AgreementEnforcement  {
 	 * @param isLastExecution the enforcement job has been stopped and it will be the last execution
 	 */
 	public void enforce(IAgreement agreement, Date since, boolean isLastExecution) {
-		logger.debug(String.format("enforce(agreement=%s,since=%s)", agreement.getAgreementId(), since));
+		logger.debug("enforce(agreement={},since={})", agreement.getAgreementId(), since);
 		
 		final Date now = new Date();
 		
@@ -119,7 +120,7 @@ public class AgreementEnforcement  {
 	 * @param metricsMap new metrics to evaluate.
 	 */
 	public void enforce(IAgreement agreement, Map<IGuaranteeTerm, List<IMonitoringMetric>> metricsMap) {
-		logger.debug(String.format("enforce(agreement=%s) guarantee map and metrics ", agreement.getAgreementId()));
+		logger.debug("enforce(agreement={}) ", agreement.getAgreementId());
 
 		checkInitialized(false);
 		
@@ -136,7 +137,7 @@ public class AgreementEnforcement  {
 	public void enforceBusiness(IAgreement agreement,
 			Map<IGuaranteeTerm, List<IViolation>> violationsMap) {
 		
-		logger.debug(String.format("enforceBusiness(agreement=%s)", agreement.getAgreementId()));
+		logger.debug("enforceBusiness(agreement={})", agreement.getAgreementId());
 		checkInitialized(false);
 		
 //		Map<IGuaranteeTerm, List<IViolation>> violations = 

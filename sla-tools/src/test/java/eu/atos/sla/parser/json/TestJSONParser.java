@@ -7,9 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -20,7 +21,7 @@ import eu.atos.sla.parser.data.wsag.Template;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/serializers-test-context.xml")
 public class TestJSONParser {
-	private static Logger logger = Logger.getLogger(TestJSONParser.class);
+	private static Logger logger = LoggerFactory.getLogger(TestJSONParser.class);
 	
 	@Test
 	public void testAgreementJSONParser() {
@@ -30,14 +31,14 @@ public class TestJSONParser {
 			String serializedData = getStringFromInputStream(new FileInputStream(file));
 			AgreementParser agreementParser = new AgreementParser();
 			Agreement wsagObject = agreementParser.getWsagObject(serializedData);
-			logger.fatal("Readed agreement:"+wsagObject);
+			logger.debug("Readed agreement:"+wsagObject);
 			String wsagData = agreementParser.getWsagAsSerializedData(serializedData);
 			agreementParser.getSerializedData(wsagData);
 		} catch (FileNotFoundException e1) {
-			logger.fatal(e1);
+			logger.error("", e1);
 		} catch (ParserException e) {
 			error = true;
-			logger.fatal(e);
+			logger.error("", e);
 		}
 		
 		assert(!error);
@@ -57,10 +58,10 @@ public class TestJSONParser {
 			String wsagData = templateParser.getWsagAsSerializedData(serializedData);
 			logger.info(templateParser.getSerializedData(wsagData));
 		} catch (FileNotFoundException e1) {
-			logger.fatal(e1);
+			logger.error("", e1);
 		} catch (ParserException e) {
 			error = true;
-			logger.fatal(e);
+			logger.error("", e);
 		}
 		
 		assert(!error);

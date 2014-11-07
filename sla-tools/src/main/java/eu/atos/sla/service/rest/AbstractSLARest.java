@@ -132,11 +132,26 @@ public abstract class AbstractSLARest {
 
 	}
 	
-	protected MessageResponse createMessage(HttpStatus status, String text) {
+	protected MessageResponse createMessage(HttpStatus status, String elementId, String text) {
 		MessageResponse message = new MessageResponse();
 		message.setCode(status.value());
 		message.setMessage(text);
+		message.setElementId(elementId);
 		return message;
 	}
+	
+	private static final String PATH_SEP = "/";
+
+	protected String buildResourceLocation(String collectionUri, String resourceId) {
+		String result;
+		if (collectionUri.endsWith(PATH_SEP)) {
+			result = collectionUri + resourceId;
+		}
+		else {
+			result = collectionUri + PATH_SEP + resourceId;
+		}
+		return result;
+	}
+
 
 }

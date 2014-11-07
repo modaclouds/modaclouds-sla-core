@@ -7,7 +7,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IGuaranteeTermDAO;
@@ -16,7 +17,7 @@ import eu.atos.sla.datamodel.bean.GuaranteeTerm;
 
 @Repository("GuaranteeTermRepository")
 public class GuaranteeTermDAOJpa implements IGuaranteeTermDAO {
-	private static Logger logger = Logger.getLogger(GuaranteeTermDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(GuaranteeTermDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -64,14 +65,14 @@ public class GuaranteeTermDAOJpa implements IGuaranteeTermDAO {
 	}
 
 	public boolean delete(IGuaranteeTerm guaranteeTerm) {
+		Long id = guaranteeTerm.getId();
 		try {
-			guaranteeTerm = entityManager.getReference(GuaranteeTerm.class,
-					guaranteeTerm.getId());
+			guaranteeTerm = entityManager.getReference(GuaranteeTerm.class, id);
 			entityManager.remove(guaranteeTerm);
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("GuaranteeTerm[{}] not found", id);
 			return false;
 		}
 	}

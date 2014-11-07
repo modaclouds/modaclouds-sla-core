@@ -11,7 +11,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class ProviderRestEntity  extends AbstractSLARest {
 	@Autowired
 	private ProviderHelperE helper;
 
-	private static Logger logger = Logger.getLogger(ProviderRestEntity.class);
+	private static Logger logger = LoggerFactory.getLogger(ProviderRestEntity.class);
 
 	public ProviderRestEntity() {
 	}
@@ -147,7 +148,7 @@ public class ProviderRestEntity  extends AbstractSLARest {
 	@GET
 	@Path("{uuid}")
 	public Provider getProviderByUuid(@PathParam("uuid") String providerUUID) throws NotFoundException{
-		logger.debug("StartOf getProviderByUuid - REQUEST for /providers/" + providerUUID);
+		logger.debug("StartOf getProviderByUuid - REQUEST for /providers/{}", providerUUID);
 
 		ProviderHelperE providerRestHelper = getProviderHelper();
 		Provider provider = providerRestHelper.getProviderByUUID(providerUUID);
@@ -196,9 +197,10 @@ public class ProviderRestEntity  extends AbstractSLARest {
 		
 		logger.debug("StartOf createProvider - REQUEST Insert /providers");
 		ProviderHelperE providerRestHelper = getProviderHelper();
-		String location = null;
+		String id = null, location = null;
 		try {
-			location = providerRestHelper.createProvider(uriInfo.getAbsolutePath().toString(), provider);
+			id = providerRestHelper.createProvider(provider);
+			location = buildResourceLocation(uriInfo.getAbsolutePath().toString() ,id);
 		} catch (DBExistsHelperException e) {
 			logger.info("createProvider ConflictException:"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
@@ -211,23 +213,23 @@ public class ProviderRestEntity  extends AbstractSLARest {
 		logger.debug("EndOf createProvider");
 		return buildResponsePOST(
 				HttpStatus.CREATED,
-				createMessage(HttpStatus.CREATED,
+				createMessage(HttpStatus.CREATED, id,
 						"The provider has been stored successfully in the SLA Repository Database. It has location "+location),
 				location);
 	}
 
 	
-	 @DELETE
+	@DELETE
 	@Path("{uuid}")
 	public Response deleteProvider(@PathParam("uuid") String providerUUID) throws ConflictException{
-		 logger.debug("DELETE /providerss/" + providerUUID);
-	  
-		 ProviderHelperE providerRestHelper = getProviderHelper();
-		 try{
-			 boolean deleted = providerRestHelper.deleteByProviderUUID(providerUUID);
-			 if (deleted)
-				 return buildResponse(HttpStatus.OK, 
-						 "The provider with uuid " + providerUUID + "was deleted successfully");
+		logger.debug("DELETE /providers/{}", providerUUID);
+	
+		ProviderHelperE providerRestHelper = getProviderHelper();
+		try{
+			boolean deleted = providerRestHelper.deleteByProviderUUID(providerUUID);
+			if (deleted)
+				return buildResponse(HttpStatus.OK, 
+						"The provider with uuid " + providerUUID + " was deleted successfully");
 			else{
 				logger.info("deleteProvider NotFoundException: There is no provider with uuid "
 								+ providerUUID + " in the SLA Repository Database");
@@ -235,11 +237,10 @@ public class ProviderRestEntity  extends AbstractSLARest {
 						printError(HttpStatus.NOT_FOUND, "There is no provider with uuid "
 								+ providerUUID + " in the SLA Repository Database"));
 			}
-		 }catch(DBExistsHelperException e){
+		}catch(DBExistsHelperException e){
 			logger.info("deleteProvider ConflictException:"+ e.getMessage());
-			 throw new ConflictException(e.getMessage());
-		 }
-	  
+			throw new ConflictException(e.getMessage());
+		}
 	}
 
 	

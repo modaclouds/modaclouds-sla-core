@@ -15,7 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -89,7 +90,7 @@ import eu.atos.sla.service.rest.helpers.exception.HelperException;
 @Scope("request")
 @Transactional
 public class TemplateRest extends AbstractSLARest{
-	private static Logger logger = Logger.getLogger(TemplateRest.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateRest.class);
 
 	@Autowired
 	private TemplateHelper helper;

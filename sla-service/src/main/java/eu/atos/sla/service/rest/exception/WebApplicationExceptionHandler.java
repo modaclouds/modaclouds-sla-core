@@ -6,12 +6,13 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.parser.ParserException;
 @Provider
 public class WebApplicationExceptionHandler implements ExceptionMapper<WebApplicationException>{
-	private static Logger logger = Logger.getLogger(WebApplicationExceptionHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(WebApplicationExceptionHandler.class);
 
 	@Override
 	public Response toResponse(WebApplicationException exception) {

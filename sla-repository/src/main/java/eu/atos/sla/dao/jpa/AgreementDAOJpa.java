@@ -10,7 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IAgreementDAO;
@@ -19,7 +20,7 @@ import eu.atos.sla.datamodel.bean.Agreement;
 
 @Repository("AgreementRepository")
 public class AgreementDAOJpa implements IAgreementDAO {
-	private static Logger logger = Logger.getLogger(AgreementDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -121,7 +122,7 @@ public class AgreementDAOJpa implements IAgreementDAO {
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("agreement[{}] not found", agreement.getAgreementId());
 			return false;
 		}
 	}
@@ -141,11 +142,12 @@ public class AgreementDAOJpa implements IAgreementDAO {
 		return agreements;
 	}
 
-	public List<IAgreement> search(String consumerId, String providerId, Boolean active) {
+	public List<IAgreement> search(String consumerId, String providerId, String templateId, Boolean active) {
 
 		TypedQuery<IAgreement> query = entityManager.createNamedQuery(Agreement.QUERY_SEARCH, IAgreement.class);
 		query.setParameter("consumerId", consumerId);
 		query.setParameter("providerId", providerId);
+		query.setParameter("templateId", templateId);
 		query.setParameter("active", active);
 		List<IAgreement> agreements = query.getResultList();
 		
@@ -157,6 +159,20 @@ public class AgreementDAOJpa implements IAgreementDAO {
 		try {
 			TypedQuery<IAgreement> query = entityManager.createNamedQuery(Agreement.QUERY_FIND_BY_PROVIDER, IAgreement.class);
 			query.setParameter("providerUuid", providerUuid);
+			List<IAgreement> agreements = query.getResultList();
+			return agreements;
+		} catch (NoResultException e) {
+			logger.debug("No Result found: " + e);
+			return null;
+		}
+	}
+
+	@Override
+	public List<IAgreement> searchPerTemplateAndConsumer(String consumerId,	String templateUUID) {
+		try {
+			TypedQuery<IAgreement> query = entityManager.createNamedQuery(Agreement.QUERY_FIND_BY_TEMPLATEUUID_AND_CONSUMER, IAgreement.class);
+			query.setParameter("consumerId", consumerId);
+			query.setParameter("templateUUID", templateUUID);
 			List<IAgreement> agreements = query.getResultList();
 			return agreements;
 		} catch (NoResultException e) {

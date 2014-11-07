@@ -14,7 +14,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -95,7 +96,7 @@ import eu.atos.sla.service.types.TemplateParam;
 @Scope("request")
 @Transactional
 public class TemplateRestEntity extends AbstractSLARest{
-	private static Logger logger = Logger.getLogger(TemplateRestEntity.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateRestEntity.class);
 
 	@Autowired
 	private TemplateHelperE helper;
@@ -130,16 +131,29 @@ public class TemplateRestEntity extends AbstractSLARest{
 	 * </pre>
 	 * 
 	 * Example: <li>curl http://localhost:8080/sla-service/templates</li>
-	 * 			<li>curl http://localhost:8080/sla-service/templates?serviceId=service02</li>
+	 * 			<li>curl http://localhost:8080/sla-service/templates?serviceIds=service02</li>
+	 * 			<li>curl http://localhost:8080/sla-service/templates?serviceIds=service02,service03</li>
 	 * @return XML information with the different details and urls of the
 	 *         templates
 	 * 
 	 */
 	@GET
-	public List<ITemplate> getTemplates(@QueryParam("serviceId") String serviceId)  {
+	public List<ITemplate> getTemplates(@QueryParam("providerId") String providerId, @QueryParam("serviceIds") String serviceIds)  {
 		logger.debug("StartOf getTemplates - REQUEST for /templates");
 		TemplateHelperE templateRestHelper = getTemplateHelper();
-		List<ITemplate> templates =  templateRestHelper.getTemplates(serviceId);
+		// we remove the blank spaces just in case somebody is adding them
+		String serviceIdsSplitted[] = null;
+		if (serviceIds!=null){
+			String serviceIdsSplittedTmp[] = serviceIds.split(",");
+			serviceIdsSplitted = new String[serviceIdsSplittedTmp.length];
+			String tmp = "";
+			for (int i=0; i<serviceIdsSplittedTmp.length;i++){
+				serviceIdsSplitted[i] = serviceIdsSplittedTmp[i].trim();
+				tmp+= "  "+serviceIdsSplitted[i];
+			}
+			logger.debug("getTemplates will search for service ids:"+tmp);
+		}
+		List<ITemplate> templates =  templateRestHelper.getTemplates(providerId, serviceIdsSplitted);
 		logger.debug("EndOf getTemplates");
 		return templates;
 	}
@@ -176,7 +190,7 @@ public class TemplateRestEntity extends AbstractSLARest{
 	@GET
 	@Path("{id}")
 	public ITemplate getTemplateByUuid(@PathParam("id") String templateId) throws NotFoundException{
-		logger.debug("StartOf getTemplateByUuid - REQUEST for /templates/{uuid}" + templateId);
+		logger.debug("StartOf getTemplateByUuid - REQUEST for /templates/{}", templateId);
 		TemplateHelperE templateRestHelper = getTemplateHelper();
 		ITemplate template = templateRestHelper.getTemplateByUUID(templateId);
 		if (template==null){
@@ -216,7 +230,7 @@ public class TemplateRestEntity extends AbstractSLARest{
 	@DELETE
 	@Path("{uuid}")
 	public Response deleteTemplate(@PathParam("uuid") String uuid) {
-		logger.debug("DELETE /templates/" + uuid);
+		logger.debug("DELETE /templates/{}", uuid);
 		TemplateHelperE templateRestHelper = getTemplateHelper();
 		boolean deleted;
 		try {
@@ -237,7 +251,7 @@ public class TemplateRestEntity extends AbstractSLARest{
 	/**
 	 * Returns the information of an specific template If the template it is not
 	 * in the database, it returns 404 with empty payload /** Creates a new
-	 * agreement
+	 * template
 	 * 
 	 * 
 	 * <pre>
@@ -271,9 +285,10 @@ public class TemplateRestEntity extends AbstractSLARest{
 		logger.debug("StartOf createTemplate - Insert /templates");
 
 		TemplateHelperE templateRestHelper = getTemplateHelper();
-		String location = null;
+		String id, location = null;
 		try {
-			location = templateRestHelper.createTemplate(uriInfo.getAbsolutePath().toString(), templateParam.getTemplate(), templateParam.getOriginalSerialzedTemplate());
+			id = templateRestHelper.createTemplate(templateParam.getTemplate(), templateParam.getOriginalSerialzedTemplate());
+			location = buildResourceLocation(uriInfo.getAbsolutePath().toString() ,id);
 		} catch (DBMissingHelperException e) {
 			logger.info("createTemplate ConflictException"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
@@ -291,8 +306,8 @@ public class TemplateRestEntity extends AbstractSLARest{
 		return buildResponsePOST(
 			HttpStatus.CREATED,
 			createMessage(
-					HttpStatus.CREATED,
-					"The agreement has been stored successfully in the SLA Repository Database. It has location "+location),location);
+					HttpStatus.CREATED, id,
+					"The template has been stored successfully in the SLA Repository Database. It has location "+location),location);
 		
 	}
 

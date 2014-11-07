@@ -11,7 +11,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IBreachDAO;
@@ -21,7 +22,7 @@ import eu.atos.sla.datamodel.bean.Breach;
 
 @Repository("BreachRepository")
 public class BreachDAOJpa implements IBreachDAO {
-	private static Logger logger = Logger.getLogger(BreachDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(BreachDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -86,13 +87,14 @@ public class BreachDAOJpa implements IBreachDAO {
 	}
 
 	public boolean delete(IBreach breach) {
+		Long id = breach.getId();
 		try {
-			breach = entityManager.getReference(Breach.class, breach.getId());
+			breach = entityManager.getReference(Breach.class, id);
 			entityManager.remove(breach);
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("breach[{}] not found", id);
 			return false;
 		}
 	}

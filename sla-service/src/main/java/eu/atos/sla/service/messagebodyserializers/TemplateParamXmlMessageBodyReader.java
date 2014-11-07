@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.parser.IParser;
@@ -34,7 +35,7 @@ import eu.atos.sla.service.types.TemplateParam;
 @Provider
 @Consumes(MediaType.APPLICATION_XML)
 public class TemplateParamXmlMessageBodyReader implements MessageBodyReader<TemplateParam> {
-	private static Logger logger = Logger.getLogger(TemplateParamXmlMessageBodyReader.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateParamXmlMessageBodyReader.class);
 	@Resource(name="templateXmlParser")
 	IParser<Template> xmlParser;
 	
@@ -49,7 +50,8 @@ public class TemplateParamXmlMessageBodyReader implements MessageBodyReader<Temp
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
 		boolean isUsed =  (type == TemplateParam.class) && mediaType.toString().equals(MediaType.APPLICATION_XML);
-		logger.debug("isReadable:"+isUsed+" --> type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType+ " with parser:"+xmlParser);
+		logger.debug("isReadable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",
+				isUsed, type, genericType, mediaType, xmlParser);
 		return isUsed;
 		
 	}
@@ -69,7 +71,7 @@ public class TemplateParamXmlMessageBodyReader implements MessageBodyReader<Temp
 	    	templateParam.setOriginalSerialzedTemplate(removeXMLHeader(templateData));
 	    	return templateParam;
 		} catch (ParserException e) {
-	    	logger.fatal("Error parsing with "+xmlParser.getClass().getName() );
+	    	logger.error("Error parsing with "+xmlParser.getClass().getName() );
 			throw new WebApplicationException(e, Response.Status.NOT_ACCEPTABLE);
 		}
 	}

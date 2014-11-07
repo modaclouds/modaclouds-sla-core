@@ -188,13 +188,13 @@ Some of the above mentioned methods might return a message. Messages can be retu
 	Content-type: application/xml
 	
 	<?xml version="1.0" encoding="UTF-8"?>
-	<message code="xxx" message="..."/>
+	<message code="xxx" elemendId="..." message="..."/>
 
 **Message Request in JSON**
 
 	Content-type: application/json
 
-	{"code":"xxx", "message": ...}
+	{"code":"xxx", "elemendId":..., "message": ...}
 
 ---
 
@@ -357,11 +357,12 @@ Error message:
 
 * 404 is returned when the uuid doesn't exist in the database.
 
-###GET /templates{?serviceId}###
+###GET /templates{?serviceIds,providerId}###
 
 The parameter is:
 
-* serviceId: id of service that is associated to the template 
+* serviceIds: string with coma separated values (CSV) with the id's of service that is associated to the template 
+* providerId: id of the provider that is offering the template
 
 ###POST /templates###
 Creates a new template. The file might include a TemplateId or not. In case of not beeing included, a uuid will be assigned.
@@ -517,14 +518,22 @@ Error message:
 ###GET /agreements/###
 Retrieves the list of all agreements.
 
-###GET /agreements{?consumerId,providerId,active}###
+###GET /agreements{?consumerId,providerId,templateId,active}###
 
 The parameters are:
 
 * consumerId: uuid of the consumer (value of Context/AgreementInitiator if Context/ServiceProvider equals "AgreementResponder"). 
 * providerId: uuid of the provider (value of Context/AgreementResponder if Context/ServiceProvider equals "AgreementResponder")
+* templateId: uuid of the template the agreement is based on.
 * active: boolean value (value in {1,true,0,false}); if true, agreements currently enforced are returned.
-  
+
+###GET /agreementsPerTemplateAndConsumer{?consumerId,templateUUID}###
+
+The parameters are:
+
+* consumerId: uuid of the consumer (value of Context/AgreementInitiator if Context/ServiceProvider equals "AgreementResponder"). 
+* templateUUID: uuid of the template in wicht the agreement is based 
+
 ###POST /agreements###
 Creates a new agreement. The body might include a AgreementId or not. In case of not being included, a uuid will be assigned. A disabled enforcement job is automatically created.
 
@@ -597,6 +606,8 @@ Error message:
 
 ###GET /agreements/{AgreementId}/guaranteestatus###
 Gets the information of the status of the different Guarantee Terms of an agreement.
+
+There are three available states: NON_DETERMINED, FULFILLED, VIOLATED.
 
 Error message:
 

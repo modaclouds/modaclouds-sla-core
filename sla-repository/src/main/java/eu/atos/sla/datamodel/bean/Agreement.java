@@ -41,14 +41,16 @@ import eu.atos.sla.datamodel.ITemplate;
 		@NamedQuery(name = Agreement.QUERY_FIND_BY_CONSUMER, query = "SELECT p FROM Agreement p where p.consumer = :consumerId "),
 		@NamedQuery(name = Agreement.QUERY_FIND_BY_PROVIDER, query = "SELECT p FROM Agreement p where  p.provider.uuid = :providerUuid "),
 		@NamedQuery(name = Agreement.QUERY_FIND_BY_TEMPLATEUUID, query = "SELECT p FROM Agreement p where  p.template.uuid = :templateUUID "),
-		@NamedQuery(name = Agreement.QUERY_ACTIVE_AGREEMENTS, query = "SELECT p FROM Agreement p "
-				+ "where p.expirationDate > :actualDate "),
+		@NamedQuery(name = Agreement.QUERY_ACTIVE_AGREEMENTS, query = "SELECT p FROM Agreement p where p.expirationDate > :actualDate "),
+		@NamedQuery(name = Agreement.QUERY_FIND_BY_TEMPLATEUUID_AND_CONSUMER, query = "SELECT p FROM Agreement p where (p.template.uuid = :templateUUID) AND (p.consumer = :consumerId)"),
 		@NamedQuery(name = Agreement.QUERY_SEARCH, query = "SELECT a FROM Agreement a "
 				+ "WHERE (:providerId is null or a.provider.uuid = :providerId) "
 				+ "AND (:consumerId is null or a.consumer = :consumerId) "
+				+ "AND (:templateId is null or a.template.uuid = :templateId) "
 				+ "AND (:active is null "
 				+ "    or (:active = true and a.expirationDate > current_timestamp()) "
 				+ "    or (:active = false and a.expirationDate <= current_timestamp()))") })
+
 public class Agreement implements IAgreement, Serializable {
 	public final static String QUERY_FIND_ALL = "Agreement.findAll";
 	public final static String QUERY_FIND_ALL_AGREEMENTS = "Agreement.findAllAgreements";
@@ -57,6 +59,7 @@ public class Agreement implements IAgreement, Serializable {
 	public final static String QUERY_FIND_BY_AGREEMENT_ID = "Agreement.getByAgreementId";
 	public final static String QUERY_ACTIVE_AGREEMENTS = "Agreement.getActiveAgreements";
 	public final static String QUERY_FIND_BY_TEMPLATEUUID = "Agreement.getByTemplateUUID";
+	public final static String QUERY_FIND_BY_TEMPLATEUUID_AND_CONSUMER = "Agreement.getByTemplateUUIDAndConsumer";
 	public final static String QUERY_SEARCH = "Agreement.search";
 
 	private static final long serialVersionUID = -5939038640423447257L;

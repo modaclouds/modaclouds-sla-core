@@ -15,7 +15,8 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -65,7 +66,7 @@ public class ViolationRest extends AbstractSLARest {
 	@Autowired
 	private ViolationHelper helper;
 
-	public static Logger logger = Logger.getLogger(ViolationRest.class);
+	public static Logger logger = LoggerFactory.getLogger(ViolationRest.class);
 
 	public ViolationRest() {
 	}

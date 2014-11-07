@@ -6,7 +6,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.parser.IParser;
 import eu.atos.sla.parser.ParserException;
@@ -17,7 +18,7 @@ import eu.atos.sla.parser.data.wsag.Agreement;
  * @author Elena Garrido
  */
 public class AgreementParser implements IParser<Agreement> {
-	private static Logger logger = Logger.getLogger(AgreementParser.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementParser.class);
 
 	/*
 	 * getWsagObject receives in serializedData the object information in xml 
@@ -27,12 +28,12 @@ public class AgreementParser implements IParser<Agreement> {
 	public Agreement getWsagObject(String serializedData) throws ParserException{
 		Agreement agreementXML = null;
 		try{
-			logger.info("Will parse "+serializedData);			
+			logger.info("Will parse {}", serializedData);
 			JAXBContext jaxbContext = JAXBContext.newInstance(Agreement.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			jaxbUnmarshaller.setEventHandler(new ValidationHandler());
 			agreementXML = (Agreement)jaxbUnmarshaller.unmarshal(new StringReader(serializedData));
-	    	logger.info("Agreement parsed "+ agreementXML);
+	    	logger.info("Agreement parsed {}", agreementXML);
 		}catch(JAXBException e){
 			throw new ParserException(e);
 		}

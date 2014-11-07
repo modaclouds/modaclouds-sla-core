@@ -15,7 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class ProviderRest  extends AbstractSLARest {
 	private ProviderHelper helper;
 
 
-	private static Logger logger = Logger.getLogger(ProviderRest.class);
+	private static Logger logger = LoggerFactory.getLogger(ProviderRest.class);
 
 	public ProviderRest() {
 	}

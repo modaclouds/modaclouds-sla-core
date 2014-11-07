@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IBusinessValueList;
@@ -22,14 +23,14 @@ import eu.atos.sla.datamodel.bean.Penalty;
  * @author rsosa
  */
 public class SimpleBusinessValuesEvaluator implements IBusinessValuesEvaluator {
-	private static Logger logger = Logger.getLogger(SimpleBusinessValuesEvaluator.class);
+	private static Logger logger = LoggerFactory.getLogger(SimpleBusinessValuesEvaluator.class);
 	
 	@Override
 	public List<? extends ICompensation> evaluate(
 			IAgreement agreement,
 			IGuaranteeTerm term, List<IViolation> violations) {
 		
-		logger.debug("Evaluating business for " + violations.size() + " new violations");
+		logger.debug("Evaluating business for {} new violations", violations.size());
 		List<ICompensation> result = new ArrayList<ICompensation>();
 		IBusinessValueList businessValues = term.getBusinessValueList();
 		if (businessValues == null) {
@@ -47,7 +48,7 @@ public class SimpleBusinessValuesEvaluator implements IBusinessValuesEvaluator {
 						getLastViolation(violations).getDatetime(),
 						penaltyDef);
 				result.add(penalty);
-				logger.debug("Raised " + penalty);
+				logger.debug("Raised {}", penalty);
 			}
 		}
 		return result;

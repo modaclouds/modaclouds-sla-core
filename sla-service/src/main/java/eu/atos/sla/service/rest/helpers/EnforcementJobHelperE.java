@@ -3,7 +3,8 @@ package eu.atos.sla.service.rest.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class EnforcementJobHelperE{
-	private static Logger logger = Logger.getLogger(EnforcementJobHelperE.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementJobHelperE.class);
 
 	
 	@Autowired
@@ -63,7 +64,7 @@ public class EnforcementJobHelperE{
 	}
 
 	public EnforcementJob getEnforcementJobByUUID(String agreementUUID) {
-		logger.debug("StartOf getEnforcementJobByUUID uuid:"+agreementUUID);
+		logger.debug("StartOf getEnforcementJobByUUID uuid:{}", agreementUUID);
 		EnforcementJob enforcementJob = null;
 		IEnforcementJob storedEnforcementJob = this.enforcementJobDAO.getByAgreementId(agreementUUID);
 		if (storedEnforcementJob!=null)
@@ -74,26 +75,25 @@ public class EnforcementJobHelperE{
 
 
 	public boolean startEnforcementJob(String agreementUUID){
-		logger.debug("startEnforcementJob agreementId:"+agreementUUID);
+		logger.debug("startEnforcementJob agreementId:{}", agreementUUID);
 		return enforcementService.startEnforcement(agreementUUID);
 	}
 
 	public boolean stopEnforcementJob(String agreementUuid){
-		logger.debug("stopEnforcementJob agreementUuid:"+agreementUuid);
+		logger.debug("stopEnforcementJob agreementUuid:{}" ,agreementUuid);
 		return enforcementService.stopEnforcement(agreementUuid);
 	}
 
-	public String createEnforcementJob(String collectionUri, EnforcementJob enforcementJobXML)
+	public String createEnforcementJob(EnforcementJob enforcementJobXML)
 			throws DBExistsHelperException, InternalHelperException, DBMissingHelperException {
 		logger.debug("StartOf createEnforcementJob");
 		IEnforcementJob enforcementJob = null;
 		IEnforcementJob stored = null;
-		String location = null;
 	
 		try {
 			if (enforcementJobXML != null) {
 				if (!doesEnforcementExistInRepository(enforcementJobXML.getAgreementId())) {
-					// the enforcement doesn't eist
+					// the enforcement doesn't exist
 					enforcementJob = modelConverter.getEnforcementJobFromEnforcementJobXML(enforcementJobXML);
 					IAgreement agreement = agreementDAO.getByAgreementId(enforcementJobXML.getAgreementId());
 					if (agreement == null)
@@ -109,30 +109,17 @@ public class EnforcementJobHelperE{
 			}
 		
 			if (stored != null) {
-				location = buildResourceLocation(collectionUri, stored.getAgreement().getAgreementId());
 				logger.debug("EndOf createEnforcementJob");
-				return location;
+				return stored.getAgreement().getAgreementId();
 			} else {
 				logger.debug("EndOf createEnforcementJob");
 				throw new InternalHelperException("Error when creating enforcementJob the SLA Repository Database");
 			}
 		} catch (ModelConversionException e) {
-			logger.fatal("createEnforcementJob error:",e);
+			logger.error("createEnforcementJob error:",e);
 			throw new InternalHelperException(e.getMessage());
 		}
 
-	}
-	private static final String PATH_SEP = "/";
-
-	private String buildResourceLocation(String collectionUri, String resourceId) {
-		String result;
-		if (collectionUri.endsWith(PATH_SEP)) {
-			result = collectionUri + resourceId;
-		}
-		else {
-			result = collectionUri + PATH_SEP + resourceId;
-		}
-		return result;
 	}
 
 }

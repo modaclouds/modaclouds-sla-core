@@ -11,7 +11,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import eu.atos.sla.util.IModelConverter;
 @Service
 @Transactional
 public class ViolationHelper {
-	private static Logger logger = Logger.getLogger(ViolationHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(ViolationHelper.class);
 
 	@Autowired
 	public IViolationDAO violationDAO;
@@ -116,7 +117,7 @@ public class ViolationHelper {
 			logger.debug("EndOf getViolationByUUID");
 			return serialized;
 		} catch (JAXBException e) {
-			logger.fatal("Error in getViolationByUUID " , e);
+			logger.error("Error in getViolationByUUID " , e);
 			throw new HelperException(Code.PARSER,  "Error parsing violations"+ e.toString() );
 		}
 	}
@@ -133,7 +134,7 @@ public class ViolationHelper {
 			logger.debug("EndOf getViolationsByAgreementId");
 			return serialized;
 		} catch (JAXBException e) {
-			logger.fatal("Error in getViolationsByAgreementId " , e);
+			logger.error("Error in getViolationsByAgreementId " , e);
 			throw new HelperException(Code.PARSER,  "Error parsing violations"+ e.toString() );
 	}
 	}

@@ -45,7 +45,7 @@ public interface ITemplateDAO  {
 	 * @param service Id of the Template
 	 * @return the corresponding Template from the database
 	 */
-	public List<ITemplate> getByServiceId (String serviceId);
+	public List<ITemplate> getByServiceIds(String []serviceIds);
 
 	
 	/**
@@ -55,7 +55,7 @@ public interface ITemplateDAO  {
 	 * @param service Id of the Template
 	 * @return the corresponding Template from the database
 	 */
-	public List<ITemplate> getByProviderAndServiceId (String providerUuid, String serviceId);
+	public List<ITemplate> getByProviderAndServiceIds(String providerUuid, String []serviceIds);
 	
 	
 	

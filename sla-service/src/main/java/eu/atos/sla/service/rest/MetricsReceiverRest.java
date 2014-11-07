@@ -12,7 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ import eu.atos.sla.parser.data.MonitoringMetric;
  *
  */
 public class MetricsReceiverRest extends AbstractSLARest {
-	private static Logger logger = Logger.getLogger(MetricsReceiverRest.class);
+	private static Logger logger = LoggerFactory.getLogger(MetricsReceiverRest.class);
 
 	@Autowired
 	private IEnforcementService enforcementService;
@@ -69,9 +70,8 @@ public class MetricsReceiverRest extends AbstractSLARest {
 			@PathParam("agreementId") String agreementId, 
 			final MonitoringMetric metric) {
 
-		logger.debug("receiveMetrics(agreementId=" + agreementId + ", data=" + metric.toString());
+		logger.debug("receiveMetrics(agreementId={} data={}", agreementId, metric.toString());
 		IAgreement agreement = agreementDao.getByAgreementId(agreementId);
-		logger.debug("agreement=" + agreement.getAgreementId());
 		
 		SimpleMetricsReceiverData data = new SimpleMetricsReceiverData(
 				metric.getMetricKey(), 

@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
@@ -18,7 +19,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
  * Translator for SimpleMetricsReceiverData type.
  */
 public class SimpleMetricsTranslator implements IMetricTranslator<SimpleMetricsTranslator.SimpleMetricsReceiverData> {
-	private final static Logger logger = Logger.getLogger(SimpleMetricsTranslator.class);
+	private final static Logger logger = LoggerFactory.getLogger(SimpleMetricsTranslator.class);
 	private final IConstraintEvaluator constraintEvaluator;
 	
 	public SimpleMetricsTranslator(IConstraintEvaluator constraintEvaluator) {

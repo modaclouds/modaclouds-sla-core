@@ -10,7 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +37,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class TemplateHelper  {
-	private static Logger logger = Logger.getLogger(TemplateHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateHelper.class);
 
 	@Autowired
 	private ITemplateDAO templateDAO;
@@ -142,7 +143,7 @@ public class TemplateHelper  {
 			logger.debug("EndOf getProviderByUUID");
 			return str;
 		} catch (Throwable e) {
-			logger.fatal("Error in getTemplateByUUID " , e);
+			logger.error("Error in getTemplateByUUID " , e);
 			throw new HelperException(Code.INTERNAL, "Error when getting template:" + e.getMessage() );
 		}
 
@@ -166,7 +167,7 @@ public class TemplateHelper  {
 			logger.debug("EndOf deleteTemplateByUuid");
 			return deleted;
 		} catch (Throwable e) {
-			logger.fatal("Error in deleteTemplateByUuid " , e);
+			logger.error("Error in deleteTemplateByUuid " , e);
 			throw new HelperException(Code.INTERNAL, "Error when deleting template:" + e.getMessage() );
 		}
 
@@ -240,10 +241,10 @@ public class TemplateHelper  {
 			} else
 				throw new HelperException(Code.INTERNAL, "Error when creating the template in the SLA Repository Database");
 		} catch (JAXBException e) {
-			logger.fatal("Error in createTemplate " , e);
+			logger.error("Error in createTemplate " , e);
 			throw new HelperException(Code.PARSER, "Error when creating template parsing file:" + e.getMessage() );
 		} catch (Throwable e) {
-			logger.fatal("Error in createTemplate " , e);
+			logger.error("Error in createTemplate " , e);
 			throw new HelperException(Code.INTERNAL, "Error when creating template:" + e.getMessage() );
 		}
 			
@@ -275,10 +276,10 @@ public class TemplateHelper  {
 			return str;
 			
 		} catch (JAXBException e) {
-			logger.fatal("Error in updateTemplate " , e);
+			logger.error("Error in updateTemplate " , e);
 			throw new HelperException(Code.PARSER, "Error when updating template parsing file:" + e.getMessage() );
 		}catch (Throwable e) {
-			logger.fatal("Error in updateTemplate " , e);
+			logger.error("Error in updateTemplate " , e);
 			throw new HelperException(Code.INTERNAL, "Error when updating template:" + e.getMessage() );
 		}
 		

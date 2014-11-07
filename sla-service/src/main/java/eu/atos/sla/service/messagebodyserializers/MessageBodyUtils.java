@@ -5,13 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class MessageBodyUtils {
-	private static Logger logger = Logger.getLogger(MessageBodyUtils.class);
+	private static Logger logger = LoggerFactory.getLogger(MessageBodyUtils.class);
 	// convert InputStream to String
 	static protected String getStringFromInputStream(InputStream is) {
- 
+
 		BufferedReader br = null;
 		StringBuilder sb = new StringBuilder();
  
@@ -24,13 +26,13 @@ public class MessageBodyUtils {
 			}
  
 		} catch (IOException e) {
-			logger.fatal(e);
+			logger.error(e.getMessage(), e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					logger.fatal(e);
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}

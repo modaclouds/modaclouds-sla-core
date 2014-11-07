@@ -10,7 +10,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class AgreementHelper{
-	private static Logger logger = Logger.getLogger(AgreementHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementHelper.class);
 
 	@Autowired
 	private IAgreementDAO agreementDAO;
@@ -154,13 +155,13 @@ public class AgreementHelper{
 				throw new HelperException(Code.INTERNAL, "Error when creating agreement the SLA Repository Database");
 			}
 		} catch (JAXBException e) {
-			logger.fatal("Error in createAgreement " , e);
+			logger.error("Error in createAgreement " , e);
 			throw new HelperException(Code.PARSER, "Error when creating agreement parsing file:" + e.getMessage() );
 		} catch (ModelConversionException e) {
-			logger.fatal("Error in createAgreement " , e);
+			logger.error("Error in createAgreement " , e);
 			throw new HelperException(Code.PARSER, "Error when creating:" + e.getMessage() );
 		} catch (Throwable e) {
-			logger.fatal("Error in createAgreement " , e);
+			logger.error("Error in createAgreement " , e);
 			throw new HelperException(Code.PARSER, "Error when creating:" + e.getMessage() );
 		}
 
@@ -260,7 +261,7 @@ public class AgreementHelper{
 		logger.debug("StartOf getAgreements consumerId:"+consumerId+ " - providerId:"+providerId+ " - active:"+active);
 		
 		List<IAgreement> agreements = new ArrayList<IAgreement>();
-		agreements = this.agreementDAO.search(consumerId, providerId, active);
+		agreements = this.agreementDAO.search(consumerId, providerId, null, active);
 		String str = printAgreementsToXML(agreements);
 		logger.debug("EndOf getAgreements");
 		return str;

@@ -9,7 +9,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IServicePropertiesDAO;
@@ -18,7 +19,7 @@ import eu.atos.sla.datamodel.bean.ServiceProperties;
 
 @Repository("ServicePropertiesRepository")
 public class ServicePropertiesDAOJpa implements IServicePropertiesDAO {
-	private static Logger logger = Logger.getLogger(ServicePropertiesDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(ServicePropertiesDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -97,7 +98,7 @@ public class ServicePropertiesDAOJpa implements IServicePropertiesDAO {
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("ServiceProperties[{}] not found", serviceProperties.getId());
 			return false;
 		}
 	}

@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
 @Service("EnforcementManager")
 @Transactional
 public class EnforcementService implements IEnforcementService {
-	private static Logger logger = Logger.getLogger(EnforcementService.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementService.class);
 	
 	@Autowired
 	IEnforcementJobDAO enforcementJobDAO;
@@ -143,7 +144,7 @@ public class EnforcementService implements IEnforcementService {
 					try{
 						agreementEnforcement.enforce(agreement, job.getLastExecuted(), true);
 					}catch(Throwable t){
-						logger.fatal("Fatal error in stopEnforcement doing enforcement", t);
+						logger.error("Fatal error in stopEnforcement doing enforcement", t);
 					}
 
 				}

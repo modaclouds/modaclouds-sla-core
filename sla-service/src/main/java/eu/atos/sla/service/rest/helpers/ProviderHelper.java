@@ -11,7 +11,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ import eu.atos.sla.util.IModelConverter;
 @Service
 @Transactional
 public class ProviderHelper {
-	private static Logger logger = Logger.getLogger(ProviderHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(ProviderHelper.class);
 
 	@Autowired
 	public IProviderDAO providerDAO;
@@ -105,7 +106,7 @@ public class ProviderHelper {
 				throw new HelperException(Code.DB_DELETED, "There are no providers in the SLA Repository Database");
 			}
 		} catch (JAXBException e) {
-			logger.fatal("Error in getProviders " , e);
+			logger.error("Error in getProviders " , e);
 			throw new HelperException(Code.PARSER, "Error when parsing :" + e.getMessage() );
 		}
 			
@@ -124,7 +125,7 @@ public class ProviderHelper {
 			logger.debug("EndOf getProviderByUUID");
 			return str;
 		} catch (JAXBException e) {
-			logger.fatal("Error in getEnforcementJobByUUID " , e);
+			logger.error("Error in getEnforcementJobByUUID " , e);
 			throw new HelperException(Code.PARSER, "Error when creating enforcementJob parsing file:" + e.getMessage() );
 		}
 	}
@@ -165,7 +166,7 @@ public class ProviderHelper {
 				logger.debug("EndOf createProvider");
 				throw new HelperException(Code.INTERNAL, "Error when creating provider the SLA Repository Database");
 		} catch (JAXBException e) {
-			logger.fatal("Error in createProvider " , e);
+			logger.error("Error in createProvider " , e);
 			throw new HelperException(Code.PARSER, "Error when creating provider parsing file:" + e.getMessage() );
 		}
 	}

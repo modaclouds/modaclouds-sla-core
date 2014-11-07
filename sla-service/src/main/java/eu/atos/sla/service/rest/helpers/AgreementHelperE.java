@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class AgreementHelperE{
-	private static Logger logger = Logger.getLogger(AgreementHelperE.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementHelperE.class);
 
 	@Autowired
 	private IAgreementDAO agreementDAO;
@@ -86,11 +87,9 @@ public class AgreementHelperE{
 	}
 	
 	
-	public String createAgreement(String uriInfo, Agreement agreementXML, String originalSerializedAgreement) throws DBMissingHelperException, DBExistsHelperException, InternalHelperException, ParserHelperException {
-		logger.debug("StartOf createAgreement payload:"+originalSerializedAgreement);
+	public String createAgreement(Agreement agreementXML, String originalSerializedAgreement) throws DBMissingHelperException, DBExistsHelperException, InternalHelperException, ParserHelperException {
+		logger.debug("StartOf createAgreement payload:{}", originalSerializedAgreement);
 		try{
-	
-			String location = null;
 			IAgreement agreementStored = null;
 	
 			if (agreementXML != null) {
@@ -98,7 +97,7 @@ public class AgreementHelperE{
 				// add field AggrementId if it doesn't exist
 				if (agreementXML.getAgreementId() == null) {
 					String agreementId = UUID.randomUUID().toString();
-					logger.debug("createAgreement agreement has no uuid, "+agreementId + " will be assigned"); 
+					logger.debug("createAgreement agreement has no uuid, {} will be assigned", agreementId); 
 					originalSerializedAgreement = setAgreementIdInSerializedAgreement(originalSerializedAgreement, agreementId);
 					agreementXML.setAgreementId(agreementId);
 				}
@@ -109,7 +108,7 @@ public class AgreementHelperE{
 					String providerUuid = agreement.getProvider().getUuid();
 					IProvider provider = providerFromRepository(providerUuid);
 					if (provider == null) {
-						throw new DBMissingHelperException("Proivder with id:"+ providerUuid+ " doesn't exist SLA Repository Database");
+						throw new DBMissingHelperException("Provider with id:"+ providerUuid+ " doesn't exist SLA Repository Database");
 					}
 					agreement.setProvider(provider);
 	
@@ -127,7 +126,7 @@ public class AgreementHelperE{
 						// the enforcement doesn't eist
 						IEnforcementJob ejob = 
 								enforcementService.createEnforcementJob(agreementStored.getAgreementId());
-						logger.debug("EnforcementJob " + ejob.getId() + " created");
+						logger.debug("EnforcementJob {} created", ejob.getId());
 					} else {
 						throw new DBExistsHelperException("Enforcement with id:"
 								+ agreementStored.getAgreementId()
@@ -141,15 +140,14 @@ public class AgreementHelperE{
 			}
 	
 			if (agreementStored != null) {
-				location = uriInfo + "/" + agreementStored.getAgreementId();
 				logger.debug("EndOf createAgreement");
-				return location;
+				return agreementStored.getAgreementId();
 			} else{
 				logger.debug("EndOf createAgreement");
 				throw new InternalHelperException("Error when creating agreement the SLA Repository Database");
 			}
 		} catch (ModelConversionException e) {
-			logger.fatal("Error in createAgreement " , e);
+			logger.error("Error in createAgreement " , e);
 			throw new ParserHelperException("Error when creating:" + e.getMessage() );
 		}
 
@@ -165,7 +163,7 @@ public class AgreementHelperE{
 		List<GuaranteeTermStatus> guaranteeTermStatusList = new ArrayList<GuaranteeTermStatus>();
 
 		// Status GuaranteTerm
-		GuaranteeTermStatusEnum agreementStatus = getAgreementStatus(guaranteeTerms);
+		GuaranteeTermStatusEnum agreementStatus = AgreementStatusCalculator.getStatus(guaranteeTerms);
 
 		guaranteeTermsStatus.setAgreementId(agreementId);
 		guaranteeTermsStatus.setValue(agreementStatus.toString());
@@ -183,39 +181,17 @@ public class AgreementHelperE{
 		return guaranteeTermsStatus;
 	}
 
-	private GuaranteeTermStatusEnum getAgreementStatus(List<IGuaranteeTerm> guaranteeTerms) {
-
-		GuaranteeTermStatusEnum result = GuaranteeTermStatusEnum.FULFILLED;
-
-		if (guaranteeTerms.size() == 0) {
-			result = GuaranteeTermStatusEnum.NON_DETERMINED;
-		} else {
-			result = GuaranteeTermStatusEnum.FULFILLED;
-
-			for (IGuaranteeTerm guaranteeTerm : guaranteeTerms) {
-
-				GuaranteeTermStatusEnum termStatus = guaranteeTerm.getStatus();
-				if (termStatus == null
-						|| termStatus == GuaranteeTermStatusEnum.NON_DETERMINED) {
-					result = GuaranteeTermStatusEnum.NON_DETERMINED;
-				} else if (termStatus == GuaranteeTermStatusEnum.VIOLATED) {
-					result = GuaranteeTermStatusEnum.VIOLATED;
-				}
-			}
-		}
-		return result;
-	}
-
-	public List<IAgreement> getAgreements(String consumerId, String providerId, Boolean active) {
-		logger.debug("StartOf getAgreements consumerId:"+consumerId+ " - providerId:"+providerId+ " - active:"+active);
-		List<IAgreement> agreements = agreementDAO.search(consumerId, providerId, active);
+	public List<IAgreement> getAgreements(String consumerId, String providerId, String templateId, Boolean active) {
+		logger.debug("StartOf getAgreements consumerId:{} - providerId:{} - templateId:{} - active:{}", 
+				consumerId, providerId, templateId, active);
+		List<IAgreement> agreements = agreementDAO.search(consumerId, providerId, templateId, active);
 		logger.debug("EndOf getAgreements");
 		return agreements;
 	}
 
 
 	public IAgreement getAgreementByID(String id) {
-		logger.debug("StartOf getAgreementByID id:"+id);
+		logger.debug("StartOf getAgreementByID id:{}", id);
 		IAgreement agreement = agreementDAO.getByAgreementId(id);
 		logger.debug("EndOf getAgreementByID");
 		return agreement;
@@ -223,14 +199,14 @@ public class AgreementHelperE{
 
 
 	public Context getAgreementContextByID(String id) throws InternalHelperException {
-		logger.debug("StartOf getAgreementContextByID id:"+id);
+		logger.debug("StartOf getAgreementContextByID id:{}", id);
 		IAgreement agreement = agreementDAO.getByAgreementId(id);
 		Context context = null;
 		try {
 			if (agreement!= null)
 				context = modelConverter.getContextFromAgreement(agreement);
 		} catch (ModelConversionException e) {
-			logger.fatal("Error getAgreementContextByID ",e);
+			logger.error("Error getAgreementContextByID ",e);
 			throw new InternalHelperException(e.getMessage());
 		}
 		logger.debug("EndOf getAgreementContextByID");
@@ -239,7 +215,7 @@ public class AgreementHelperE{
 	
 	
 	public List<IAgreement> getActiveAgreements(long actualDate) {
-		logger.debug("StartOf getActiveAgreements actualDate:"+actualDate);
+		logger.debug("StartOf getActiveAgreements actualDate:{}", actualDate);
 		List<IAgreement> agreements = agreementDAO.getByActiveAgreements(actualDate);
 		logger.debug("EndOf getActiveAgreements");
 		return agreements;
@@ -247,11 +223,12 @@ public class AgreementHelperE{
 	}
 
 	public boolean deleteByAgreementId(String agreementId) {
-		logger.debug("StartOf deleteByAgreementId agreementId:"+agreementId);
+		logger.debug("StartOf deleteByAgreementId agreementId:{}", agreementId);
 		boolean deleted = false;
 		IEnforcementJob enforcementJob = enforcementJobDAO.getByAgreementId(agreementId);
 		if (enforcementJob!=null){
-			logger.debug("EnforcementJob exists associated to agreementId "+agreementId+", it will be stopped and removed");
+			logger.debug("EnforcementJob exists associated to agreementId {} it will be stopped and removed", 
+					agreementId);
 			enforcementJobDAO.delete(enforcementJob);
 		}
 		
@@ -266,7 +243,7 @@ public class AgreementHelperE{
 	}
 
 	public GuaranteeTermsStatus getAgreementStatus(String id) throws DBMissingHelperException{
-		logger.debug("StartOf getAgreementStatus id:"+id);
+		logger.debug("StartOf getAgreementStatus id:{}", id);
 
 		IAgreement agreement = agreementDAO.getByAgreementId(id);
 		if (agreement == null)
@@ -286,6 +263,39 @@ public class AgreementHelperE{
 		 
 	}
 
+	public List<IAgreement> getAgreementsPerTemplateAndConsumer(String consumerId, String templateUUID) {
+		logger.debug("StartOf getAgreementsPerTemplateAndConsumer consumerId:"+consumerId+ " - templateUUID:"+templateUUID);
+		List<IAgreement> agreements = agreementDAO.searchPerTemplateAndConsumer(consumerId, templateUUID);
+		logger.debug("EndOf getAgreementsPerTemplateAndConsumer");
+		return agreements;
+	}
 
 
+	public static class AgreementStatusCalculator {
+		
+		
+		public static GuaranteeTermStatusEnum getStatus(List<IGuaranteeTerm> guaranteeTerms) {
+
+			GuaranteeTermStatusEnum result = GuaranteeTermStatusEnum.FULFILLED;
+
+			if (guaranteeTerms.size() == 0) {
+				result = GuaranteeTermStatusEnum.NON_DETERMINED;
+			} else {
+				result = GuaranteeTermStatusEnum.FULFILLED;
+
+				for (IGuaranteeTerm guaranteeTerm : guaranteeTerms) {
+
+					GuaranteeTermStatusEnum termStatus = guaranteeTerm.getStatus();
+					if (termStatus == null
+							|| termStatus == GuaranteeTermStatusEnum.NON_DETERMINED) {
+						result = GuaranteeTermStatusEnum.NON_DETERMINED;
+					} else if (termStatus == GuaranteeTermStatusEnum.VIOLATED) {
+						result = GuaranteeTermStatusEnum.VIOLATED;
+						break;
+					}
+				}
+			}
+			return result;
+		}
+	}
 }

@@ -7,7 +7,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IPolicyDAO;
@@ -16,7 +17,7 @@ import eu.atos.sla.datamodel.bean.Policy;
 
 @Repository("PolicyRepository")
 public class PolicyDAOJpa implements IPolicyDAO {
-	private static Logger logger = Logger.getLogger(PolicyDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(PolicyDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -67,13 +68,14 @@ public class PolicyDAOJpa implements IPolicyDAO {
 
 	@Override
 	public boolean delete(IPolicy policy) {
+		Long id = policy.getId();
 		try {
-			policy = entityManager.getReference(Policy.class, policy.getId());
+			policy = entityManager.getReference(Policy.class, id);
 			entityManager.remove(policy);
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("Policy[{}] not found", id);
 			return false;
 		}
 	}

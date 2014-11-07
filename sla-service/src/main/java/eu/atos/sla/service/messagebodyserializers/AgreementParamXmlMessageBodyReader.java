@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.parser.IParser;
@@ -34,7 +35,7 @@ import eu.atos.sla.service.types.AgreementParam;
 @Provider
 @Consumes(MediaType.APPLICATION_XML)
 public class AgreementParamXmlMessageBodyReader implements MessageBodyReader<AgreementParam> {
-	private static Logger logger = Logger.getLogger(AgreementParamXmlMessageBodyReader.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementParamXmlMessageBodyReader.class);
 
 	@Resource(name="agreementXmlParser")
 	IParser<Agreement> xmlParser;
@@ -51,7 +52,8 @@ public class AgreementParamXmlMessageBodyReader implements MessageBodyReader<Agr
 		initParser();
 		boolean isUsed = (type == AgreementParam.class) && mediaType.toString().equals(MediaType.APPLICATION_XML);
 		if (isUsed)
-			logger.debug("isReadable:"+isUsed+" --> type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType+ " with parser:"+xmlParser);
+			logger.debug("isReadable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
+					isUsed, type, genericType, mediaType, xmlParser);
 		return isUsed;
 	}
 
@@ -61,22 +63,22 @@ public class AgreementParamXmlMessageBodyReader implements MessageBodyReader<Agr
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-    	String str = MessageBodyUtils.getStringFromInputStream(entityStream);
+		String str = MessageBodyUtils.getStringFromInputStream(entityStream);
 		try {
 			Agreement agreement = (xmlParser==null)?defaultParser.getWsagObject(str):xmlParser.getWsagObject(str);
-	    	AgreementParam agreementParam = new AgreementParam();
-	    	agreementParam.setAgreement(agreement);
-	    	String agreementData = (xmlParser==null)?defaultParser.getWsagAsSerializedData(str):xmlParser.getWsagAsSerializedData(str);
-	    	agreementParam.setOriginalSerialzedAgreement(removeXMLHeader(agreementData));
-	    	return agreementParam;
+			AgreementParam agreementParam = new AgreementParam();
+			agreementParam.setAgreement(agreement);
+			String agreementData = (xmlParser==null)?defaultParser.getWsagAsSerializedData(str):xmlParser.getWsagAsSerializedData(str);
+			agreementParam.setOriginalSerialzedAgreement(removeXMLHeader(agreementData));
+			return agreementParam;
 		} catch (ParserException e) {
-	    	logger.fatal("Error parsing with "+xmlParser.getClass().getName() );
+			logger.error("Error parsing with "+xmlParser.getClass().getName() );
 			throw new WebApplicationException(e, Response.Status.NOT_ACCEPTABLE);
 		}
 	}
 
 	private String removeXMLHeader(String originalXML){
-    	return originalXML.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();		
+		return originalXML.replaceAll("\\<\\?xml(.+?)\\?\\>", "").trim();		
 	}
 
 

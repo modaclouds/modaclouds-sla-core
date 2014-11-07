@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ import eu.atos.sla.util.IModelConverter;
 @Service
 @Transactional
 public class ViolationHelperE {
-	private static Logger logger = Logger.getLogger(ViolationHelperE.class);
+	private static Logger logger = LoggerFactory.getLogger(ViolationHelperE.class);
 
 	@Autowired
 	public IViolationDAO violationDAO;
@@ -87,7 +88,9 @@ public class ViolationHelperE {
 	public List<Violation> getViolations(String agreementId, String guaranteeTerm,
 			String providerUuid, Date begin, Date end)
 			throws ParserHelperException {
-		logger.debug("StartOf getViolationsByAgreementId agreementId:"+agreementId +" guaranteeTerm "+guaranteeTerm+ " providerUuid "+ providerUuid + " begin "+begin+" end "+end);
+		logger.debug(
+				"StartOf getViolationsByAgreementId agreementId:{} guaranteeTerm:{} providerUuid:{} begin:{}  end:{}", 
+				agreementId, guaranteeTerm, providerUuid, begin, end);
 		
 		List<Violation> violations = new ArrayList<Violation>();
 		List<IViolation> storedViolations = null;

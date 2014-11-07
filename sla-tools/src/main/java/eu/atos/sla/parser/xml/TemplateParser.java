@@ -6,14 +6,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.parser.IParser;
 import eu.atos.sla.parser.ParserException;
 import eu.atos.sla.parser.ValidationHandler;
 import eu.atos.sla.parser.data.wsag.Template;
 public class TemplateParser implements IParser<Template> {
-	private static Logger logger = Logger.getLogger(TemplateParser.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateParser.class);
 
 
 	/*
@@ -24,16 +25,16 @@ public class TemplateParser implements IParser<Template> {
 	public Template getWsagObject(String serializedData) throws ParserException{
 		Template templateXML = null;
 		try{
-			logger.info("Will parse "+serializedData);			
+			logger.info("Will parse {}", serializedData);
 			JAXBContext jaxbContext = JAXBContext.newInstance(Template.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			jaxbUnmarshaller.setEventHandler(new ValidationHandler());			
 			templateXML = (Template)jaxbUnmarshaller.unmarshal(new StringReader(serializedData));
-	    	logger.info("Template parsed "+ templateXML);
+			logger.info("Template parsed {}", templateXML);
 		}catch(JAXBException e){
 			throw new ParserException(e);
 		}
-    	return templateXML;
+		return templateXML;
 
 	}
 

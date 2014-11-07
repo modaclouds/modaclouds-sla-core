@@ -7,7 +7,7 @@ XML="application/xml"
 JSON="application/json"
 in_case=0
 
-#####
+		#####
 
 #shopt -s expand_aliases
 set -o history -o histexpand
@@ -17,7 +17,7 @@ if [ "$0" != "bin/generate-appendix.sh" ]; then
 	echo "Must be executed from project root"
 	exit 1
 fi
-bin/restoreDatabase.sh
+>&2 bin/restoreDatabase.sh
 
 function curl_cmd() {
 	in_case=1
@@ -39,7 +39,7 @@ function curl_post() {
 	local type_header=${3:+-H Content-type:$3}
 	local accept_header=${4:+-H Accept:$4}
 	local url="$SLA_MANAGER_URL/$1"
-	curl_cmd "-d@$2" -X POST $type_header $accept_header "$url"
+	curl_cmd "-d@samples/appendix/$2" -X POST $type_header $accept_header "$url"
 	local code=$?
 
 	md_rest
@@ -53,7 +53,7 @@ function curl_put() {
 	md_text "Content type: $3\n"
 
 	local url="$SLA_MANAGER_URL/$1"
-	local file_param=${2:+-d@$3}
+	local file_param=${2:+-d@samples/appendix/$3}
 	local type_header=${3:+-H Content-type:$3}
 	curl_cmd -X PUT $file_param $type_header "$url"
 	
@@ -81,6 +81,8 @@ function curl_get() {
 
 function curl_delete() {
 	# $1: relative url
+	md_text "\n"
+
 	local url="$SLA_MANAGER_URL/$1"
 	local accept_header="-H Accept:$XML"
 	curl_cmd -X DELETE $accept_header "$url"
@@ -95,11 +97,11 @@ function md_rest() {
 	local out=$(grep -e "^[0-9a-f]\{1,4\}:" /tmp/curl.out | sed -e's/^.\{5\} /\t/')
 
 	local request=$(
-		echo "$out" | awk -e'BEGIN{flag=1}/^\tHTTP\/1./{flag=0}{if (flag) print;}'
+	echo "$out" | awk -e'BEGIN{flag=1}/^\tHTTP\/1./{flag=0}{if (flag && ($0 !~ /(^\t?$)|Expect: 100/)) print;}'
 	)
 
 	local response=$(
-		echo "$out" | awk -e'BEGIN{flag=0}/^\tHTTP\/1./{flag=1}{if (flag) print;}'
+		echo "$out" | awk -e'BEGIN{flag=0}/^\tHTTP\/1\.. [^1]/{flag=1}{if (flag && $0 !~ /^\t?0?$/) print;}'
 	)
 
 	echo -e "\t\$ $CMD"
@@ -107,7 +109,8 @@ function md_rest() {
 	echo "$request"
 	echo
 	echo "$response"
-
+	echo 
+	#get_status
 }
 
 function md_text() {
@@ -135,70 +138,108 @@ function md_title() {
 	echo
 }
 
+function get_status() {
+	filter_status=$(awk "/^.{5} HTTP\/1.1 [^1]/ {print \$3;}" /tmp/curl.out)
+	echo "$filter_status"
+}
+
 md_title 1 "Appendix REST API examples"
-md_title 2 "Providers" "providers"		######
+md_title 2 "Providers" "providers"				###### PROVIDERS
 
-md_title 3 "Create a provider"			###
+md_title 3 "Create a provider"					###
 
-curl_post "providers" "samples/provider01.xml" "$XML" "$XML"
-curl_post "providers" "samples/provider02.xml" "$XML" "$XML"
-curl_post "providers" "samples/provider03.json" "$JSON" "$JSON"
+curl_post "providers" "provider01.xml" "$XML" "$XML"
+curl_post "providers" "provider02.xml" "$XML" "$XML"
+curl_post "providers" "provider03.json" "$JSON" "$JSON"
 
 md_text "Provider exists."
-curl_post "providers" "samples/provider02.xml" "$XML" "$XML"
+curl_post "providers" "provider02.xml" "$XML" "$XML"
 
-md_title 3 "Get a provider"		###
+md_title 3 "Get a provider"						###
 curl_get "providers/provider02" "" "$XML"
 curl_get "providers/provider02" "" "$JSON"
 
-md_title 3 "Get all the providers"		###
+md_text "Provider not exists."
+curl_get "providers/notexists"  "" "$XML"
+
+md_title 3 "Get all the providers"				###
 curl_get "providers" "" "$XML"
 curl_get "providers" "" "$JSON"
 
-md_title 3 "Delete a provider"		###
-curl_delete "providers/provider04"
+md_title 3 "Delete a provider"					###
+curl_delete "providers/provider03"
 
 md_text "Provider not exists"
 curl_delete "providers/notexists"
 
 
-md_title 2 "Templates" "templates"		######
+md_title 2 "Templates" "templates"				###### TEMPLATES
 
-md_title 3 "Create a template"			###
-curl_post "templates" "samples/template02.xml" "$XML" "$XML"
-curl_post "templates" "samples/template05.json" "$JSON" "$JSON"
+md_title 3 "Create a template"					###
+curl_post "templates" "template01.xml" "$XML" "$XML"
+curl_post "templates" "template02.json" "$JSON" "$JSON"
+curl_post "templates" "template02b.xml" "$XML" "$XML"
 
-md_title 3 "Get a template"		###
-curl_get "templates/template012" "" "$XML"
-curl_get "templates/template05" "" "$JSON"
+md_text "Template exists."
+curl_post "templates" "template01.xml" "$XML" "$XML"
 
-md_title 3 "Get all the templates"		###
+md_text "Linked provider not exists."
+curl_post "templates" "template03.xml" "$XML" "$XML"
+
+md_title 3 "Get a template"						###
+curl_get "templates/template02" "" "$XML"
+curl_get "templates/template02" "" "$JSON"
+
+md_text "Template not exists."
+curl_get "templates/notexists" "" "$XML"
+
+md_title 3 "Get all the templates"				###
 curl_get "templates" "" "$XML"
 curl_get "templates" "" "$JSON"
 
-md_title 3 "Delete a template"		###
-curl_delete "templates/template05"
+md_title 3 "Delete a template"					###
+curl_delete "templates/template02b"
+
+md_text "Template not exists"
+curl_delete "templates/notexists"
 
 
-md_title 2 "Agremeents" "agreements"		######
+md_title 2 "Agremeents" "agreements"			###### AGREEMENTS
 
-md_title 3 "Create an agreement"			###
-curl_post "agreements" "samples/agreement02.xml" "$XML" "$XML"
-curl_post "agreements" "samples/agreement07.json" "$JSON" "$JSON"
+md_title 3 "Create an agreement"				###
+curl_post "agreements" "agreement01.xml" "$XML" "$XML"
+curl_post "agreements" "agreement02.json" "$JSON" "$JSON"
+curl_post "agreements" "agreement02b.xml" "$XML" "$XML"
 
-md_title 3 "Get an agreement"			###
-curl_get "agreements/agreement02" "" "$XML"
-curl_get "agreements/agreement05" "" "$JSON"
+md_text "Linked provider not exists."
+curl_post "agreements" "agreement03.xml" "$XML" "$XML"
+md_text "Linked template not exists."
+curl_post "agreements" "agreement04.xml" "$XML" "$XML"
+
+md_text "Agreement exists."
+curl_post "agreements" "agreement01.xml" "$XML" "$XML"
+
+md_title 3 "Get an agreement"					###
+curl_get "agreements/agreement01" "" "$XML"
+curl_get "agreements/agreement01" "" "$JSON"
 
 
-md_title 3 "Get all the agreements"			###
+md_title 3 "Get all the agreements"				###
 curl_get "agreements" "" "$XML"
 curl_get "agreements" "" "$JSON"
 
+md_title 3 "Get agreement status"				###
+curl_get "agreements/agreement02/guaranteestatus" "" "$XML"
+curl_get "agreements/agreement02/guaranteestatus" "" "$JSON"
 
-md_title 3 "Delete an agreement"			###
 
-md_title 2 "Violations" "violations"		######
+md_title 3 "Delete an agreement"				###
+curl_delete "agreements/agreement02b"
 
-md_title 3 "Get all the violations"			###
+md_text "Agreement not exists"
+curl_delete "agreements/notexists"
+
+md_title 2 "Violations" "violations"			######
+
+md_title 3 "Get all the violations"				###
 

@@ -3,7 +3,8 @@ package eu.atos.sla.service.rest.helpers;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -32,7 +33,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class TemplateHelperE  {
-	private static Logger logger = Logger.getLogger(TemplateHelperE.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateHelperE.class);
 
 	@Autowired
 	private ITemplateDAO templateDAO;
@@ -66,32 +67,36 @@ public class TemplateHelperE  {
 	}
 	
 
-	public List<ITemplate> getTemplates(String serviceId){
-		logger.debug("StartOf getTemplates");
+	public List<ITemplate> getTemplates(String providerId, String []serviceIds){
+		logger.debug("StartOf getTemplates providerId {}, serviceIds{}",providerId, serviceIds);
 		List<ITemplate> templates = null;
-		if (serviceId == null)
+		if ((serviceIds == null) && (providerId==null))
 			templates = templateDAO.getAll();
 		else
-			templates = templateDAO.getByServiceId(serviceId);
+			templates = templateDAO.search(providerId, serviceIds);
 		logger.debug("EndOf getTemplates");
 		return templates;
 	}
 
+	
 	public ITemplate getTemplateByUUID(String uuid) {
-		logger.debug("StartOf getTemplateByUUID uuid:"+uuid);
+		logger.debug("StartOf getTemplateByUUID uuid:{}", uuid);
 		ITemplate template = templateDAO.getByUuid(uuid);
 		logger.debug("EndOf getTemplateByUUID" );
 		return template;
 	}
 
 
-
 	public boolean deleteTemplateByUuid(String uuid) throws DBExistsHelperException  {
-		logger.debug("StartOf deleteTemplateByUuid uuid:"+uuid);
+		logger.debug("StartOf deleteTemplateByUuid uuid:{}", uuid);
 
 		boolean deleted = false;
 		List<IAgreement> list = agreementDAO.getByTemplate(uuid);
-		if (list.size()>0) throw new DBExistsHelperException("There are still agreements associated to this template, it cannot be removed");
+		if (list.size() > 0) {
+			throw new DBExistsHelperException(
+					"There are still agreements associated to this template, it cannot be removed");
+		}
+		
 		ITemplate template = templateDAO.getByUuid(uuid);
 	
 		if (template != null) {
@@ -103,17 +108,16 @@ public class TemplateHelperE  {
 
 
 	
-	public String createTemplate(String uriInfo, Template templateXML, String originalSerializedTemplate)throws DBMissingHelperException, DBExistsHelperException, InternalHelperException, ParserHelperException {
-		logger.debug("StartOf createTemplate payload:"+originalSerializedTemplate);
+	public String createTemplate(Template templateXML, String originalSerializedTemplate)throws DBMissingHelperException, DBExistsHelperException, InternalHelperException, ParserHelperException {
+		logger.debug("StartOf createTemplate payload:{}", originalSerializedTemplate);
 		try {
-			String location = null;
 			ITemplate templateStored = null;
 
 			if (templateXML != null) {
 				// add field TemplateId if it doesn't exist
 				if (templateXML.getTemplateId() == null) {
 					String templateId = UUID.randomUUID().toString();
-					logger.debug("createAgreement agreement has no uuid, " + templateId + " will be assigned"); 
+					logger.debug("createTemplate template has no uuid, {} will be assigned", templateId ); 
 					originalSerializedTemplate = setTemplateIdInSerializedTemplate(originalSerializedTemplate, templateId);	
 					templateXML.setTemplateId(templateId);
 				}
@@ -135,7 +139,8 @@ public class TemplateHelperE  {
 					if (provider==null) throw new DBMissingHelperException("Provider with UUID "+providerUUID+" doesn't exist in the database");
 
 					ITemplate template = modelConverter.getTemplateFromTemplateXML(templateXML, originalSerializedTemplate);
-					logger.info("Template uuid is"+template.getUuid()+" - Template id is"+template.getId()+ " - Template text is"+template.getText());
+					logger.info("Template uuid is {} - Template id is {} - Template text is {}", 
+							template.getUuid(), template.getId(), template.getText());
 					templateStored = templateDAO.save(template);
 					provider.addTemplate(templateStored);
 					providerDAO.update(provider);
@@ -145,38 +150,46 @@ public class TemplateHelperE  {
 				}
 			}
 			if (templateStored != null) {
-				location = uriInfo + "/" +  templateStored.getUuid();
 				logger.debug("EndOf createTemplate");
-				return location;
+				return templateStored.getUuid();
 			} else{
 				logger.debug("EndOf createTemplate");
 				throw new InternalHelperException("Error when creating the template in the SLA Repository Database");
 			}
 		} catch (ModelConversionException e) {
-			logger.fatal("Error in createTemplate " , e);
+			logger.error("Error in createTemplate " , e);
 			throw new ParserHelperException("Error when creating template, parsing file:" + e.getMessage() );
 		}
 			
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRED)	
-	public ITemplate updateTemplate(String uuid, Template templateXML, String originalSerializedTemplate) throws ParserHelperException, InternalHelperException, DBMissingHelperException, DBExistsHelperException {
+	public ITemplate updateTemplate(String uuid, Template templateXML, String originalSerializedTemplate) 
+			throws ParserHelperException, InternalHelperException, DBMissingHelperException, DBExistsHelperException {
+		
 		// TODO  correct method, check that everything is properly updated
 		// provider can be incorrect and software doesn't return any error
 		
-		logger.debug("StartOf updateTemplate with uuid: "+uuid+" payload:"+originalSerializedTemplate);
+		logger.debug("StartOf updateTemplate with uuid:{} payload:{}", uuid, originalSerializedTemplate);
 		try{
 			if (uuid==null) throw new InternalHelperException("TemplateUuid has not been informed, cannot do and update");
 
 			if (templateXML.getTemplateId()==null) templateXML.setTemplateId(uuid); 
 			ITemplate template = modelConverter.getTemplateFromTemplateXML(templateXML, originalSerializedTemplate);
-			logger.debug("uuid: "+uuid+" templateXML.getTemplateId():"+templateXML.getTemplateId()+ " template.getUuid:"+template.getUuid());
-			if (!template.getUuid().equals(uuid)) throw new InternalHelperException("TemplateUuid in file has been informed and doesn't match with the parameter. Remove the one from the file or send the same.");
+			logger.debug("uuid: {} templateXML.getTemplateId():{} template.getUuid:{}", 
+					uuid, templateXML.getTemplateId(), template.getUuid());
+			if (!template.getUuid().equals(uuid)) {
+				throw new InternalHelperException(
+						"TemplateUuid in file has been informed and doesn't match with the parameter. "
+						+ "Remove the one from the file or send the same.");
+			}
 			
 			List<IAgreement> agreementList = agreementDAO.getByTemplate(uuid);
 			if (agreementList != null){
 				logger.debug("agreements list not null");
-				if (agreementList.size() > 0) throw new DBExistsHelperException("Template with "+uuid+" has agreements associated. It cannot be changed");
+				if (agreementList.size() > 0) { 
+					throw new DBExistsHelperException("Template with "+uuid+" has agreements associated. It cannot be changed");
+				}
 			}
 			
 			String providerUUID = null;
@@ -208,7 +221,7 @@ public class TemplateHelperE  {
 			return templateFromDatabase;
 			
 		}catch (ModelConversionException e) {
-			logger.fatal("Error in updateTemplate " , e);
+			logger.error("Error in updateTemplate " , e);
 			throw new ParserHelperException("Error when updating, parsing template:" + e.getMessage() );
 		}
 		
@@ -216,8 +229,9 @@ public class TemplateHelperE  {
 
 	private String setTemplateIdInSerializedTemplate(String serializedTemplate, String templateId){
 		return serializedTemplate.replaceAll(
-						"<wsag:Template xmlns:wsag=\"http://www.ggf.org/namespaces/ws-agreement\" xmlns:sla=\"http://sla.atos.eu\">",
-						"<wsag:Template xmlns:wsag=\"http://www.ggf.org/namespaces/ws-agreement\" xmlns:sla=\"http://sla.atos.eu\" wsag:TemplateId=\""+ templateId + "\">");
+				"<wsag:Template xmlns:wsag=\"http://www.ggf.org/namespaces/ws-agreement\" xmlns:sla=\"http://sla.atos.eu\">",
+				"<wsag:Template xmlns:wsag=\"http://www.ggf.org/namespaces/ws-agreement\" xmlns:sla=\"http://sla.atos.eu\" wsag:TemplateId=\""+ templateId + "\">");
 	}
 
+	
 }

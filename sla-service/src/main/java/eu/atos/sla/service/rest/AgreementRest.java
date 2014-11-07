@@ -17,7 +17,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -78,7 +79,7 @@ import eu.atos.sla.service.types.BooleanParam;
 @Component
 @Scope("request")
 public class AgreementRest extends AbstractSLARest{
-	private static Logger logger = Logger.getLogger(AgreementRest.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementRest.class);
 
 	@Autowired
 	private AgreementHelper helper;

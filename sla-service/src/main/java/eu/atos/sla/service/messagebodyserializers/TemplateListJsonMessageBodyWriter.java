@@ -15,7 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.datamodel.ITemplate;
@@ -34,7 +35,7 @@ import eu.atos.sla.parser.data.wsag.Template;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 public class TemplateListJsonMessageBodyWriter implements MessageBodyWriter<List<ITemplate>> {
-	private static Logger logger = Logger.getLogger(TemplateListJsonMessageBodyWriter.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateListJsonMessageBodyWriter.class);
 	byte[] serializedData = null;
 	Throwable catchedException = null;
 
@@ -56,7 +57,8 @@ public class TemplateListJsonMessageBodyWriter implements MessageBodyWriter<List
 		if (genericType!=null)
 			isUsed = (genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
 		if (isUsed)
-			logger.debug("isWriteable:"+isUsed +"--> type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType+ " with parser:"+jsonParser);
+			logger.debug("isWritable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
+					isUsed, type, genericType, mediaType, jsonParser);
 		return isUsed;
 	}
 	

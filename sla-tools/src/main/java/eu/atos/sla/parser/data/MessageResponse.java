@@ -21,7 +21,10 @@ public class MessageResponse {
 	private int code;
 	@XmlAttribute(name = "message")
 	private String message;
+	@XmlAttribute(name = "elementId")
+	private String elementId;
 
+	
 	public MessageResponse() {
 	}
 
@@ -39,6 +42,14 @@ public class MessageResponse {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getElementId() {
+		return elementId;
+	}
+
+	public void setElementId(String elementId) {
+		this.elementId = elementId;
 	}
 
 }
