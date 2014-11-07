@@ -9,7 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -30,7 +31,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
  * @author rsosa
  */
 public class ModacloudsTranslator implements IMetricTranslator<String>{
-	private static final Logger logger = Logger.getLogger(ModacloudsTranslator.class);
+	private static final Logger logger = LoggerFactory.getLogger(ModacloudsTranslator.class);
 	
 	/**
 	 * Needed to get the guarantee term that evaluates a particular metric key.

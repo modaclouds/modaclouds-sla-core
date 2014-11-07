@@ -3,7 +3,6 @@ package eu.modaclouds.sla.service.rest;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,7 +11,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -30,7 +30,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
 @Scope("request")
 @Transactional
 public class MetricsReceiverRest extends AbstractSLARest {
-	private static Logger logger = Logger.getLogger(MetricsReceiverRest.class);
+	private static Logger logger = LoggerFactory.getLogger(MetricsReceiverRest.class);
 
 	@Autowired
 	private IEnforcementService enforcementService;

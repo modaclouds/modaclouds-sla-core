@@ -1,0 +1,31 @@
+{
+  "_:-379a59fa:14854b01d3c:-7ffc" : {
+    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#metric" : [ 
+      {
+        "type" : "literal" ,
+        "value" : "v1"
+      }
+    ] ,
+    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#timestamp" : [ 
+      {
+        "type" : "literal" ,
+        "value" : "1410170109303" ,
+        "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
+      }
+    ] ,
+    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#value" : [ 
+      {
+        "type" : "literal" ,
+        "value" : "20000" ,
+        "datatype" : "http://www.w3.org/2001/XMLSchema#double"
+      }
+    ] ,
+    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#resourceId" : [ 
+      {
+        "type" : "literal" ,
+        "value" : "eHealth-ws" ,
+        "datatype" : "http://www.w3.org/2001/XMLSchema#string"
+      }
+    ]
+  }
+}
