@@ -11,7 +11,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ import eu.atos.sla.service.rest.helpers.exception.InternalHelperException;
 @Scope("request")
 @Transactional
 public class EnforcementJobRestEntity extends AbstractSLARest{
-	private static Logger logger = Logger.getLogger(EnforcementJobRestEntity.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementJobRestEntity.class);
 
 	@Autowired
 	private EnforcementJobHelperE helper;
@@ -128,7 +129,7 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 	@GET
 	@Path("{agreementId}")
 	public EnforcementJob getEnforcementJobByAgreementId(@PathParam("agreementId") String agreementUUID) throws NotFoundException{
-		logger.debug("StartOf getEnforcementJobByAgreementId - REQUEST for /enforcements/" + agreementUUID);
+		logger.debug("StartOf getEnforcementJobByAgreementId - REQUEST for /enforcements/{}", agreementUUID);
 		EnforcementJobHelperE enforcementJobService = getHelper();
 		EnforcementJob enforcementJob= enforcementJobService.getEnforcementJobByUUID(agreementUUID);
 		if (enforcementJob==null){
@@ -273,9 +274,10 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 		logger.debug("StartOf createEnforcementJob - REQUEST Insert /enforcement");
 		
 		EnforcementJobHelperE enforcementJobHelper = getHelper();
-		String location = null;
+		String id, location = null;
 		try {
-			location = enforcementJobHelper.createEnforcementJob(uriInfo.getAbsolutePath().toString(), enforcementJob);
+			id = enforcementJobHelper.createEnforcementJob(enforcementJob);
+			location = buildResourceLocation(uriInfo.getAbsolutePath().toString(), id);
 		} catch (DBExistsHelperException e) {
 			logger.info("createEnforcementJob ConflictException:"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
@@ -290,7 +292,7 @@ public class EnforcementJobRestEntity extends AbstractSLARest{
 		return buildResponsePOST(
 				HttpStatus.CREATED,
 				createMessage(
-						HttpStatus.CREATED,
+						HttpStatus.CREATED, id,
 						"The enforcementJob has been stored successfully in the SLA Repository Database"),
 				location);
 	}

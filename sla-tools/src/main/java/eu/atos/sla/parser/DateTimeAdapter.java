@@ -6,9 +6,11 @@ import java.util.TimeZone;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DateTimeAdapter extends XmlAdapter<String, Date>{ 
-	private static Logger logger = Logger.getLogger(DateTimeAdapter.class);
+	private static Logger logger = LoggerFactory.getLogger(DateTimeAdapter.class);
 	
 	static private String dateFormat;
 
@@ -48,10 +50,11 @@ public class DateTimeAdapter extends XmlAdapter<String, Date>{
 			formatter.setTimeZone(TimeZone.getTimeZone(unmarshallTimezone));
 			date = formatter.parse(dateAsString);
 		}catch(Throwable t){
-			logger.fatal("Date "+dateAsString+" couldn't be unmarshal with "+dateFormat+ " and timezone "+unmarshallTimezone);
-			throw new ParserException("Date "+dateAsString+" couldn't be unmarshal with "+dateFormat+ " and timezone "+unmarshallTimezone, t);
+			throw new ParserException(
+					"Date " + dateAsString + " couldn't be unmarshal with " + dateFormat + 
+					" and timezone "+unmarshallTimezone, t);
 		}
-		logger.debug(date +" has been unmashalled to : "+date);
+		logger.debug(date +"{} has been unmarshalled to {}", dateAsString, date);
 		return date;
 	}
 
@@ -64,10 +67,11 @@ public class DateTimeAdapter extends XmlAdapter<String, Date>{
 			formatter.setTimeZone(TimeZone.getTimeZone(marshallTimezone));
 			dateAsString = formatter.format(date);
 		}catch(Throwable t){
-			logger.fatal("Date "+date+" couldn't be marshal with "+dateFormat + " and timezone "+marshallTimezone);
-			throw new ParserException("Date "+date+" couldn't be marshal with "+dateFormat + " and timezone "+marshallTimezone, t);
+			throw new ParserException(
+					"Date " + date + " couldn't be marshal with " + dateFormat + 
+					" and timezone " + marshallTimezone, t);
 		}
-		logger.debug(date +" has been mashalled to : "+dateAsString);
+		logger.debug(date +"{} has been mashalled to {}", date, dateAsString);
 		return dateAsString;
 	}
 

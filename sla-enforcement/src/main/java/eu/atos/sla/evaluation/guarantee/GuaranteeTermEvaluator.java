@@ -3,7 +3,8 @@ package eu.atos.sla.evaluation.guarantee;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.ICompensation;
@@ -29,7 +30,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
  *
  */
 public class GuaranteeTermEvaluator implements IGuaranteeTermEvaluator {
-	private static Logger logger = Logger.getLogger(GuaranteeTermEvaluator.class);
+	private static Logger logger = LoggerFactory.getLogger(GuaranteeTermEvaluator.class);
 	
 	IServiceLevelEvaluator serviceLevelEval;
 	IBusinessValuesEvaluator businessEval;
@@ -46,8 +47,8 @@ public class GuaranteeTermEvaluator implements IGuaranteeTermEvaluator {
 		 */
 		checkInitialized();
 					
-		logger.debug(String.format("evaluate(agreement=%s, term=%s, now=%s)", 
-				agreement.getAgreementId(), term.getKpiName(), now));
+		logger.debug("evaluate(agreement={}, term={}, now={})", 
+				agreement.getAgreementId(), term.getKpiName(), now);
 
 		final List<IViolation> violations = serviceLevelEval.evaluate(agreement, term, metrics, now);
 		logger.debug("Found " + violations.size() + " violations");

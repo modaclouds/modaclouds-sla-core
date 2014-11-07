@@ -8,7 +8,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +24,7 @@ import eu.atos.sla.parser.data.wsag.Template;
  * @author Elena Garrido
  */
 public class TemplateParser implements IParser<Template> {
-	private static Logger logger = Logger.getLogger(TemplateParser.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateParser.class);
 
 	/*
 	 * getWsagObject receives in serializedData the object information in json 
@@ -33,18 +34,16 @@ public class TemplateParser implements IParser<Template> {
 	public Template getWsagObject(String serializedData) throws ParserException{
 		Template template = null;
 		try{
-			logger.info("Will parse "+serializedData);
+			logger.info("Will parse {}", serializedData);
 			ObjectMapper mapper = new ObjectMapper();
 			template = mapper.readValue(serializedData, Template.class);
-	    	logger.debug("Template parsed "+ template);
+			logger.debug("Template parsed {}", template);
 		} catch (JsonProcessingException e) {
-			logger.fatal(e);
 			throw new ParserException(e);
 		} catch (Throwable e) {
-			logger.fatal(e);
 			throw new ParserException(e);
 		}
-    	return template;
+		return template;
 
 	}
 
@@ -62,7 +61,6 @@ public class TemplateParser implements IParser<Template> {
 			jaxbMarshaller.setEventHandler(new ValidationHandler());
 			jaxbMarshaller.marshal(template, stringWriter);
 		} catch (JAXBException e) {
-			logger.fatal(e);
 			throw new ParserException(e);
 		}
 		return stringWriter.toString();
@@ -84,10 +82,8 @@ public class TemplateParser implements IParser<Template> {
 				String result = mapper.writeValueAsString(template);
 				return result;
 			} catch (JsonProcessingException e) {
-				logger.fatal(e);
 				throw new ParserException(e);
 			} catch (JAXBException e) {
-				logger.fatal(e);
 				throw new ParserException(e);
 			}
 	}

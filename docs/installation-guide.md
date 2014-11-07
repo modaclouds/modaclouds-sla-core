@@ -156,7 +156,7 @@ parameters overridable is:
 
 F.e., to use a different database configuration:
 
-	$ export DB_URL=http://localhost:8080/sla
+	$ export DB_URL=jdbc:mysql://localhost:3306/sla
 	$ export DB_USERNAME=sla
 	$ export DB_PASSWORD=<secret>
 	$ bin/runserver.sh 

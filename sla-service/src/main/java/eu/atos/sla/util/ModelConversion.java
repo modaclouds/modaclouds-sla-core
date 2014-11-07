@@ -6,10 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.datamodel.IAgreement;
@@ -31,12 +32,13 @@ import eu.atos.sla.parser.data.wsag.Context;
 import eu.atos.sla.parser.data.wsag.GuaranteeTerm;
 import eu.atos.sla.parser.data.wsag.ServiceLevelObjective;
 import eu.atos.sla.parser.data.wsag.ServiceProperties;
+import eu.atos.sla.parser.data.wsag.ServiceScope;
 import eu.atos.sla.parser.data.wsag.Variable;
 import eu.atos.sla.parser.xml.AgreementParser;
 
 @Component
 public class ModelConversion implements IModelConverter {
-	private static Logger logger = Logger.getLogger(ModelConversion.class);
+	private static Logger logger = LoggerFactory.getLogger(ModelConversion.class);
 	
 	public static class ServiceLevelParser {
 
@@ -65,10 +67,10 @@ public class ModelConversion implements IModelConverter {
 				
 				return result;
 			} catch (JsonProcessingException e) {
-				logger.fatal("Error parsing "+serviceLevel, e);
+				logger.error("Error parsing "+serviceLevel, e);
 				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
 			} catch (IOException e) {
-				logger.fatal("Error parsing "+serviceLevel, e);
+				logger.error("Error parsing "+serviceLevel, e);
 				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
 			}
 		}
@@ -111,7 +113,7 @@ public class ModelConversion implements IModelConverter {
 			try {
 				rootNode = mapper.readTree(qualifyingCondition);
 				JsonNode samplingperiodNode = rootNode.path("samplingperiodfactor");
-				logger.fatal("samplingperiodNode "+samplingperiodNode);
+				logger.error("samplingperiodNode "+samplingperiodNode);
 				
 				String samplingperiodfactor = textOrJson(samplingperiodNode);
 
@@ -133,10 +135,10 @@ public class ModelConversion implements IModelConverter {
 				
 				return result;
 			} catch (JsonProcessingException e) {
-				logger.fatal("Error parsing "+qualifyingCondition, e);
+				logger.error("Error parsing "+qualifyingCondition, e);
 				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
 			} catch (IOException e) {
-				logger.fatal("Error parsing "+qualifyingCondition, e);
+				logger.error("Error parsing "+qualifyingCondition, e);
 				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
 			}
 		}
@@ -159,7 +161,7 @@ public class ModelConversion implements IModelConverter {
 
 	
 	private void setProviderAndConsumer(IAgreement agreement, String provider, String consumer) {
-		logger.info("setProviderAndConsumer provider:"+provider+ " - consumer:"+consumer);
+		logger.info("setProviderAndConsumer provider:{} - consumer:{}", provider, consumer);
 
 		if (consumer != null) {
 			agreement.setConsumer(consumer);
@@ -269,7 +271,8 @@ public class ModelConversion implements IModelConverter {
 					for (Variable variableXML : variablesXML) {
 
 						IVariable variable = new eu.atos.sla.datamodel.bean.Variable();
-						logger.debug("Variable with name:"+variableXML.getName()+"  -  location:"+variableXML.getLocation()+ " - metric:"+variableXML.getMetric());
+						logger.debug("Variable with name:{} -  location:{} - metric:{}", 
+								variableXML.getName(), variableXML.getLocation(), variableXML.getMetric());
 						if (variableXML.getLocation() != null) {
 							variable.setLocation(variableXML.getLocation());
 						}
@@ -309,21 +312,25 @@ public class ModelConversion implements IModelConverter {
 				guaranteeTerm.setName(guaranteeTermXML.getName());
 			}
 
-			if (guaranteeTermXML.getServiceScope() != null) {
-				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName:"+guaranteeTermXML.getServiceScope().getServiceName()+ " - servicesopeValue:"+guaranteeTermXML.getServiceScope().getValue());
-				guaranteeTerm.setServiceScope(guaranteeTermXML.getServiceScope().getValue());
-				guaranteeTerm.setServiceName( guaranteeTermXML.getServiceScope().getServiceName());
+			ServiceScope scope = guaranteeTermXML.getServiceScope();
+			if (scope != null) {
+				logger.debug("guaranteeTerm with name:{} -  servicescopeName:{} - servicescopeValue:{}", 
+						guaranteeTermXML.getName(), scope.getServiceName(), scope.getValue());
+				guaranteeTerm.setServiceScope(scope.getValue());
+				guaranteeTerm.setServiceName( scope.getServiceName());
 			}else
-				logger.debug("guaranteeTerm with name:"+guaranteeTermXML.getName()+"  -  servicesopeName: serviceScope is null - servicesopeValue: serviceScope is null");
+				logger.debug("guaranteeTerm with name:{} - serviceScope is null", guaranteeTermXML.getName() );
 
 			// qualifying condition
 			if (guaranteeTermXML.getQualifyingCondition()!= null){
-				logger.debug("qualifying confition informed with:"+guaranteeTermXML.getQualifyingCondition());
+				logger.debug("qualifying condition informed with:{}", guaranteeTermXML.getQualifyingCondition());
 				String qc = guaranteeTermXML.getQualifyingCondition();
 				if (qc != null) {
 					QualifyingConditionParser.Result parsedQc = QualifyingConditionParser.parse(qc);
 					guaranteeTerm.setSamplingPeriodFactor(parsedQc.getSamplingPeriodFactor());
-					if (parsedQc.getSamplingPeriodFactor() == IGuaranteeTerm.ENFORCED_AT_END) agreement.setHasGTermToBEEvaluatedAtEndOfEnformcement(true);
+					if (parsedQc.getSamplingPeriodFactor() == IGuaranteeTerm.ENFORCED_AT_END) {
+						agreement.setHasGTermToBEEvaluatedAtEndOfEnformcement(true);
+					}
 				}
 			}
 			ServiceLevelObjective slo  =guaranteeTermXML.getServiceLevelObjetive();
@@ -331,7 +338,8 @@ public class ModelConversion implements IModelConverter {
 				if (slo.getKpitarget().getKpiName() != null) {
 					guaranteeTerm.setKpiName(slo.getKpitarget().getKpiName());
 					String csl = slo.getKpitarget().getCustomServiceLevel();
-					logger.debug("guaranteeTerm  with kpiname:"+slo.getKpitarget().getKpiName()+ " --  getCustomServiceLevel: "+csl);
+					logger.debug("guaranteeTerm  with kpiname:{} --  getCustomServiceLevel: ", 
+							slo.getKpitarget().getKpiName(), csl);
 					if (csl != null) {
 						ServiceLevelParser.Result parsedSlo = ServiceLevelParser.parse(csl);
 						guaranteeTerm.setServiceLevel(parsedSlo.getConstraint());
@@ -356,12 +364,12 @@ public class ModelConversion implements IModelConverter {
 	public ITemplate getTemplateFromTemplateXML(eu.atos.sla.parser.data.wsag.Template templateXML,	String payload) throws ModelConversionException{
 		ITemplate template = new Template();
 		if (templateXML.getTemplateId() != null) {
-			logger.debug("TemplateId at header will be used: "+templateXML.getTemplateId());
+			logger.debug("TemplateId at header will be used:{}", templateXML.getTemplateId());
 			template.setUuid(templateXML.getTemplateId());
 		} else {
 			// uuid
 			if (templateXML.getContext().getTemplateId() != null) {
-				logger.debug("TemplateId in context will be used: "+templateXML.getTemplateId());
+				logger.debug("TemplateId in context will be used:{}", templateXML.getTemplateId());
 				template.setUuid(templateXML.getContext().getTemplateId());
 			}else{
 				String templateId = UUID.randomUUID().toString();
@@ -372,7 +380,7 @@ public class ModelConversion implements IModelConverter {
 		if (templateXML.getContext().getService()!=null){
 			template.setServiceId(templateXML.getContext().getService());
 		}else{
-			logger.fatal("Service is null, field must be informed");			
+			logger.error("Service is null, field must be informed");			
 			throw new ModelConversionException("Service is null, field must be informed");
 		}
 		

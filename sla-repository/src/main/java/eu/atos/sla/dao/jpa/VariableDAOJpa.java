@@ -9,7 +9,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IVariableDAO;
@@ -18,7 +19,7 @@ import eu.atos.sla.datamodel.bean.Variable;
 
 @Repository("VariableRepository")
 public class VariableDAOJpa implements IVariableDAO {
-	private static Logger logger = Logger.getLogger(VariableDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(VariableDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -97,7 +98,7 @@ public class VariableDAOJpa implements IVariableDAO {
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("Variable[{}] not found", variable.getId());
 			return false;
 		}
 	}

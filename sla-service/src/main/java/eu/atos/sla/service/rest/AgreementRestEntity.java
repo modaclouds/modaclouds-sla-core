@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -83,7 +84,7 @@ import eu.atos.sla.service.types.BooleanParam;
 @Component
 @Scope("request")
 public class AgreementRestEntity extends AbstractSLARest{
-	private static Logger logger = Logger.getLogger(AgreementRestEntity.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementRestEntity.class);
 
 	@Autowired
 	private AgreementHelperE helper;
@@ -130,14 +131,41 @@ public class AgreementRestEntity extends AbstractSLARest{
 	public List<IAgreement> getAgreements(
 			@QueryParam("consumerId") String consumerId,
 			@QueryParam("providerId") String providerId,
+			@QueryParam("templateId") String templateId,
 			@QueryParam("active") BooleanParam active) {
 		logger.debug("StartOf getAgreements - REQUEST for /agreements");
 		AgreementHelperE agreementRestHelper = getAgreementHelper();
-		List<IAgreement> agreements =  agreementRestHelper.getAgreements(consumerId, providerId, BooleanParam.getValue(active));
+		List<IAgreement> agreements = agreementRestHelper.getAgreements(
+				consumerId, providerId, templateId, BooleanParam.getValue(active));
 			
 		return agreements;
 	}
 
+	/**
+	 * Gets a the list of available agreements from where we can get metrics,
+	 * host information, etc.
+	 * 
+	 * </pre>
+	 * 
+	 * Example: 
+	 * <li>curl http://localhost:8080/sla-service/agreements</li>
+	 * <li>curl http://localhost:8080/sla-service/agreements?consumerId=user-10343</li>
+	 * @throws NotFoundException 
+	 * 
+	 * @throws JAXBException
+	 */
+	@GET
+	@Path("agreementsPerTemplateAndConsumer")
+	@Deprecated
+	public List<IAgreement> getAgreementsPerTemplateAndConsumer(
+			@QueryParam("consumerId") String consumerId,
+			@QueryParam("templateUUID") String templateUUID) {
+		logger.debug("StartOf getAgreementsPerTemplateAndConsumer - REQUEST for /agreementsPerTemplateAndConsumer");
+		AgreementHelperE agreementRestHelper = getAgreementHelper();
+		List<IAgreement> agreements =  agreementRestHelper.getAgreementsPerTemplateAndConsumer(consumerId, templateUUID);
+			
+		return agreements;
+	}
 	
 	
 	/**
@@ -214,14 +242,14 @@ public class AgreementRestEntity extends AbstractSLARest{
 	@GET
 	@Path("{id}/context")
 	public eu.atos.sla.parser.data.wsag.Context  getAgreementContextById(@PathParam("id") String agreementId) throws NotFoundException, InternalException {
-		logger.debug("StartOf getAgreementContextById REQUEST for /agreements/" + agreementId+"/context");
+		logger.debug("StartOf getAgreementContextById REQUEST for /agreements/{}/context", agreementId);
 
 		AgreementHelperE agreementRestHelper = getAgreementHelper();
 		eu.atos.sla.parser.data.wsag.Context context;
 		try {
 			context = agreementRestHelper.getAgreementContextByID(agreementId);
 		} catch (InternalHelperException e) {
-			logger.fatal("getAgreementContextById InternalException", e); 			
+			logger.error("getAgreementContextById InternalException", e); 			
 			throw new InternalException(e.getMessage());
 		}
 		if (context==null){
@@ -268,10 +296,12 @@ public class AgreementRestEntity extends AbstractSLARest{
 	@POST
 	public Response createAgreement(@Context UriInfo uriInfo,  AgreementParam agrementParam) throws NotFoundException, ConflictException, InternalException{
 		logger.debug("StartOf createAgreement - Insert /agreements");
-		String location = null;
+		String id, location = null;
 		try{
 			AgreementHelperE agreementRestHelper = getAgreementHelper();
-			location = agreementRestHelper.createAgreement(uriInfo.getAbsolutePath().toString(), agrementParam.getAgreement(), agrementParam.getOriginalSerialzedAgreement());
+			id = agreementRestHelper.createAgreement(agrementParam.getAgreement(), agrementParam.getOriginalSerialzedAgreement());
+			location = buildResourceLocation(uriInfo.getAbsolutePath().toString() ,id);
+			logger.debug("EndOf createAgreement");
 		} catch (DBMissingHelperException e) {
 			logger.info("createAgreement ConflictException"+ e.getMessage());
 			throw new ConflictException(e.getMessage());
@@ -288,8 +318,7 @@ public class AgreementRestEntity extends AbstractSLARest{
 		logger.debug("EndOf createAgreement");
 		return buildResponsePOST(
 				HttpStatus.CREATED,
-				createMessage(
-						HttpStatus.CREATED,
+				createMessage(HttpStatus.CREATED, id, 
 						"The agreement has been stored successfully in the SLA Repository Database. It has location "+location), location);
 	}
 
@@ -336,14 +365,13 @@ public class AgreementRestEntity extends AbstractSLARest{
 	@DELETE
 	@Path("{agreementId}")
 	public Response deleteAgreement(@PathParam("agreementId") String agreementId){
-		logger.debug("DELETE /agreements/" + agreementId);
+		logger.debug("DELETE /agreements/{}", agreementId);
 
 		AgreementHelperE agreementRestHelper = getAgreementHelper();
 		boolean deleted = agreementRestHelper.deleteByAgreementId(agreementId);
 		if (deleted)
-			return buildResponse(HttpStatus.OK, /*egarrido it was returned HttpStatus.NO_CONTENT, I don't know why */
-					"The enforcement job with agreement id " + agreementId
-							+ "was deleted successfully");
+			return buildResponse(HttpStatus.OK,
+					"The agreement id " + agreementId + "with it's enforcement job was successfully deleted");
 		else{
 			logger.info("getAgreementContextById NotFoundException: There is no agreement with id " + agreementId + " in the SLA Repository Database");						
 			return buildResponse(HttpStatus.NOT_FOUND, 

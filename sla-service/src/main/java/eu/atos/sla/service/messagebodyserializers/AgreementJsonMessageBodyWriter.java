@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.datamodel.IAgreement;
@@ -33,7 +34,7 @@ import eu.atos.sla.parser.data.wsag.Agreement;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 public class AgreementJsonMessageBodyWriter implements MessageBodyWriter<IAgreement> {
-	private static Logger logger = Logger.getLogger(AgreementJsonMessageBodyWriter.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementJsonMessageBodyWriter.class);
 	Throwable catchedException;
 	
 	@Resource(name="agreementJsonParser")
@@ -48,7 +49,8 @@ public class AgreementJsonMessageBodyWriter implements MessageBodyWriter<IAgreem
 		initParser();
 		boolean isUsed =  (genericType == IAgreement.class) && (mediaType.toString().equals(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
 		if (isUsed)
-			logger.debug("isWriteable:"+isUsed+ " -->type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType+ " with parser:"+jsonParser);
+			logger.debug("isWritable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",
+					isUsed, type, genericType, mediaType, jsonParser);
 		return isUsed;
 	}
 	
@@ -58,19 +60,19 @@ public class AgreementJsonMessageBodyWriter implements MessageBodyWriter<IAgreem
 		if (agreement.getText()!=null){
 			try {
 				String jsonData = jsonParser.getSerializedData(agreement.getText());
-				logger.info("jsonData "+jsonData);
+				logger.info("jsonData {}", jsonData);
 				serializedData = jsonData.getBytes();
 				return serializedData.length;
 			} catch (ParserException e) {
-				logger.fatal(e.getMessage());
+				logger.error(e.getMessage());
 				catchedException = e;
 			} catch (Throwable e) {
-				logger.fatal(e.getMessage());
+				logger.error(e.getMessage());
 				catchedException = e;
 			}
 		}else {
-	    	logger.fatal("Error marshalling data agreement text is null");
-    		throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+			logger.error("Error marshalling data agreement text is null");
+			throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
 		}
 		return 0;
 	}

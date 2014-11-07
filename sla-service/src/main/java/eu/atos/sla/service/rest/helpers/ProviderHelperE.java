@@ -3,7 +3,8 @@ package eu.atos.sla.service.rest.helpers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ import eu.atos.sla.util.IModelConverter;
 @Service
 @Transactional
 public class ProviderHelperE {
-	private static Logger logger = Logger.getLogger(ProviderHelperE.class);
+	private static Logger logger = LoggerFactory.getLogger(ProviderHelperE.class);
 
 	@Autowired
 	public IProviderDAO providerDAO;
@@ -62,7 +63,7 @@ public class ProviderHelperE {
 	}
 	
 	public Provider getProviderByUUID(String uuid)  {
-		logger.debug("StartOf getProviderByUUID uuid:"+uuid);
+		logger.debug("StartOf getProviderByUUID uuid:{}", uuid);
 		Provider provider = null;
 		IProvider storedProvider = providerDAO.getByUUID(uuid);
 		if (storedProvider!=null)
@@ -72,7 +73,7 @@ public class ProviderHelperE {
 	}
 	
 	
-	public String createProvider(String uriInfo, Provider providerXML) throws DBExistsHelperException, InternalHelperException {
+	public String createProvider(Provider providerXML) throws DBExistsHelperException, InternalHelperException {
 		logger.debug("StartOf createProvider");
 		IProvider stored = null;
 		if (providerXML != null) {
@@ -88,8 +89,7 @@ public class ProviderHelperE {
 	
 		if (stored != null) {
 			logger.debug("EndOf createProvider");
-			String location = uriInfo + "/" + stored.getUuid();
-			return location;
+			return stored.getUuid();
 		} else
 			logger.debug("EndOf createProvider");
 		throw new InternalHelperException("Error when creating provider the SLA Repository Database");
@@ -97,18 +97,19 @@ public class ProviderHelperE {
 	
 	
 	public boolean deleteByProviderUUID(String providerUUID) throws DBExistsHelperException{
-		logger.debug("StartOf deleteByProviderUUID providerUUID:"+providerUUID);
+		logger.debug("StartOf deleteByProviderUUID providerUUID:{}", providerUUID);
 		
 		boolean deleted = false;
-		List<ITemplate> listTemplates = templateDAO.getByProvider(providerUUID);
+		List<ITemplate> listTemplates = templateDAO.search(providerUUID, null);
 		if ((listTemplates==null) || listTemplates.size()>0){ 
-			logger.debug("Templates exists associated to providerUUID "+providerUUID+", provider will not be removed");
+			logger.debug("Templates exists associated to providerUUID {}, provider will not be removed", providerUUID);
 			throw new DBExistsHelperException("Template with provider uuid:"
 					+ providerUUID +" exists in the SLA Repository Database. Provider cannot be removed.");
 		}else{
 			List<IAgreement> listAgreements = agreementDAO.getByProvider(providerUUID);
 			if ((listAgreements==null) || listAgreements.size()>0){ 
-				logger.debug("Agreements exists associated to providerUUID "+providerUUID+", provider will not be removed");
+				logger.debug("Agreements exists associated to providerUUID {}, provider will not be removed", 
+						providerUUID);
 				throw new DBExistsHelperException("Agreements with provider uuid:"
 						+ providerUUID +" exists in the SLA Repository Database. Provider cannot be removed.");
 			}else{

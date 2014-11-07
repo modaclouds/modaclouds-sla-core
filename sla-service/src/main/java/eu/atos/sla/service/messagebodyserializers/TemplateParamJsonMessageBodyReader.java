@@ -14,7 +14,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.Provider;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eu.atos.sla.parser.IParser;
@@ -33,7 +34,7 @@ import eu.atos.sla.service.types.TemplateParam;
 @Provider
 @Consumes(MediaType.APPLICATION_JSON)
 public class TemplateParamJsonMessageBodyReader implements MessageBodyReader<TemplateParam> {
-	private static Logger logger = Logger.getLogger(TemplateParamJsonMessageBodyReader.class);
+	private static Logger logger = LoggerFactory.getLogger(TemplateParamJsonMessageBodyReader.class);
 	@Resource(name="templateJsonParser")
 	IParser<Template> jsonParser;
 	Throwable catchedException;
@@ -45,9 +46,12 @@ public class TemplateParamJsonMessageBodyReader implements MessageBodyReader<Tem
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
-		boolean isUsed = (type == TemplateParam.class) && mediaType.toString().equals(MediaType.APPLICATION_JSON) && jsonParser!=null;
+		boolean isUsed = (type == TemplateParam.class) && 
+				mediaType.toString().equals(MediaType.APPLICATION_JSON) && 
+				jsonParser!=null;
 		if (isUsed)
-			logger.debug("isReadable:"+isUsed+" --> type:"+type+ " genericType:"+genericType+ " mediaType:"+mediaType + " with parser:"+jsonParser);
+			logger.debug("isReadable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",
+					isUsed, type, genericType, mediaType, jsonParser);
 		return isUsed;
 	}
 
@@ -57,16 +61,16 @@ public class TemplateParamJsonMessageBodyReader implements MessageBodyReader<Tem
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
 			throws IOException, WebApplicationException {
-	    	String str = MessageBodyUtils.getStringFromInputStream(entityStream);
+			String str = MessageBodyUtils.getStringFromInputStream(entityStream);
 			try {
 				Template templateWSAG = jsonParser.getWsagObject(str);
 				String serializedWsagData = jsonParser.getWsagAsSerializedData(str);
 				TemplateParam agreementParam = new TemplateParam();
-			    agreementParam.setTemplate(templateWSAG);
-			    agreementParam.setOriginalSerialzedTemplate(removeXMLHeader(serializedWsagData));
-			    return agreementParam;
+				agreementParam.setTemplate(templateWSAG);
+				agreementParam.setOriginalSerialzedTemplate(removeXMLHeader(serializedWsagData));
+				return agreementParam;
 			} catch (ParserException e) {
-		    	logger.fatal("Error parsing"+e.getMessage());
+				logger.error("Error parsing"+e.getMessage());
 				throw new WebApplicationException(e,Response.Status.NOT_ACCEPTABLE);
 			}
 	}

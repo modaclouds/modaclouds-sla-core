@@ -10,7 +10,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IServiceDAO;
@@ -19,7 +20,7 @@ import eu.atos.sla.datamodel.bean.Service;
 
 @Repository("ServiceRepository")
 public class ServiceDAOJpa implements IServiceDAO {
-	private static Logger logger = Logger.getLogger(ServiceDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(ServiceDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -116,7 +117,7 @@ public class ServiceDAOJpa implements IServiceDAO {
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("Service[{}] not found", service.getId());
 			return false;
 		}
 	}

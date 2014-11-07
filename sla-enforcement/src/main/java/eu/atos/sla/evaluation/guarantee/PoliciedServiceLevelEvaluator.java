@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IBreach;
@@ -50,7 +51,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
  */
 public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 
-	private static Logger logger = Logger.getLogger(PoliciedServiceLevelEvaluator.class);
+	private static Logger logger = LoggerFactory.getLogger(PoliciedServiceLevelEvaluator.class);
 
 	private static IPolicy defaultPolicy = new Policy(1, new Date(0));
 	private IConstraintEvaluator constraintEval;
@@ -61,8 +62,8 @@ public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 	@Override
 	public List<IViolation> evaluate(
 			IAgreement agreement, IGuaranteeTerm term, List<IMonitoringMetric> metrics, Date now) {
-		logger.debug(String.format("evaluate(agreement=%s, term=%s, servicelevel=%s)", 
-				agreement.getAgreementId(), term.getKpiName(), term.getServiceLevel()));
+		logger.debug("evaluate(agreement={}, term={}, servicelevel={})", 
+				agreement.getAgreementId(), term.getKpiName(), term.getServiceLevel());
 
 		/*
 		 * throws NullPointerException if not property initialized 
@@ -77,7 +78,7 @@ public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 		 * Calculate with new metrics are breaches
 		 */
 		List<IMonitoringMetric> newBreachMetrics = constraintEval.evaluate(kpiName, constraint, metrics);
-		logger.debug(String.format("Found %d breaches in new metrics", newBreachMetrics.size()));
+		logger.debug("Found {} breaches in new metrics", newBreachMetrics.size());
 		
 		List<IPolicy> policies = getPoliciesOrDefault(term);
 		boolean withPolicies = !isDefaultPolicy(policies);
@@ -94,8 +95,8 @@ public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 		for (IPolicy policy : policies) {
 			Date breachesBegin = new Date(now.getTime() - policy.getTimeInterval().getTime());
 
-			logger.debug(String.format("Evaluating policy(%d,%ss) in interval(%s, %s)", 
-					policy.getCount(), policy.getTimeInterval().getTime() / 1000, breachesBegin, now));
+			logger.debug("Evaluating policy({},{}s) in interval({}, {})", 
+					policy.getCount(), policy.getTimeInterval().getTime() / 1000, breachesBegin, now);
 			
 			List<IBreach> oldBreaches;
 			
@@ -104,7 +105,7 @@ public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 				 * TODO rsosa: oldBreaches should start from last violation, if any; otherwise, as is.
 				 */
 				oldBreaches = breachRepository.getByTimeRange(agreement, kpiName, breachesBegin, now);
-				logger.debug(String.format("Found %d breaches", oldBreaches.size()));
+				logger.debug("Found {} breaches", oldBreaches.size());
 				
 				List<IBreach> breaches = new PoliciedServiceLevelEvaluator.CompositeList<IBreach>(
 						oldBreaches, newBreaches);

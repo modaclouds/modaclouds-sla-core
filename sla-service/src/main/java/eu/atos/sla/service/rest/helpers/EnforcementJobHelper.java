@@ -11,7 +11,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ import eu.atos.sla.util.ModelConversionException;
 @Service
 @Transactional
 public class EnforcementJobHelper{
-	private static Logger logger = Logger.getLogger(EnforcementJobHelper.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementJobHelper.class);
 
 	@Autowired
 	private IEnforcementJobDAO enforcementJobDAO;
@@ -110,7 +111,7 @@ public class EnforcementJobHelper{
 				throw new HelperException(Code.DB_DELETED, "There are no enformcements in the SLA Repository Database");
 			}
 		} catch (JAXBException e) {
-			logger.fatal("Error in getEnforcementJobByUUID " , e);
+			logger.error("Error in getEnforcementJobByUUID " , e);
 			throw new HelperException(Code.PARSER, "Error when creating enforcementJob parsing file:" + e.getMessage() );
 		}
 	}
@@ -127,7 +128,7 @@ public class EnforcementJobHelper{
 			logger.debug("EndOf getEnforcementJobByUUID");
 			return str;
 		} catch (JAXBException e) {
-			logger.fatal("Error in getEnforcementJobByUUID " , e);
+			logger.error("Error in getEnforcementJobByUUID " , e);
 			throw new HelperException(Code.PARSER, "Error when creating enforcementJob parsing file:" + e.getMessage() );
 		}
 	}
@@ -179,10 +180,10 @@ public class EnforcementJobHelper{
 				throw new HelperException(Code.INTERNAL, "Error when creating enforcementJob the SLA Repository Database");
 			}
 		} catch (JAXBException e) {
-			logger.fatal("Error in createEnforcementJob " , e);
+			logger.error("Error in createEnforcementJob " , e);
 			throw new HelperException(Code.PARSER, "Error when creating enforcementJob parsing file:" + e.getMessage() );
 		} catch (ModelConversionException e) {
-			logger.fatal("Error in createEnforcementJob " , e);
+			logger.error("Error in createEnforcementJob " , e);
 			throw new HelperException(Code.INTERNAL, e.getMessage() );
 		}
 

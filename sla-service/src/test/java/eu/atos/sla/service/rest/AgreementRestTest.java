@@ -2,9 +2,9 @@ package eu.atos.sla.service.rest;
 
 //import java.io.File;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //import com.jayway.restassured.RestAssured;
 //import com.jayway.restassured.response.Response;
@@ -16,11 +16,11 @@ import org.junit.Test;
  */
 
 public class AgreementRestTest {
-	private static Logger logger = Logger.getLogger(AgreementRestTest.class);
+	private static Logger logger = LoggerFactory.getLogger(AgreementRestTest.class);
 
 	@Test
 	public void testGetAgreements() {
-		logger.log(Level.DEBUG, "start of testGetAgreements");
+		logger.debug("start of testGetAgreements");
 /*		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = 8080;
 		RestAssured.basePath = "/sla-service";
@@ -29,7 +29,7 @@ public class AgreementRestTest {
 		logger.log(Level.INFO, "Rest output call "+someData.htmlPath().prettyPrint());
 		//TODO egarrido, missing to do verification, if rest call result is correct or not.
 */
-		logger.log(Level.DEBUG, "end of testGetAgreements");
+		logger.debug("end of testGetAgreements");
 		
 		assert (true);
 	}

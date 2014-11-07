@@ -1,6 +1,7 @@
 package eu.atos.sla.enforcement.schedule;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 
@@ -10,7 +11,7 @@ import eu.atos.sla.enforcement.AgreementEnforcement;
 
 @Scope("prototype")
 public class EnforcementTask implements Runnable {
-	private static Logger logger = Logger.getLogger(EnforcementTask.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementTask.class);
 
 	private IEnforcementJob job;
 	@Autowired
@@ -31,7 +32,7 @@ public class EnforcementTask implements Runnable {
 
             agreementEnforcement.enforce(agreement, job.getLastExecuted(), false);
 		}catch(Exception e){
-			logger.fatal("Error with thread "+Thread.currentThread().getName(), e);
+			logger.error("Error with thread " + Thread.currentThread().getName(), e);
 		}
 	}
 	

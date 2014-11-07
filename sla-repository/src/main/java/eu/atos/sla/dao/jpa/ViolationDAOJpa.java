@@ -9,7 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.test.annotation.Rollback;
 
@@ -19,7 +20,7 @@ import eu.atos.sla.datamodel.bean.Violation;
 
 @Repository("ViolationRepository")
 public class ViolationDAOJpa implements IViolationDAO {
-	private static Logger logger = Logger.getLogger(ViolationDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(ViolationDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")

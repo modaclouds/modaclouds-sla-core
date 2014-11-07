@@ -10,7 +10,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import eu.atos.sla.dao.IEnforcementJobDAO;
@@ -20,7 +21,7 @@ import eu.atos.sla.datamodel.bean.EnforcementJob;
 
 @Repository("EnforcementJobService")
 public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
-	private static Logger logger = Logger.getLogger(EnforcementJobDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(EnforcementJobDAOJpa.class);
 	private EntityManager entityManager;
 
 	public EnforcementJob getById(Long id) {
@@ -105,7 +106,7 @@ public class EnforcementJobDAOJpa implements IEnforcementJobDAO {
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("enforcement[{}] not found", enforcementJob.getId());
 			return false;
 		}
 	}

@@ -4,7 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,7 +40,7 @@ public class ScheduledEnforcementWorker implements InitializingBean, IScheduledE
 
 	private static final String CRON = "eu.atos.sla.enforcement.spawnlookup.cron";
 
-	private static Logger logger = Logger.getLogger(ScheduledEnforcementWorker.class);
+	private static Logger logger = LoggerFactory.getLogger(ScheduledEnforcementWorker.class);
 
 
 	@Value("ENF{" + CRON + "}")
@@ -72,14 +73,14 @@ public class ScheduledEnforcementWorker implements InitializingBean, IScheduledE
 	public void spawnMonitors() {
 		Date since = computeOffset();
 		List<IEnforcementJob> nonExecuted = enforcementJobDAO.getNotExecuted(since);
-		logger.debug(String.format("spawning {%d} tasks", nonExecuted.size()));
+		logger.debug("spawning {} tasks", nonExecuted.size());
 		for (IEnforcementJob job : nonExecuted) {
 			try{
 				EnforcementTask et = new EnforcementTask(job);
 				applicationContext.getAutowireCapableBeanFactory().autowireBean(et);
 				taskExecutor.execute(et);
 			}catch(Throwable t){
-				logger.fatal("Error while executing enforcement job",t);				
+				logger.error("Error while executing enforcement job",t);				
 			}
 		}
 	}
@@ -103,8 +104,8 @@ public class ScheduledEnforcementWorker implements InitializingBean, IScheduledE
 		}
 		
 		
-		logger.debug(String.format("EnforcementWorker registered, cron{%s}, interval{%s}", 
-				cron, pollIntervalString));
+		logger.debug("EnforcementWorker registered, cron[{}], interval[{}]", 
+				cron, pollIntervalString);
 	}
 	
 

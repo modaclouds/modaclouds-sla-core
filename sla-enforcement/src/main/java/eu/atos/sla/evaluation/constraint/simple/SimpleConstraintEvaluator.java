@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.evaluation.IMetricsValidator;
@@ -15,7 +16,7 @@ import eu.atos.sla.evaluation.constraint.IConstraintEvaluator;
 import eu.atos.sla.monitoring.IMonitoringMetric;
 
 public class SimpleConstraintEvaluator implements IMetricsValidator, IConstraintEvaluator {
-	private static Logger logger = Logger.getLogger(SimpleConstraintEvaluator.class);
+	private static Logger logger = LoggerFactory.getLogger(SimpleConstraintEvaluator.class);
 	
 	private static final int MIN_SAMPLES = 100;
 	private SimpleConstraintParser parser = new SimpleConstraintParser();
@@ -29,7 +30,7 @@ public class SimpleConstraintEvaluator implements IMetricsValidator, IConstraint
 	@Override
 	public List<IMonitoringMetric> evaluate(String kpiName, String constraint,
 			List<IMonitoringMetric> metrics) {
-		logger.debug(String.format("evaluate(kpi=%s, constraint=%s", kpiName, constraint));
+		logger.debug("evaluate(kpi={}, constraint={}", kpiName, constraint);
 		List<IMonitoringMetric> result = new ArrayList<IMonitoringMetric>();
 		for (IMonitoringMetric metric : getBreaches(null /*don't care */, kpiName, metrics, constraint)) {
 			
@@ -98,7 +99,7 @@ public class SimpleConstraintEvaluator implements IMetricsValidator, IConstraint
 	 */
 	static class SimpleValidatorIter implements
 			Iterator<IMonitoringMetric> {
-		private static Logger logger = Logger.getLogger(SimpleValidatorIter.class);
+		private static Logger logger = LoggerFactory.getLogger(SimpleValidatorIter.class);
 		
 //		private Collection<IMonitoringMetric> metrics;
 		private Iterator<IMonitoringMetric> it;

@@ -10,7 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -57,7 +58,7 @@ public class ViolationRestEntity extends AbstractSLARest {
 	@Autowired
 	private ViolationHelperE helper;
 
-	public static Logger logger = Logger.getLogger(ViolationRestEntity.class);
+	public static Logger logger = LoggerFactory.getLogger(ViolationRestEntity.class);
 
 	public ViolationRestEntity() {
 	}
@@ -99,7 +100,7 @@ public class ViolationRestEntity extends AbstractSLARest {
 	@GET
 	@Path("{uuid}")
 	public Violation getViolationByUuid(@PathParam("uuid") UUID violationUuid) {
-		logger.debug("StartOf getViolationByUuid - REQUEST for /violations/" + violationUuid);
+		logger.debug("StartOf getViolationByUuid - REQUEST for /violations/{}", violationUuid);
 		ViolationHelperE violationRestHelper = getViolationHelper();
 		Violation violation = violationRestHelper.getViolationByUUID(violationUuid);
 		logger.debug("EndOf getViolationByUuid");

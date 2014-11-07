@@ -9,7 +9,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 
@@ -19,7 +20,7 @@ import eu.atos.sla.datamodel.bean.Provider;
 
 @Service("ProviderRepository")
 public class ProviderDAOJpa implements IProviderDAO {
-	private static Logger logger = Logger.getLogger(ProviderDAOJpa.class);
+	private static Logger logger = LoggerFactory.getLogger(ProviderDAOJpa.class);
 	private EntityManager entityManager;
 
 	@PersistenceContext(unitName = "slarepositoryDB")
@@ -117,14 +118,14 @@ public class ProviderDAOJpa implements IProviderDAO {
 
 	@Override
 	public boolean delete(IProvider provider) {
+		Long id = provider.getId();
 		try {
-			provider = entityManager.getReference(Provider.class,
-					provider.getId());
+			provider = entityManager.getReference(Provider.class, id);
 			entityManager.remove(provider);
 			entityManager.flush();
 			return true;
 		} catch (EntityNotFoundException e) {
-			logger.debug(e);
+			logger.debug("Provider[{}] not found", id);
 			return false;
 		}
 	}
