@@ -24,7 +24,9 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 	protected static Date DEFAULT_INTERVAL = new Date(0);
 	protected static String DEFAULT_VALUE_EXPRESSION = "";
 	protected static String DEFAULT_VALUE_UNIT = "";
-
+	protected static String DEFAULT_ACTION = "";
+	protected static String DEFAULT_VALIDITY = "";
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", unique = true, nullable = false)
@@ -46,12 +48,25 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 	@Column(name="value_expression", nullable=false)
 	private String valueExpression;
 	
+	@Column(name="action", nullable=false)
+	private String action;
+	
+	@Column(name="validity", nullable=false)
+	private String validity;
+	
 	public CompensationDefinition() {
 		this.kind = ICompensationDefinition.CompensationKind.UNKNOWN;
 		this.timeInterval = DEFAULT_INTERVAL;
 		this.count = DEFAULT_COUNT;
+		this.action = DEFAULT_ACTION;
+		this.validity = DEFAULT_VALIDITY;
+		this.valueExpression = DEFAULT_VALUE_EXPRESSION;
+		this.valueUnit = DEFAULT_VALUE_UNIT;
 	}
 	
+	/**
+	 * Constructor for wsag compensations
+	 */
 	protected CompensationDefinition(CompensationKind kind, Date timeInterval,
 			String valueUnit, String valueExpression) {
 		
@@ -66,8 +81,13 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 		this.valueExpression = valueExpression;
 
 		this.count = DEFAULT_COUNT;
+		this.action = DEFAULT_ACTION;
+		this.validity = DEFAULT_VALIDITY;
 	}
 
+	/**
+	 * Constructor for wsag compensations
+	 */
 	protected CompensationDefinition(CompensationKind kind, 
 			int count, String valueUnit, String valueExpression) {	
 		
@@ -81,6 +101,30 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 		this.valueExpression = valueExpression;
 		
 		this.timeInterval = DEFAULT_INTERVAL;
+		this.action = DEFAULT_ACTION;
+		this.validity = DEFAULT_VALIDITY;
+	}
+
+	/**
+	 * Constructor for extended compensations
+	 */
+	protected CompensationDefinition(CompensationKind kind, int count, Date timeInterval, String action, 
+			String valueUnit, String valueExpression, String validity) {
+		
+		checkNotNull(kind, "kind");
+		checkNotNull(timeInterval, "timeInterval");
+		checkNotNull(action, "action");
+		checkNotNull(valueUnit, "valueUnit");
+		checkNotNull(valueExpression, "valueExpression");
+		checkNotNull(validity, "validity");
+
+		this.kind = kind;
+		this.count = count;
+		this.timeInterval = timeInterval;
+		this.valueUnit = valueUnit;
+		this.valueExpression = valueExpression;
+		this.action = action;
+		this.validity = validity;
 	}
 	
 	private void checkNotNull(Object o, String property) {
@@ -120,33 +164,43 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 	}
 	
 	@Override
+	public String getAction() {
+		return action;
+	}
+	
+	@Override
+	public String getValidity() {
+		return validity;
+	}
+	
+	@Override
 	public String toString() {
-		return String.format(
-				"<CompensationDefinition(kind=%s,timeInterval=%d ms,count=%d,valueUnit=%s,valueExpression=%s)>",
-				kind.toString(), 
-				timeInterval.getTime(), 
-				count, 
-				valueUnit, 
-				valueExpression);
+		String fmt = "";
+		
+		fmt = "<CompensationDefinition("
+				+ "kind=%s,timeInterval=%d ms,count=%d,action='%s',valueUnit=%s,valueExpression=%s,validity=%s)>";
+		return String.format(fmt, 
+				kind.toString(),
+				timeInterval.getTime(),
+				count,
+				action,
+				valueUnit,
+				valueExpression,
+				validity);
 	}
 
-//	public boolean equals(Compensation other) {
-//		
-//		return kind.equals(other.getKind()) && 
-//				timeInterval.equals(other.getTimeInterval()) &&
-//				getCount().equals(other.getCount()) &&
-//				valueUnit.equals(other.getValueUnit()) &&
-//				valueExpression.equals(other.getValueExpression());
-//	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((action == null) ? 0 : action.hashCode());
 		result = prime * result + count;
 		result = prime * result + ((kind == null) ? 0 : kind.hashCode());
 		result = prime * result
 				+ ((timeInterval == null) ? 0 : timeInterval.hashCode());
+		result = prime * result
+				+ ((validity == null) ? 0 : validity.hashCode());
 		result = prime * result
 				+ ((valueExpression == null) ? 0 : valueExpression.hashCode());
 		result = prime * result
@@ -166,20 +220,35 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 			return false;
 		}
 		CompensationDefinition other = (CompensationDefinition) obj;
+		if (action == null) {
+			if (other.action != null) {
+				return false;
+			}
+		} else if (!action.equals(other.action)) {
+			return false;
+		}
 		if (count != other.count) {
 			return false;
 		}
 		if (kind != other.kind) {
 			return false;
 		}
+		/*
+		 * Direct Date compare gives a lot of problems with timezones
+		 */
+		
 		if (timeInterval == null) {
 			if (other.timeInterval != null) {
 				return false;
 			}
-		/*
-		 * Direct Date compare gives a lot of problems with timezones
-		 */
 		} else if (timeInterval.getTime() != other.timeInterval.getTime()) {
+			return false;
+		}
+		if (validity == null) {
+			if (other.validity != null) {
+				return false;
+			}
+		} else if (!validity.equals(other.validity)) {
 			return false;
 		}
 		if (valueExpression == null) {
@@ -198,7 +267,7 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 		}
 		return true;
 	}
-	
+
 	public static final ICompensationDefinition EMPTY_COMPENSATION_DEFINITION = new ICompensationDefinition() {
 		
 		@Override
@@ -229,6 +298,16 @@ public abstract class CompensationDefinition implements Serializable, ICompensat
 		@Override
 		public Integer getCount() {
 			return DEFAULT_COUNT;
+		}
+		
+		@Override
+		public String getAction() {
+			return DEFAULT_ACTION;
+		}
+		
+		@Override
+		public String getValidity() {
+			return DEFAULT_VALIDITY;
 		}
 	};
 	

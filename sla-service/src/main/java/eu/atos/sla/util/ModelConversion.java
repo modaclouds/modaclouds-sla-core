@@ -11,8 +11,10 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.atos.sla.dao.IProviderDAO;
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IAgreement.Context.ServiceProvider;
 import eu.atos.sla.datamodel.IEnforcementJob;
@@ -38,141 +40,12 @@ import eu.atos.sla.parser.xml.AgreementParser;
 
 @Component
 public class ModelConversion implements IModelConverter {
+	@Autowired
+	private IProviderDAO providerDAO;
+	
+	private BusinessValueListParser businessValueListParser;
+	
 	private static Logger logger = LoggerFactory.getLogger(ModelConversion.class);
-	
-	public static class ServiceLevelParser {
-
-		public static class Result {
-			String constraint;
-			
-			protected String getConstraint() {
-				return constraint;
-			}
-		}
-		
-		protected static Result parse(String serviceLevel) throws ModelConversionException {
-			ObjectMapper mapper = new ObjectMapper();
-			
-			String constraint = null;
-			JsonNode rootNode = null;
-			try {
-				rootNode = mapper.readTree(serviceLevel);
-				JsonNode constraintNode = rootNode.path("constraint");
-				
-				constraint = textOrJson(constraintNode);
-
-				if (constraint==null) throw new ModelConversionException(serviceLevel+" didn't contain the constraint keyword");
-				Result result = new Result();
-				result.constraint = constraint;
-				
-				return result;
-			} catch (JsonProcessingException e) {
-				logger.error("Error parsing "+serviceLevel, e);
-				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
-			} catch (IOException e) {
-				logger.error("Error parsing "+serviceLevel, e);
-				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
-			}
-		}
-
-		/**
-		 * Returns the text value of a node or its inner string representation.
-		 * 
-		 * textOrJson( "constraint" : "performance < 10" ) -> "performance < 10"
-		 * textOrJson( "constraint" : { "hasMaxValue": 10 } ) -> "{\"hasMaxValue\": 10}"
-		 */
-		private static String textOrJson(JsonNode constraintNode) {
-			String constraint = null;
-			
-			if (!constraintNode.isMissingNode()) {
-				constraint = constraintNode.getTextValue();
-				if (constraint == null) {
-					constraint = constraintNode.toString();
-				}
-			}
-			return constraint;
-		}
-		
-	}
-
-	public static class QualifyingConditionParser {
-		static private final String AT_END = "AT_END";
-		static private final String SCHEDULEx = "SCHEDULEx";
-		public static class Result {
-			int samplingperiodFactor;
-			
-			protected int getSamplingPeriodFactor() {
-				return samplingperiodFactor;
-			}
-		}
-		
-		protected static Result parse(String qualifyingCondition) throws ModelConversionException {
-			ObjectMapper mapper = new ObjectMapper();
-			
-			JsonNode rootNode = null;
-			try {
-				rootNode = mapper.readTree(qualifyingCondition);
-				JsonNode samplingperiodNode = rootNode.path("samplingperiodfactor");
-				logger.error("samplingperiodNode "+samplingperiodNode);
-				
-				String samplingperiodfactor = textOrJson(samplingperiodNode);
-
-				if (samplingperiodfactor==null) throw new ModelConversionException(qualifyingCondition+" didn't contain the samplingperiodfactor keyword");
-				Result result = new Result();
-				if ((samplingperiodfactor.startsWith(SCHEDULEx)) || (samplingperiodfactor.startsWith(AT_END))){
-					if (samplingperiodfactor.startsWith(SCHEDULEx)){ 
-						try{
-							result.samplingperiodFactor = Integer.valueOf(samplingperiodfactor.substring(SCHEDULEx.length()).trim());
-						}catch (NumberFormatException e){
-							throw new ModelConversionException(qualifyingCondition+" "+SCHEDULEx+" must be followed by a decimal");
-						}
-					}
-					if (samplingperiodfactor.startsWith(AT_END)){ 
-						result.samplingperiodFactor = IGuaranteeTerm.ENFORCED_AT_END;
-					}
-				}else
-					throw new ModelConversionException(qualifyingCondition+" must be a multiple from schedule or be executed at the end. Make sure the value starts with "+SCHEDULEx+" or has the word "+AT_END);
-				
-				return result;
-			} catch (JsonProcessingException e) {
-				logger.error("Error parsing "+qualifyingCondition, e);
-				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
-			} catch (IOException e) {
-				logger.error("Error parsing "+qualifyingCondition, e);
-				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
-			}
-		}
-
-		
-		private static String textOrJson(JsonNode samplingperiodNode) {
-			String value = null;
-			
-			if (!samplingperiodNode.isMissingNode()) {
-				value = samplingperiodNode.getTextValue();
-				if (value == null) {
-					value = samplingperiodNode.toString();
-				}
-			}
-			return value;
-		}
-		
-	}
-	
-
-	
-	private void setProviderAndConsumer(IAgreement agreement, String provider, String consumer) {
-		logger.info("setProviderAndConsumer provider:{} - consumer:{}", provider, consumer);
-
-		if (consumer != null) {
-			agreement.setConsumer(consumer);
-		}
-		if (provider != null) {
-			eu.atos.sla.datamodel.bean.Provider providerObj = new eu.atos.sla.datamodel.bean.Provider();
-			providerObj.setUuid(provider);
-			agreement.setProvider(providerObj);
-		}
-	}
-
 	
 	
 	/* (non-Javadoc)
@@ -293,6 +166,7 @@ public class ModelConversion implements IModelConverter {
 		}
 
 		agreement.setServiceProperties(servicePropertiesList);
+		agreement.setName(agreementXML.getName());
 
 		// GuaranteeTerms
 		List<IGuaranteeTerm> guaranteeTerms = new ArrayList<IGuaranteeTerm>();
@@ -329,11 +203,14 @@ public class ModelConversion implements IModelConverter {
 					QualifyingConditionParser.Result parsedQc = QualifyingConditionParser.parse(qc);
 					guaranteeTerm.setSamplingPeriodFactor(parsedQc.getSamplingPeriodFactor());
 					if (parsedQc.getSamplingPeriodFactor() == IGuaranteeTerm.ENFORCED_AT_END) {
-						agreement.setHasGTermToBEEvaluatedAtEndOfEnformcement(true);
+						agreement.setHasGTermToBeEvaluatedAtEndOfEnformcement(true);
 					}
 				}
 			}
-			ServiceLevelObjective slo  =guaranteeTermXML.getServiceLevelObjetive();
+			/*
+			 * Parse SLO and BusinessValues
+			 */
+			ServiceLevelObjective slo = guaranteeTermXML.getServiceLevelObjetive();
 			if (slo.getKpitarget() != null) {
 				if (slo.getKpitarget().getKpiName() != null) {
 					guaranteeTerm.setKpiName(slo.getKpitarget().getKpiName());
@@ -346,6 +223,8 @@ public class ModelConversion implements IModelConverter {
 					}
 				}
 			}
+			guaranteeTerm.setBusinessValueList(businessValueListParser.parse(guaranteeTermXML));
+			
 			guaranteeTerms.add(guaranteeTerm);
 		}
 
@@ -357,6 +236,30 @@ public class ModelConversion implements IModelConverter {
 		return agreement;
 	}
 
+	// we retrieve the providerUUID from the template and get the provider object from the database 
+	private IProvider getProviderFromTemplate(eu.atos.sla.parser.data.wsag.Template templateXML) throws ModelConversionException {
+		
+		Context context = templateXML.getContext();
+		
+		String provider = null;
+		try {
+			ServiceProvider ctxProvider = ServiceProvider.fromString(context.getServiceProvider());
+			 
+			switch (ctxProvider) {
+			case AGREEMENT_RESPONDER:
+				provider= context.getAgreementResponder();
+				break;
+			case AGREEMENT_INITIATOR:
+				provider= context.getAgreementInitiator();
+				break;
+			}
+		} catch (IllegalArgumentException e) {
+			throw new ModelConversionException("The Context/ServiceProvider field must match with the word "+ServiceProvider.AGREEMENT_RESPONDER+ " or "+ServiceProvider.AGREEMENT_INITIATOR);
+		}
+		IProvider providerObj = providerDAO.getByUUID(provider);
+		return providerObj;
+	}
+	
 	/* (non-Javadoc)
 	 * @see eu.atos.sla.util.IModelConversion#getTemplateFromTemplateXML(eu.atos.sla.datamodel.parser.xml.agreement.Template, java.lang.String)
 	 */
@@ -386,6 +289,9 @@ public class ModelConversion implements IModelConverter {
 		
 		// Text
 		template.setText(payload);
+		// Name
+		template.setName(templateXML.getName());
+		template.setProvider(getProviderFromTemplate(templateXML));
 		return template;
 	}
 
@@ -472,24 +378,6 @@ public class ModelConversion implements IModelConverter {
 
 		return providerXML;
 	}
-/*  egarrido: no se esá usando
-	public Breach getBreachXML(IBreach breach) {
-
-		Breach breachXML = new Breach();
-		Violation violation = new Violation();
-
-		if (breach.getViolation() != null)
-			violation = getViolationXML(breach.getViolation());
-
-		// breachXML.setId(breach.getId());
-		breachXML.setContractUUID(breach.getContractUUID());
-		breachXML.setViolation(violation);
-		breachXML.setDatetime(breach.getDatetime());
-		breachXML.setMetricName(breach.getKpiName());
-		breachXML.setValue(breach.getValue());
-
-		return breachXML;
-	} */
 
 	@Override
 	public Violation getViolationXML(IViolation violation) {
@@ -534,4 +422,139 @@ public class ModelConversion implements IModelConverter {
 		return enforcementJobXML;
 	}
 
+	public static class ServiceLevelParser {
+
+		public static class Result {
+			String constraint;
+			
+			protected String getConstraint() {
+				return constraint;
+			}
+		}
+		
+		protected static Result parse(String serviceLevel) throws ModelConversionException {
+			ObjectMapper mapper = new ObjectMapper();
+			
+			String constraint = null;
+			JsonNode rootNode = null;
+			try {
+				rootNode = mapper.readTree(serviceLevel);
+				JsonNode constraintNode = rootNode.path("constraint");
+				
+				constraint = textOrJson(constraintNode);
+
+				if (constraint==null) throw new ModelConversionException(serviceLevel+" didn't contain the constraint keyword");
+				Result result = new Result();
+				result.constraint = constraint;
+				
+				return result;
+			} catch (JsonProcessingException e) {
+				logger.error("Error parsing "+serviceLevel, e);
+				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
+			} catch (IOException e) {
+				logger.error("Error parsing "+serviceLevel, e);
+				throw new ModelConversionException("Error parsing "+serviceLevel+ " message:"+ e.getMessage());
+			}
+		}
+
+		/**
+		 * Returns the text value of a node or its inner string representation.
+		 * 
+		 * textOrJson( "constraint" : "performance < 10" ) -> "performance < 10"
+		 * textOrJson( "constraint" : { "hasMaxValue": 10 } ) -> "{\"hasMaxValue\": 10}"
+		 */
+		private static String textOrJson(JsonNode constraintNode) {
+			String constraint = null;
+			
+			if (!constraintNode.isMissingNode()) {
+				constraint = constraintNode.getTextValue();
+				if (constraint == null) {
+					constraint = constraintNode.toString();
+				}
+			}
+			return constraint;
+		}
+		
+	}
+
+	public static class QualifyingConditionParser {
+		static private final String AT_END = "AT_END";
+		static private final String SCHEDULEx = "SCHEDULEx";
+		public static class Result {
+			int samplingperiodFactor;
+			
+			protected int getSamplingPeriodFactor() {
+				return samplingperiodFactor;
+			}
+		}
+		
+		protected static Result parse(String qualifyingCondition) throws ModelConversionException {
+			ObjectMapper mapper = new ObjectMapper();
+			
+			JsonNode rootNode = null;
+			try {
+				rootNode = mapper.readTree(qualifyingCondition);
+				JsonNode samplingperiodNode = rootNode.path("samplingperiodfactor");
+				logger.error("samplingperiodNode "+samplingperiodNode);
+				
+				String samplingperiodfactor = textOrJson(samplingperiodNode);
+
+				if (samplingperiodfactor==null) throw new ModelConversionException(qualifyingCondition+" didn't contain the samplingperiodfactor keyword");
+				Result result = new Result();
+				if ((samplingperiodfactor.startsWith(SCHEDULEx)) || (samplingperiodfactor.startsWith(AT_END))){
+					if (samplingperiodfactor.startsWith(SCHEDULEx)){ 
+						try{
+							result.samplingperiodFactor = Integer.valueOf(samplingperiodfactor.substring(SCHEDULEx.length()).trim());
+						}catch (NumberFormatException e){
+							throw new ModelConversionException(qualifyingCondition+" "+SCHEDULEx+" must be followed by a decimal");
+						}
+					}
+					if (samplingperiodfactor.startsWith(AT_END)){ 
+						result.samplingperiodFactor = IGuaranteeTerm.ENFORCED_AT_END;
+					}
+				}else
+					throw new ModelConversionException(qualifyingCondition+" must be a multiple from schedule or be executed at the end. Make sure the value starts with "+SCHEDULEx+" or has the word "+AT_END);
+				
+				return result;
+			} catch (JsonProcessingException e) {
+				logger.error("Error parsing "+qualifyingCondition, e);
+				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
+			} catch (IOException e) {
+				logger.error("Error parsing "+qualifyingCondition, e);
+				throw new ModelConversionException("Error parsing "+qualifyingCondition+ " message:"+ e.getMessage());
+			}
+		}
+
+		
+		private static String textOrJson(JsonNode samplingperiodNode) {
+			String value = null;
+			
+			if (!samplingperiodNode.isMissingNode()) {
+				value = samplingperiodNode.getTextValue();
+				if (value == null) {
+					value = samplingperiodNode.toString();
+				}
+			}
+			return value;
+		}
+		
+	}
+	
+	private void setProviderAndConsumer(IAgreement agreement, String provider, String consumer) {
+		logger.info("setProviderAndConsumer provider:{} - consumer:{}", provider, consumer);
+
+		if (consumer != null) {
+			agreement.setConsumer(consumer);
+		}
+		if (provider != null) {
+			eu.atos.sla.datamodel.bean.Provider providerObj = new eu.atos.sla.datamodel.bean.Provider();
+			providerObj.setUuid(provider);
+			agreement.setProvider(providerObj);
+		}
+	}
+
+	public void setBusinessValueListParser(
+			BusinessValueListParser customBusinessValueParser) {
+		this.businessValueListParser = customBusinessValueParser;
+	}
 }

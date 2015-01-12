@@ -25,6 +25,7 @@ enforcement.constraintEvaluator.class = eu.atos.sla.evaluation.constraint.simple
 enforcement.metricsRetriever.class = eu.atos.sla.monitoring.simple.DummyMetricsRetriever
 enforcement.poll.interval.mseconds = 10000
 enforcement.spawnlookup.cron = 30 * * * * *
+enforcement.notification.class = eu.atos.sla.notification.DummyEnforcementNotifier
 
 #security
 #configure user and password to access to the rest services
@@ -51,3 +52,10 @@ parser.date.format = yyyy-MM-dd'T'HH:mm:ssz
 parser.date.unmarshall.timezone = GMT
 #timezone to be used to return the date values
 parser.date.marshall.timezone = CET
+
+# 
+# Converter values
+#
+
+# class that parses business values in a template/agreement
+converter.businessparser.class = eu.atos.sla.util.BusinessValueListParser

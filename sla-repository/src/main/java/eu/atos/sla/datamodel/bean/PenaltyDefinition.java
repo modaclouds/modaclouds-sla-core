@@ -30,4 +30,9 @@ public class PenaltyDefinition extends CompensationDefinition implements IPenalt
 		super(CompensationKind.PENALTY, count, valueUnit, valueExpression);
 	}
 
+	public PenaltyDefinition(int count, Date timeInterval, String action, String valueUnit, String valueExpression, 
+			String validity) {
+		
+		super(CompensationKind.CUSTOM_PENALTY, count, timeInterval, action, valueUnit, valueExpression, validity);
+	}
 }

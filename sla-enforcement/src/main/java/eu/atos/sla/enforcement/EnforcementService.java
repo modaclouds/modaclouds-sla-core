@@ -139,8 +139,8 @@ public class EnforcementService implements IEnforcementService {
 		job.setEnabled(false);
 		enforcementJobDAO.save(job);
 			IAgreement agreement = agreementDAO.getByAgreementId(agreementId);
-			if (agreement.getHasGTermToBEEvaluatedAtEndOfEnformcement()!= null){
-				if (agreement.getHasGTermToBEEvaluatedAtEndOfEnformcement()){
+			if (agreement.getHasGTermToBeEvaluatedAtEndOfEnformcement()!= null){
+				if (agreement.getHasGTermToBeEvaluatedAtEndOfEnformcement()){
 					try{
 						agreementEnforcement.enforce(agreement, job.getLastExecuted(), true);
 					}catch(Throwable t){

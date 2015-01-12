@@ -43,25 +43,18 @@ public class BusinessValueList implements IBusinessValueList, Serializable {
 	@JoinColumn(name = "business_value_id", referencedColumnName = "id", nullable = true)
 	private List<IPenaltyDefinition> penalties;
 
-	@Column(name = "custom_business_value", nullable=false)
-	private String customBusinessValue;
-	
 	public BusinessValueList() {
 		this.importance = 0;
 		this.penalties = new ArrayList<IPenaltyDefinition>();
 	}
 	
-	public BusinessValueList(int importance, Collection<IPenaltyDefinition> penalties, String customBusinessValue) {
+	public BusinessValueList(int importance, Collection<IPenaltyDefinition> penalties) {
 	
 		this.importance = importance;
 		this.penalties = new ArrayList<IPenaltyDefinition>();
 		if (penalties != null) {
 			this.penalties.addAll(penalties);
 		}
-		if (customBusinessValue == null) {
-			customBusinessValue = "";
-		}
-		this.customBusinessValue = customBusinessValue;
 	}
 	
 	@Override
@@ -91,20 +84,11 @@ public class BusinessValueList implements IBusinessValueList, Serializable {
 	}
 
 	@Override
-	public String getCustomBusinessValue() {
-		return customBusinessValue;
-	}
-	
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((getPenalties() == null) ? 0 : getPenalties().hashCode());
-		result = prime
-				* result
-				+ ((customBusinessValue == null) ? 0 : customBusinessValue
-						.hashCode());
 		result = prime * result + importance;
 		return result;
 	}
@@ -130,7 +114,6 @@ public class BusinessValueList implements IBusinessValueList, Serializable {
 		ArrayList<IPenaltyDefinition> aux = new ArrayList<IPenaltyDefinition>(getPenalties());
 		
 		boolean result = importance == other.getImportance() &&
-				customBusinessValue.equals(other.getCustomBusinessValue()) &&
 				aux.equals(other.getPenalties());
 		return result;
 	}

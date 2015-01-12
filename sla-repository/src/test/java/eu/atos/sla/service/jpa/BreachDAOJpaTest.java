@@ -211,11 +211,12 @@ public class BreachDAOJpaTest extends
 		template.setServiceId("serviceid");
 		template.setText("text");
 		template.setUuid("serviceUUID");
+		template.setProvider(provider);
 		agreement.setProvider(provider);
 		agreement.setTemplate(template);
 		try {
-			templateDAO.save(template);
 			providerDAO.save(provider);
+			templateDAO.save(template);
 			agreementSaved = agreementDAO.save(agreement);
 
 		} catch (Exception e) {

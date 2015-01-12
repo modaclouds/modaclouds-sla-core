@@ -48,6 +48,14 @@
 						</wsag:CustomServiceLevel>
 					</wsag:KPITarget>
 				</wsag:ServiceLevelObjective>
+				<wsag:BusinessValueList>
+					<wsag:CustomBusinessValue>
+						<sla:Penalty type="discount" expression="35" unit="%" validity="P1D"/>
+					</wsag:CustomBusinessValue>
+					<wsag:CustomBusinessValue count="5" duration="P1D">
+						<sla:Penalty type="service" expression="sms" validity="P1M"/>
+					</wsag:CustomBusinessValue>
+				</wsag:BusinessValueList>
 			</wsag:GuaranteeTerm>
 		</wsag:All>
 	</wsag:Terms>

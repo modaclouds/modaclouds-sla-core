@@ -22,6 +22,7 @@ import eu.atos.sla.evaluation.guarantee.IGuaranteeTermEvaluator.GuaranteeTermEva
 import eu.atos.sla.monitoring.IMetricsRetriever;
 import eu.atos.sla.monitoring.IMetricsRetrieverV2;
 import eu.atos.sla.monitoring.IMonitoringMetric;
+import eu.atos.sla.notification.INotifierManager;
 
 
 
@@ -72,7 +73,10 @@ public class AgreementEnforcement  {
 
 	@Autowired
 	private IEnforcementService service;
-	
+
+	@Autowired
+	INotifierManager notifierManager;
+
 	private int maxRetrievedResults = MAX_RETRIEVED_RESULTS;
 	private IAgreementEvaluator agreementEvaluator;
 	private IMetricsRetriever retriever;
@@ -81,6 +85,7 @@ public class AgreementEnforcement  {
 	@Value("ENF{" + POLL_INTERVAL + "}")
 	private String pollIntervalString;
 	private long pollInterval;
+	
 	
 	public AgreementEnforcement() {
 	}
@@ -128,6 +133,8 @@ public class AgreementEnforcement  {
 				agreementEvaluator.evaluate(agreement, metricsMap);
 		
 		service.saveEnforcementResult(agreement, evaluationResult);
+		
+		notifierManager.addToBeNotified(agreement, evaluationResult);
 	}
 	
 	/**

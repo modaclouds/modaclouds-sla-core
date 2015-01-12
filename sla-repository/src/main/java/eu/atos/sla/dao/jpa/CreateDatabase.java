@@ -8,11 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 public class CreateDatabase {
-	@PersistenceContext(unitName = "slarepositoryDB")
+	@PersistenceContext(unitName = "slarepositoryDBCreation")
 	private EntityManager manager;
 
 	@Transactional(noRollbackFor = Exception.class)
 	public static void main(String[] args) {
-		Persistence.createEntityManagerFactory("slarepositoryDB");
+		Persistence.createEntityManagerFactory("slarepositoryDBCreation");
 	}
 }

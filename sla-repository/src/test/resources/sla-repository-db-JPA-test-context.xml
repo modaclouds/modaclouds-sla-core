@@ -14,6 +14,6 @@
 
 	<context:annotation-config />
 
-	<import resource="classpath*:ord-test-context.xml" />
+	<import resource="classpath*:repository-test-context.xml" />
 
 </beans> 

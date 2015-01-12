@@ -77,7 +77,7 @@ public class GuaranteeTermDAOJpaTest extends
 		
 		IPenaltyDefinition penalty = newPenalty(1, "%", "10");
 		List<IPenaltyDefinition> compensations = Collections.singletonList(penalty);
-		BusinessValueList bvl = new BusinessValueList(1, compensations, "");
+		BusinessValueList bvl = new BusinessValueList(1, compensations);
 		guaranteeTerm.setBusinessValueList(bvl);
 
 		IGuaranteeTerm saved;

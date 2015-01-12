@@ -53,7 +53,7 @@ public class AgreementListJsonMessageBodyWriter implements MessageBodyWriter<Lis
 		initParser();
 		if (genericType!=null)
 			isUsed = (genericType.toString().equals(className) && 
-					mediaType.toString().equals(MediaType.APPLICATION_JSON)) && 
+					mediaType.toString().contains(MediaType.APPLICATION_JSON)) && 
 					jsonParser!=null ;
 		if (isUsed)
 			logger.debug("isWriteable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",

@@ -75,7 +75,8 @@ public class Agreement implements IAgreement, Serializable {
 	private List<IServiceProperties> serviceProperties;
 	private List<IGuaranteeTerm> guaranteeTerms;
 	private String serviceId;
-	private Boolean hasGTermToBEEvaluatedAtEndOfEnformcement;
+	private Boolean hasGTermToBeEvaluatedAtEndOfEnformcement;
+	private String name;
 							
 	public Agreement() {
 	}
@@ -197,16 +198,24 @@ public class Agreement implements IAgreement, Serializable {
 	}
 
 
-	@Override
 	@Column(name = "metrics_eval_end")
-	public Boolean getHasGTermToBEEvaluatedAtEndOfEnformcement() {
-		return hasGTermToBEEvaluatedAtEndOfEnformcement;
+	public Boolean getHasGTermToBeEvaluatedAtEndOfEnformcement() {
+		return hasGTermToBeEvaluatedAtEndOfEnformcement;
 	}
 
-	@Override
-	public void setHasGTermToBEEvaluatedAtEndOfEnformcement(
-			Boolean hasGTermToBEEvaluatedAtEndOfEnformcement) {
-		this.hasGTermToBEEvaluatedAtEndOfEnformcement = hasGTermToBEEvaluatedAtEndOfEnformcement;
+	public void setHasGTermToBeEvaluatedAtEndOfEnformcement(
+			Boolean hasGTermToBeEvaluatedAtEndOfEnformcement) {
+		this.hasGTermToBeEvaluatedAtEndOfEnformcement = hasGTermToBeEvaluatedAtEndOfEnformcement;
+	}
+
+	@Column(name = "name")
+	public String getName() {
+		// TODO Auto-generated method stub
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	

@@ -124,6 +124,13 @@ public interface IAgreement {
 	public String getServiceId();
 
 	public void setServiceId(String serviceId);
+
+	/**
+	 * Name of the agreement.
+	 */
+	public String getName();
+
+	public void setName(String name);
 	
 	/**
 	 * ServiceProperties are used to define measurable and exposed properties associated
@@ -139,8 +146,8 @@ public interface IAgreement {
 	 * some of the GuaranteeTerms should just measured and evaluated at the end of the execution of 
 	 * the enforcementJob. This variable indicates if it has to be executed or not. 
 	 */
-	public Boolean getHasGTermToBEEvaluatedAtEndOfEnformcement();
+	public Boolean getHasGTermToBeEvaluatedAtEndOfEnformcement();
 
-	public void setHasGTermToBEEvaluatedAtEndOfEnformcement(Boolean hasGTermToBEEvaluatedAtEndOfEnformcement);
+	public void setHasGTermToBeEvaluatedAtEndOfEnformcement(Boolean hasGTermToBeEvaluatedAtEndOfEnformcement);
 
 }

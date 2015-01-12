@@ -19,13 +19,14 @@ import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.atos.sla.parser.data.wsag.Template;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/serializers-test-context.xml")
+@ContextConfiguration("/tools-test-context.xml")
 public class TestXMLParser {
 	private static Logger logger = LoggerFactory.getLogger(TestXMLParser.class);
 
 	@Test
 	public void testTemplateXMLtoJSON() {
-		File file = new File("C:/AtosSLA/sourceCode/trunk/samples/Template_Lannion_vm_Trento193_205_211_85.xml");
+		String path = "/samples/template01.xml";
+		File file = new File(this.getClass().getResource(path).getFile());
 		boolean error = false;
 		try {
 			String serializedData = getStringFromInputStream(new FileInputStream(file));

@@ -139,9 +139,10 @@ public class EnforcementServiceTest  {
 		template.setServiceId("service");
 		template.setText("asadsad");
 		template.setUuid(UUID.randomUUID().toString());
+		template.setProvider(provider);
+		providerDao.save(provider);
 		templateDao.save(template);
 		
-		providerDao.save(provider);
 		
 		IAgreement agreement = newAgreement(provider, template);
 		agreementDao.save(agreement);
@@ -263,6 +264,7 @@ public class EnforcementServiceTest  {
 		template.setUuid(UUID.randomUUID().toString());
 		template.setText("");
 		provider.addTemplate(template);
+		template.setProvider(provider);
 		templateDao.save(template);
 		
 		/* create agreement */
@@ -304,9 +306,10 @@ public class EnforcementServiceTest  {
 		template.setServiceId("service");
 		template.setText("asadsad");
 		template.setUuid(UUID.randomUUID().toString());
+		template.setProvider(provider);
+		providerDao.save(provider);
 		templateDao.save(template);
 		
-		providerDao.save(provider);
 		
 		IAgreement agreement = newAgreement(provider, template);
 		IAgreement agreementStored = agreementDao.save(agreement);

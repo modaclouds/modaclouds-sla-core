@@ -56,7 +56,7 @@ public class AgreementListXmlMessageBodyWriter implements MessageBodyWriter<List
 		initParser();
 		boolean isUsed = false;
 		if (genericType!=null)
-			isUsed = genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_XML);
+			isUsed = genericType.toString().equals(className) && mediaType.toString().contains(MediaType.APPLICATION_XML);
 		if (isUsed)
 			logger.debug("isWriteable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
 					isUsed, type, genericType, mediaType, xmlParser);

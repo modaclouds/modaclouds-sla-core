@@ -55,7 +55,7 @@ public class TemplateListJsonMessageBodyWriter implements MessageBodyWriter<List
 		boolean isUsed = false;
 		initParser();
 		if (genericType!=null)
-			isUsed = (genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
+			isUsed = (genericType.toString().equals(className) && mediaType.toString().contains(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
 		if (isUsed)
 			logger.debug("isWritable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
 					isUsed, type, genericType, mediaType, jsonParser);

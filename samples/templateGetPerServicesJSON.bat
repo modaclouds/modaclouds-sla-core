@@ -1,1 +1,1 @@
-curl -u user:password -H "Accept: application/json" -X GET localhost:8080/sla-service/templates/?serviceIds=vm-Trento:10.250.3.101
+curl -u user:password -H "Accept: application/json" -X GET localhost:8080/sla-service/templates/?serviceIds=%1

@@ -49,7 +49,7 @@ public class TemplateJsonMessageBodyWriter implements MessageBodyWriter<ITemplat
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
 		boolean isUsed = (genericType == ITemplate.class) && 
-				(mediaType.toString().equals(MediaType.APPLICATION_JSON)) && 
+				(mediaType.toString().contains(MediaType.APPLICATION_JSON)) && 
 				jsonParser!=null ;
 		if (isUsed)
 			logger.debug("isWritable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",

@@ -15,18 +15,23 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.atos.sla.dao.IProviderDAO;
 import eu.atos.sla.dao.ITemplateDAO;
+import eu.atos.sla.datamodel.IProvider;
 import eu.atos.sla.datamodel.ITemplate;
+import eu.atos.sla.datamodel.bean.Provider;
 import eu.atos.sla.datamodel.bean.Template;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("/sla-repository-db-JPA-test-context.xml")
 public class TemplateDAOJpaTest extends
 		AbstractTransactionalJUnit4SpringContextTests {
+	final static String PROVIDER_UUID = "provider10";
+	
 	@Autowired
 	ITemplateDAO templateDAO;
 
 	@Autowired
 	IProviderDAO providerDAO;
+	
 
 	@Test
 	public void notNull() {
@@ -38,12 +43,25 @@ public class TemplateDAOJpaTest extends
 	public void save() {
 
 		String templateUuid = UUID.randomUUID().toString();
+		IProvider psaved = new Provider();
+		try {
+			IProvider provider = new Provider();
+			provider.setName(PROVIDER_UUID);
+			provider.setUuid(PROVIDER_UUID);
+			psaved = providerDAO.save(provider);
+		} catch (Exception e) {
+			//it might be in the db and fail
+			psaved = providerDAO.getByUUID(PROVIDER_UUID);
+		}		
 
 		ITemplate template = new Template();
 		template.setText("Template name 1");
 		template.setUuid(templateUuid);
 		template.setServiceId("serviceTest");
+		template.setProvider(psaved);
 
+		
+		
 		@SuppressWarnings("unused")
 		ITemplate saved = new Template();
 		try {
@@ -62,10 +80,23 @@ public class TemplateDAOJpaTest extends
 
 		String templateUuid = UUID.randomUUID().toString();
 
+		IProvider psaved = new Provider();
+		try {
+			IProvider provider = new Provider();
+			provider.setName(PROVIDER_UUID);
+			provider.setUuid(PROVIDER_UUID);
+			psaved = providerDAO.save(provider);
+		} catch (Exception e) {
+			//it might be in the db and fail
+			psaved = providerDAO.getByUUID(PROVIDER_UUID);
+		}		
+		
+		
 		Template template = new Template();
 		template.setText("Template name 1");
 		template.setUuid(templateUuid);
 		template.setServiceId("serviceTest");
+		template.setProvider(psaved);
 
 		ITemplate saved = new Template();
 		try {
@@ -87,14 +118,24 @@ public class TemplateDAOJpaTest extends
 	@Test
 	public void detete() {
 
-		int size = templateDAO.getAll().size();
 		String uuid = UUID.randomUUID().toString();
+		
+		IProvider psaved = new Provider();
+		try {
+			IProvider provider = new Provider();
+			provider.setName(PROVIDER_UUID);
+			psaved = providerDAO.save(provider);
+		} catch (Exception e) {
+			//it might be in the db and fail
+			psaved = providerDAO.getByUUID(PROVIDER_UUID);
+		}		
+		
 		ITemplate template = new Template();
 		template.setUuid(uuid);
 		template.setText("template text");
 		template.setServiceId("serviceTest");
+		template.setProvider(psaved);
 
-		@SuppressWarnings("unused")
 		ITemplate saved = new Template();
 		try {
 			saved = templateDAO.save(template);
@@ -102,17 +143,20 @@ public class TemplateDAOJpaTest extends
 			e.printStackTrace();
 			fail();
 		}
-		ITemplate templateFromDatabase = templateDAO.getAll().get(size);
-		Long id = templateFromDatabase.getId();
-
-		templateFromDatabase = templateDAO.getById(id);
+		Long id = saved.getId();
+		ITemplate templateFromDatabase = templateDAO.getById(id);
 		boolean deleted = templateDAO.delete(templateFromDatabase);
 		assertTrue(deleted);
 
 		deleted = templateDAO.delete(templateFromDatabase);
 		assertTrue(!deleted);
 
-		templateFromDatabase = templateDAO.getById(new Long(223232));
+		
+		try {
+			providerDAO.delete(psaved);
+		} catch (Exception e) {
+		}		
+		templateFromDatabase = templateDAO.getById(id);
 		assertEquals(null, templateFromDatabase);
 	}
 
@@ -122,10 +166,22 @@ public class TemplateDAOJpaTest extends
 		int size = templateDAO.getAll().size();
 		String uuid = UUID.randomUUID().toString();
 
+		IProvider psaved = new Provider();
+		IProvider provider = new Provider();
+		provider.setName(PROVIDER_UUID);
+		try {
+			psaved = providerDAO.save(provider);
+		} catch (Exception e) {
+			//it might be in the db and fail
+			psaved = providerDAO.getByUUID(PROVIDER_UUID);
+		}		
+
 		Template template = new Template();
 		template.setText("template text");
 		template.setServiceId("serviceTest");
 		template.setUuid(uuid);
+		template.setProvider(psaved);
+
 
 		@SuppressWarnings("unused")
 		ITemplate saved = new Template();

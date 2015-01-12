@@ -3,14 +3,16 @@ package eu.atos.sla.datamodel;
 import java.util.Date;
 
 /**
- * This element expresses the reward or penalty to be assessed for meeting (or not) and objetive.
+ * This element expresses the reward or penalty to be assessed for meeting (or not) an objetive.
  *
  */
 public interface ICompensationDefinition {
 
 	public static enum CompensationKind {
-		REWARD, 
-		PENALTY, 
+		REWARD,
+		CUSTOM_REWARD,
+		PENALTY,
+		CUSTOM_PENALTY,
 		UNKNOWN
 	}
 	
@@ -59,4 +61,19 @@ public interface ICompensationDefinition {
 	 */
 	String getValueExpression();
 
+	/**
+	 * In extended compensations, defines the domain-specific type of compensation, such as 
+	 * "discount", "terminate", "service"...
+	 */
+	String getAction();
+
+	/**
+	 * In extended compensations, defines the time interval where the action should take place. E.g., 
+	 * a discount of 10% with a validity of one day (i.e., the prize of that day will have a discount of a 10%).
+	 * 
+	 * The validity must be expressed in xs:duration format.
+	 * 
+	 * @see http://www.w3.org/TR/xmlschema-2/#duration
+	 */
+	String getValidity();
 }

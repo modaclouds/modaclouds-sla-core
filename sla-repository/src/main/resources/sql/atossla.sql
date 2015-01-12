@@ -28,6 +28,7 @@ CREATE TABLE `agreement` (
   `consumer` varchar(255) DEFAULT NULL,
   `expiration_time` datetime DEFAULT NULL,
   `metrics_eval_end` tinyint(1) DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
   `service_id` varchar(255) DEFAULT NULL,
   `text` longtext,
   `provider_id` bigint(20) NOT NULL,
@@ -70,7 +71,6 @@ DROP TABLE IF EXISTS `business_value_list`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `business_value_list` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `custom_business_value` varchar(255) NOT NULL,
   `importance` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -150,9 +150,11 @@ DROP TABLE IF EXISTS `penaltydefinition`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `penaltydefinition` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `action` varchar(255) NOT NULL,
   `number` int(11) NOT NULL,
   `kind` varchar(255) NOT NULL,
   `time_interval` datetime NOT NULL,
+  `validity` varchar(255) NOT NULL,
   `value_expression` varchar(255) NOT NULL,
   `value_unit` varchar(255) NOT NULL,
   `business_value_id` bigint(20) DEFAULT NULL,
@@ -224,10 +226,11 @@ DROP TABLE IF EXISTS `template`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `template` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
   `service_id` varchar(255) DEFAULT NULL,
   `text` longtext NOT NULL,
   `uuid` varchar(255) NOT NULL,
-  `provider_id` bigint(20) DEFAULT NULL,
+  `provider_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_m0a0t99pnntf75psmk1lptr3n` (`uuid`),
   KEY `FK_5p28ldeg0v7loq063g2s9gykx` (`provider_id`),
@@ -290,4 +293,4 @@ CREATE TABLE `violation` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-09-30 16:53:44
+-- Dump completed on 2015-01-07 15:31:37

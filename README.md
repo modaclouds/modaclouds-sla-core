@@ -33,9 +33,9 @@ It is currently used in:
 
 Licensed under the [Apache License, Version 2.0][8]
 
-[1]: doc/TOC.md
-[2]: doc/developer-guide.md
-[3]: doc/installation-guide.md
+[1]: docs/TOC.md
+[2]: docs/developer-guide.md
+[3]: docs/installation-guide.md
 [4]: http://www.modaclouds.eu
 [5]: http://www.seaclouds-project.eu
 [6]: http:/fi-xifi.eu/

@@ -19,7 +19,7 @@ import eu.atos.sla.parser.data.wsag.Agreement;
 import eu.atos.sla.parser.data.wsag.Template;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("/serializers-test-context.xml")
+@ContextConfiguration("/tools-test-context.xml")
 public class TestJSONParser {
 	private static Logger logger = LoggerFactory.getLogger(TestJSONParser.class);
 	
