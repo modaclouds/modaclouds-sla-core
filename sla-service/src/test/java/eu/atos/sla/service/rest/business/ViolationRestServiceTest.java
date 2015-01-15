@@ -197,20 +197,6 @@ public class ViolationRestServiceTest extends
 		String violationUUID2 = UUID.randomUUID().toString();
 
 		AgreementStatus status = AgreementStatus.PENDING;
-
-		// Template
-		ITemplate template = new Template();
-		template.setText(new Constants().templateTest.toString());
-		template.setUuid(templateUUID);
-
-		@SuppressWarnings("unused")
-		ITemplate templateSaved = new Template();
-		try {
-			templateSaved = templateDAO.save(template);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		// Provider
 		IProvider provider = new Provider();
 		provider.setName("Provider" + providerUUID);
@@ -222,6 +208,21 @@ public class ViolationRestServiceTest extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// Template
+		ITemplate template = new Template();
+		template.setText(new Constants().templateTest.toString());
+		template.setUuid(templateUUID);
+		template.setProvider(providerSaved);
+
+		@SuppressWarnings("unused")
+		ITemplate templateSaved = new Template();
+		try {
+			templateSaved = templateDAO.save(template);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 		IAgreement agreement = new Agreement();
 		agreement.setAgreementId(agreementId);
@@ -334,19 +335,6 @@ public class ViolationRestServiceTest extends
 		String violationUUID2 = UUID.randomUUID().toString();
 
 		AgreementStatus status = AgreementStatus.PENDING;
-
-		// Template
-		ITemplate template = new Template();
-		template.setText(new Constants().templateTest.toString());
-		template.setUuid(templateUUID);
-
-		ITemplate templateSaved = new Template();
-		try {
-			templateSaved = templateDAO.save(template);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
 		// Provider
 		IProvider provider = new Provider();
 		provider.setName("Provider" + providerUUID);
@@ -358,6 +346,20 @@ public class ViolationRestServiceTest extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// Template
+		ITemplate template = new Template();
+		template.setText(new Constants().templateTest.toString());
+		template.setUuid(templateUUID);
+		template.setProvider(providerSaved);
+
+		ITemplate templateSaved = new Template();
+		try {
+			templateSaved = templateDAO.save(template);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 		IAgreement agreement = new Agreement();
 		agreement.setAgreementId(agreementId);
@@ -471,17 +473,6 @@ public class ViolationRestServiceTest extends
 
 		AgreementStatus status = AgreementStatus.PENDING;
 
-		// Template
-		ITemplate template = new Template();
-		template.setText(new Constants().templateTest.toString());
-		template.setUuid(templateUUID);
-
-		ITemplate templateSaved = new Template();
-		try {
-			templateSaved = templateDAO.save(template);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		// Provider
 		IProvider provider = new Provider();
@@ -494,6 +485,20 @@ public class ViolationRestServiceTest extends
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// Template
+		ITemplate template = new Template();
+		template.setText(new Constants().templateTest.toString());
+		template.setUuid(templateUUID);
+		template.setProvider(providerSaved);
+
+		ITemplate templateSaved = new Template();
+		try {
+			templateSaved = templateDAO.save(template);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 
 		IAgreement agreement = new Agreement();
 		agreement.setAgreementId(agreementId);

@@ -4,24 +4,27 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import eu.atos.sla.datamodel.IProvider;
 import eu.atos.sla.datamodel.ITemplate;
 
 @Entity
 @Table(name = "template")
 @NamedQueries({
-		@NamedQuery(name = Template.QUERY_FIND_ALL, query = "SELECT p FROM Template p"),
-		@NamedQuery(name = Template.QUERY_FIND_BY_UUID, query = "SELECT p FROM Template p WHERE p.uuid = :uuid"),
-		@NamedQuery(name = Template.QUERY_SEARCH, query = "SELECT t FROM Provider p "
-				+ "INNER JOIN p.templates t "
-				+ "WHERE (:providerId is null or p.uuid = :providerId) "
+		@NamedQuery(name = Template.QUERY_FIND_ALL, query = "SELECT t FROM Template t"),
+		@NamedQuery(name = Template.QUERY_FIND_BY_UUID, query = "SELECT t FROM Template t WHERE t.uuid = :uuid"),
+		@NamedQuery(name = Template.QUERY_SEARCH, query = "SELECT t FROM Template t "
+				+ "WHERE (:providerId is null or t.provider.uuid = :providerId) "
 				+ "AND (:flagServiceIds is null or t.serviceId in (:serviceIds))"),
 		@NamedQuery(name = Template.QUERY_FIND_BY_AGREEMENT, query = "SELECT a.template FROM Agreement a "
 				+ "WHERE a.agreementId = :agreementId"),
@@ -39,6 +42,8 @@ public class Template implements ITemplate, Serializable {
 	private String uuid;
 	private String text;
 	private String serviceId;
+	private String name;
+	private IProvider provider;
 
 	public Template() {
 	}
@@ -97,6 +102,26 @@ public class Template implements ITemplate, Serializable {
 
 	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
+	}
+
+	@Column(name = "name", nullable = true)
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	
+	@ManyToOne(targetEntity = Provider.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "provider_id", referencedColumnName = "id", nullable = false)
+	public IProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(IProvider provider) {
+		this.provider = provider;
 	}
 
 }

@@ -58,9 +58,10 @@ public class AgreementEnforcementTest {
 		String constraint = kpiName + " LT 0.5";
 
 		IProvider provider = newProvider();
-		providerDao.save(provider);
+		IProvider psaved = providerDao.save(provider);
 		
-		ITemplate template = newTemplate();
+		ITemplate template = newTemplate(psaved);
+		
 		templateDao.save(template);
 		
 		agreement = new Agreement();
@@ -103,10 +104,11 @@ public class AgreementEnforcementTest {
 		return provider;
 	}
 
-	private ITemplate newTemplate() {
+	private ITemplate newTemplate(IProvider provider) {
 		ITemplate template = new Template();
 		template.setUuid("templateId");
 		template.setText("");
+		template.setProvider(provider);
 		return template;
 	}
 	private IGuaranteeTerm newGuaranteeTerm(String kpiName, String constraint) {

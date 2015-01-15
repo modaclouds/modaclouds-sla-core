@@ -274,6 +274,46 @@ So, if a service provider wants to offer policies in their SLA, they have to
 be compliant with this format. The constraint string is still totally domain 
 defined.
 
+###Business rules###
+A simple and generic implementation of business rules has been included in the core. Each guarantee term may 
+have a BusinessValueList element where the penalties of not satisfying a guarantee term are defined.
+
+The business structure defined in the wsag specification is not expressive enough for our purposes, so that
+structure is basically ignored, and the implementation makes use of CustomBusinessValues to define the business rules
+as a generalization of the standard penalties.
+
+The recognized xml structure is:
+	
+	<wsag:BusinessValueList>
+	  <wsag:Importance>xs:integer</wsag:Importance>?
+	  <wsag:CustomBusinessValue count="xs:integer" duration="xs:duration">
+	    <sla:Penalty 
+	      type="xs:string" 
+	      expression="xs:string"
+	      unit="xs:string"
+	      validity="xs:string"
+	    />*
+	  </wsag:CustomBusinessValue>*
+	</wsag:BusinessValueList>
+
+
+Count and duration attributes are optional. If not specified, this CustomBusinessValue applies at each
+violation. Otherwise, it applies only if `count` violations occur in a `duration` interval of time.
+
+The interpretation of every Penalty attribute is up to an external accounting module, but the intended meaning is:
+
+* type: kind of penalty (f.e: discount, service, terminate)
+* expression, unit: value of the penalty (f.e. discount of (50, euro), discount(100, %), service(sms))
+* validity: interval of time where the penalty is applied
+
+Each time a violation is generated, the enforcement calculates if a business rule must be applied. If so, the 
+corresponding Penalty is saved, and passed to the notification component.
+
+The parsing of the business value list is performed in the IModelConverter. If a project wants to use a different
+xml structure, it can write the jaxb classes and a new BusinessValueListParser. The assignment of the parser to the
+model converter is done in the applicationContext.xml. The class to assign is defined in the configuration.properties
+file.
+
 ## Project personalization ##
 It is possible to program some plugins that can be injected in the code and that will personalize the behavior of 
 the SLA software. 
@@ -303,6 +343,30 @@ deployed. The pom.xml should be touched when a library is used that is not initi
 ###Enforcement###
 
 TODO roman
+
+####Notifications
+It is possible to, once results from the enforcement task have been recorded, to notify a class.
+
+The code must be included in the sla-personalization project.  The new clas must implement the 
+*IAgreementEnforcementNotifier* interface. It is defined as:
+
+	public interface IAgreementEnforcementNotifier {
+	
+		void onFinishEvaluation(IAgreement agreement, Map<IGuaranteeTerm, GuaranteeTermEvaluationResult>  guaranteeTermEvaluationMap);
+	}
+
+
+The only existing method must be implemented by the class. It will receive the same data as it is recorded in the
+database. It will receive the *agreement*, from where the agreementId or any other data can be retrieve. An 
+the *guaranteeTermEvaluationMap* that has a type of *GuaranteeTermEvaluationResult* which is implemented as:
+
+	public interface GuaranteeTermEvaluationResult {
+		
+		List<IViolation> getViolations();
+		List<? extends ICompensation> getCompensations();
+	}
+
+The information of the violations and compensations can be retrieved. 
 
 ###Parsing###
 

@@ -160,19 +160,7 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		<dependency>
-			<groupId>org.jdom</groupId>
-			<artifactId>jdom</artifactId>
-			<version>1.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>jaxen</groupId>
-			<artifactId>jaxen</artifactId>
-			<version>1.1.1</version>
-			<scope>test</scope>
-		</dependency>
-		
+		 
 		<!-- Jaway jar, user to test rest interface -->
 		<dependency>
 			<groupId>com.jayway.restassured</groupId>

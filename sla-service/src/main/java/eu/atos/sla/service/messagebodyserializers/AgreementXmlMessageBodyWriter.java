@@ -52,7 +52,7 @@ public class AgreementXmlMessageBodyWriter implements MessageBodyWriter<IAgreeme
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
-		boolean isUsed = (genericType == IAgreement.class) && (mediaType.toString().equals(MediaType.APPLICATION_XML));
+		boolean isUsed = (genericType == IAgreement.class) && (mediaType.toString().contains(MediaType.APPLICATION_XML));
 		if (isUsed)
 			logger.debug("isWritable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
 				isUsed, type, genericType, mediaType, xmlParser);

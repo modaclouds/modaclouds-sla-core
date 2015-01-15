@@ -7,14 +7,40 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+		<property name="persistenceUnitName" value="slarepositoryDB" />
+		<property name="jpaVendorAdapter" ref="jpaAdapter" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${DB_DRIVER}" />
+		<property name="url" value="${DB_URL}" />
+		<property name="username" value="${DB_USERNAME}" />
+		<property name="password" value="${DB_PASSWORD}" />
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="jpaAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+		p:database="MYSQL" p:showSql="${DB_SHOWSQL}"/>
+
+<!-- 
 	<bean id="pum"
 		class="org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager">
 		<property name="persistenceXmlLocations">
 			<list>
-				<value>classpath*:META-INF/persistence.test.xml</value>
+				<value>classpath*:META-INF/persistence.xml</value>
 			</list>
 		</property>
-		<!-- comment dataSourceLooup to use jndi -->
+		<!- - comment dataSourceLooup to use jndi - ->
 		<property name="dataSourceLookup">
 			<bean
 				class="org.springframework.jdbc.datasource.lookup.BeanFactoryDataSourceLookup" />
@@ -36,17 +62,6 @@
 		</property>
 	</bean>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		p:driverClassName="org.hsqldb.jdbcDriver" p:url="jdbc:hsqldb:mem:atossla;sql.syntax_mys=true"
-		p:username="sa" p:password="" />
-
-	<bean id="dataSource.mysql"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		p:driverClassName="com.mysql.jdbc.Driver" p:url="jdbc:mysql://localhost:3306/${db.name}"
-		p:username="${db.username}" p:password="${db.password}" />
-
-
 	<bean id="transactionTemplate"
 		class="org.springframework.transaction.support.TransactionTemplate">
 		<constructor-arg ref="transactionManager" />
@@ -63,16 +78,13 @@
 			</list>
 		</property>
 	</bean>
-
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
 		p:entityManagerFactory-ref="entityManagerFactory" />
 
+
 	<bean id="jpaAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-		p:showSql="true" />
+		p:database="MYSQL" p:showSql="${db.showSQL}"/>
 
-	<bean id="jpaAdapter.mysql"
-		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-		p:database="MYSQL" p:showSql="true" />
-		
+  -->
 </beans>

@@ -47,7 +47,7 @@ public class AgreementJsonMessageBodyWriter implements MessageBodyWriter<IAgreem
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
-		boolean isUsed =  (genericType == IAgreement.class) && (mediaType.toString().equals(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
+		boolean isUsed =  (genericType == IAgreement.class) && (mediaType.toString().contains(MediaType.APPLICATION_JSON)) && jsonParser!=null ;
 		if (isUsed)
 			logger.debug("isWritable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",
 					isUsed, type, genericType, mediaType, jsonParser);

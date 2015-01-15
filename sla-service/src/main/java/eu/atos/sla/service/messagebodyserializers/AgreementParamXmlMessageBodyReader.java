@@ -50,7 +50,7 @@ public class AgreementParamXmlMessageBodyReader implements MessageBodyReader<Agr
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
 		initParser();
-		boolean isUsed = (type == AgreementParam.class) && mediaType.toString().equals(MediaType.APPLICATION_XML);
+		boolean isUsed = (type == AgreementParam.class) && mediaType.toString().contains(MediaType.APPLICATION_XML);
 		if (isUsed)
 			logger.debug("isReadable:{} --> type:{} genericType:{} mediaType:{} with parser:{}",
 					isUsed, type, genericType, mediaType, xmlParser);

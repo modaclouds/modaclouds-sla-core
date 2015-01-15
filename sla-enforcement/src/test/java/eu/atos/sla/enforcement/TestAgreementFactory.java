@@ -65,7 +65,7 @@ public class TestAgreementFactory {
 		);
 		t.setViolations(new ArrayList<IViolation>());
 		
-		IBusinessValueList businessValueList = new BusinessValueList(0, penalties, "");
+		IBusinessValueList businessValueList = new BusinessValueList(0, penalties);
 		t.setBusinessValueList(businessValueList);
 		return t;
 	}

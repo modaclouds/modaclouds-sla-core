@@ -56,7 +56,7 @@ public class TemplateListXmlMessageBodyWriter implements MessageBodyWriter<List<
 		boolean isUsed = false;
 		
 		if (genericType!=null)
-			isUsed = genericType.toString().equals(className) && mediaType.toString().equals(MediaType.APPLICATION_XML);
+			isUsed = genericType.toString().equals(className) && mediaType.toString().contains(MediaType.APPLICATION_XML);
 		
 		if (isUsed)
 			logger.debug("isWritable: {} -->type:{} genericType:{} mediaType:{} with parser:{}",

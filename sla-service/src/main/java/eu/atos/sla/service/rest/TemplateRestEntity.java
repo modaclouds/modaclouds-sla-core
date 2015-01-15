@@ -237,7 +237,7 @@ public class TemplateRestEntity extends AbstractSLARest{
 			deleted = templateRestHelper.deleteTemplateByUuid(uuid);
 			if (deleted)
 				return buildResponse(HttpStatus.OK, /*egarrido it was returned HttpStatus.NO_CONTENT, I don't know why */
-						"Template with uuid" + uuid + "was deleted successfully");
+						"Template with uuid " + uuid + " was deleted successfully");
 			else
 				return buildResponse(HttpStatus.NOT_FOUND, 
 						printError(HttpStatus.NOT_FOUND, "There is no template with uuid "
