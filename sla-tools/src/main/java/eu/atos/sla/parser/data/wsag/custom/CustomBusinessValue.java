@@ -1,6 +1,7 @@
 package eu.atos.sla.parser.data.wsag.custom;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -37,9 +38,26 @@ public class CustomBusinessValue {
 	@XmlAttribute(name="duration")
 	private Duration duration;
 
-	@XmlElement(name="Penalty")
+	@XmlElement(name="Penalty", namespace="http://sla.atos.eu")
 	private List<Penalty> penalties;
 
+	public CustomBusinessValue() {
+		/*
+		 * assign default values: count=1, duration=Date(0), penalties=emptylist
+		 */
+		penalties = new ArrayList<Penalty>();
+	}
+	
+	public CustomBusinessValue(int count, Duration duration) {
+		this(count, duration, Collections.<Penalty>emptyList());
+	}
+	
+	public CustomBusinessValue(int count, Duration duration, List<Penalty> penalties) {
+		this.count = count;
+		this.duration = duration;
+		this.penalties = new ArrayList<Penalty>(penalties);
+	}
+	
 	public Integer getCount() {
 		return count;
 	}
@@ -55,6 +73,10 @@ public class CustomBusinessValue {
 			penalties = new ArrayList<Penalty>();
 		}
 		return penalties;
+	}
+	
+	public void addPenalty(Penalty penalty) {
+		penalties.add(penalty);
 	}
 	
 	@Override

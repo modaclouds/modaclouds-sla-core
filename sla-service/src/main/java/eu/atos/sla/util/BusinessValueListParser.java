@@ -71,34 +71,52 @@ public class BusinessValueListParser {
 	protected IBusinessValueList parse(GuaranteeTerm guaranteeTermXML) 
 			throws ModelConversionException {
 
-		try {
-			BusinessValueList bvlXml = guaranteeTermXML.getBusinessValueList();
-			if (bvlXml == null) {
-				return newBusinessValueList(0);
-			}
-			
-			int importance = (bvlXml.getImportance() != null)? bvlXml.getImportance() : 0;
-			IBusinessValueList businessValueList = newBusinessValueList(importance);
-			
-			/*
-			 * most standard elements not handled; only importance and CustomBusinessValue
-			 */
+		BusinessValueList bvlXml = guaranteeTermXML.getBusinessValueList();
+		if (bvlXml == null) {
+			return newBusinessValueList(0);
+		}
+		
+		int importance = (bvlXml.getImportance() != null)? bvlXml.getImportance() : 0;
+		IBusinessValueList businessValueList = newBusinessValueList(importance);
+		
+		/*
+		 * most standard elements not handled; only importance and CustomBusinessValue
+		 */
 
-			if (bvlXml.getCustomBusinessValue() != null) {
-				for (Object bvlItem : bvlXml.getCustomBusinessValue()) {
-					CustomBusinessValue item = (CustomBusinessValue) um.unmarshal((Node) bvlItem);
+		parseCustomBusinessValues(bvlXml, businessValueList);
+		return businessValueList;
+			
+	}
+
+	/*
+	 * this method parses CustomBusinessValue if jaxb deserialized it as a Node.
+	 */
+	private void parseCustomBusinessValuesOld(BusinessValueList bvlXml,
+			IBusinessValueList businessValueList) throws JAXBException {
+		if (bvlXml.getCustomBusinessValue() != null) {
+			for (Object bvlItem : bvlXml.getCustomBusinessValue()) {
+				CustomBusinessValue item = (CustomBusinessValue) um.unmarshal((Node) bvlItem);
+				
+				for (Penalty action: item.getPenalties()) {
 					
-					for (Penalty action: item.getPenalties()) {
-						
-						IPenaltyDefinition penaltyDef = newPenaltyDefinition(item, action);
-						businessValueList.addPenalty(penaltyDef);
-					}
+					IPenaltyDefinition penaltyDef = newPenaltyDefinition(item, action);
+					businessValueList.addPenalty(penaltyDef);
 				}
 			}
-			return businessValueList;
-			
-		} catch (JAXBException e) {
-			throw new ModelConversionException(e.getMessage());
+		}
+	}
+
+	private void parseCustomBusinessValues(BusinessValueList bvlXml,
+			IBusinessValueList businessValueList) {
+		if (bvlXml.getCustomBusinessValue() != null) {
+			for (CustomBusinessValue item : bvlXml.getCustomBusinessValue()) {
+				
+				for (Penalty action: item.getPenalties()) {
+					
+					IPenaltyDefinition penaltyDef = newPenaltyDefinition(item, action);
+					businessValueList.addPenalty(penaltyDef);
+				}
+			}
 		}
 	}
 
