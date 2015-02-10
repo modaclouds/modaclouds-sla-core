@@ -18,8 +18,8 @@
 	<import resource="classpath*:personalization-context.xml"/>
 	
 	<bean id="modelConverter" class="eu.atos.sla.util.ModelConversion">
-		<property name="customBusinessValueParser">
-			<bean class="eu.atos.sla.util.CustomBusinessValueParser"/>
+		<property name="businessValueListParser">
+			<bean class="eu.atos.sla.util.BusinessValueListParser"/>
 		</property>
 	</bean>
 

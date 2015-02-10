@@ -72,7 +72,12 @@ public class TestAgreementFactory {
 
 	public static IViolation newViolation(IAgreement agreement, IGuaranteeTerm term, IPolicy policy) {
 		
-		IViolation result = new Violation(agreement, term, policy, "", "", new Date());
+		return newViolation(agreement, term, policy, new Date());
+	}
+	
+	public static IViolation newViolation(IAgreement agreement, IGuaranteeTerm term, IPolicy policy, Date datetime) {
+		
+		IViolation result = new Violation(agreement, term, policy, "", "", datetime);
 		return result;
 	}
 }

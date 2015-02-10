@@ -8,11 +8,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import eu.atos.sla.parser.data.wsag.custom.CustomBusinessValue;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement(name = "BusinessValueList")
 public class BusinessValueList {
 	@XmlElement(name = "CustomBusinessValue")
-	protected List<Object> customBusinessValue;
+	protected List<CustomBusinessValue> customBusinessValue;
 
 	@XmlElement(name = "Importance")
 	protected Integer importance;
@@ -34,9 +36,9 @@ public class BusinessValueList {
 	/**
 	 * Gets the value of the customBusinessValue property.
 	 */
-	public List<Object> getCustomBusinessValue() {
+	public List<CustomBusinessValue> getCustomBusinessValue() {
 		if (customBusinessValue == null) {
-			customBusinessValue = new ArrayList<Object>();
+			customBusinessValue = new ArrayList<CustomBusinessValue>();
 		}
 		return this.customBusinessValue;
 	}

@@ -7,10 +7,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Deprecated
 public class Utils<T> {
 
@@ -35,7 +36,7 @@ public class Utils<T> {
 
 		ObjectMapper mapper = new ObjectMapper();
 
-		mapper.setSerializationInclusion(Inclusion.NON_EMPTY);
+		mapper.setSerializationInclusion(Include.NON_EMPTY);
 		String guaranteeTermsString = null;
 		try {
 			guaranteeTermsString = mapper.writeValueAsString(elements);

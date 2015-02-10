@@ -38,7 +38,20 @@ public class Penalty {
 	
 	@XmlAttribute(name="validity")
 	private String validity = "";
-	
+
+	/**
+	 * Constructs a Penalty with default values.
+	 */
+	public Penalty() {
+	}
+
+	public Penalty(String type, String expression, String unit, String validity) {
+		this.type = type;
+		this.expression = expression;
+		this.unit = unit;
+		this.validity = validity;
+	}
+
 	public String getType() {
 		return type;
 	}

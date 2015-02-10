@@ -9,7 +9,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
-import eu.atos.sla.evaluation.guarantee.IGuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
+import eu.atos.sla.evaluation.guarantee.GuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
 
 
 

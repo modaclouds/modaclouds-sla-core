@@ -104,7 +104,7 @@ public class PoliciedServiceLevelEvaluator implements IServiceLevelEvaluator {
 				/*
 				 * TODO rsosa: oldBreaches should start from last violation, if any; otherwise, as is.
 				 */
-				oldBreaches = breachRepository.getByTimeRange(agreement, kpiName, breachesBegin, now);
+				oldBreaches = breachRepository.getBreachesByTimeRange(agreement, kpiName, breachesBegin, now);
 				logger.debug("Found {} breaches", oldBreaches.size());
 				
 				List<IBreach> breaches = new PoliciedServiceLevelEvaluator.CompositeList<IBreach>(

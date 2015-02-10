@@ -133,10 +133,17 @@ CREATE TABLE `penalty` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `agreement_id` varchar(255) DEFAULT NULL,
   `datetime` datetime DEFAULT NULL,
+  `kpi_name` varchar(255) DEFAULT NULL,
   `uuid` varchar(255) DEFAULT NULL,
   `definition_id` bigint(20) NOT NULL,
+  `violation_id` bigint(20) NOT NULL,
+  `guarantee_term_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_s4japyqgwxvss8e63ejryo4js` (`definition_id`),
+  KEY `FK_ecbrf8mo6b45v7s2ilcpb1qb6` (`violation_id`),
+  KEY `FK_v8in0arhs3ff1i109d9ftxbm` (`guarantee_term_id`),
+  CONSTRAINT `FK_v8in0arhs3ff1i109d9ftxbm` FOREIGN KEY (`guarantee_term_id`) REFERENCES `guarantee_term` (`id`),
+  CONSTRAINT `FK_ecbrf8mo6b45v7s2ilcpb1qb6` FOREIGN KEY (`violation_id`) REFERENCES `violation` (`id`),
   CONSTRAINT `FK_s4japyqgwxvss8e63ejryo4js` FOREIGN KEY (`definition_id`) REFERENCES `penaltydefinition` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -293,4 +300,4 @@ CREATE TABLE `violation` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-07 15:31:37
+-- Dump completed on 2015-01-21 12:51:26

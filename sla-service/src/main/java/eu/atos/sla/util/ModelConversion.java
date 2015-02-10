@@ -6,17 +6,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
+
+
+
+//import org.codehaus.jackson.JsonNode;
+//import org.codehaus.jackson.JsonProcessingException;
+//import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.atos.sla.dao.IProviderDAO;
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IAgreement.Context.ServiceProvider;
+import eu.atos.sla.datamodel.ICompensation.IPenalty;
 import eu.atos.sla.datamodel.IEnforcementJob;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
 import eu.atos.sla.datamodel.IProvider;
@@ -28,6 +36,7 @@ import eu.atos.sla.datamodel.bean.Agreement;
 import eu.atos.sla.datamodel.bean.Template;
 import eu.atos.sla.parser.ParserException;
 import eu.atos.sla.parser.data.EnforcementJob;
+import eu.atos.sla.parser.data.Penalty;
 import eu.atos.sla.parser.data.Provider;
 import eu.atos.sla.parser.data.Violation;
 import eu.atos.sla.parser.data.wsag.Context;
@@ -215,11 +224,14 @@ public class ModelConversion implements IModelConverter {
 				if (slo.getKpitarget().getKpiName() != null) {
 					guaranteeTerm.setKpiName(slo.getKpitarget().getKpiName());
 					String csl = slo.getKpitarget().getCustomServiceLevel();
-					logger.debug("guaranteeTerm  with kpiname:{} --  getCustomServiceLevel: ", 
+					logger.debug("guaranteeTerm with kpiname:{} --  getCustomServiceLevel: ", 
 							slo.getKpitarget().getKpiName(), csl);
 					if (csl != null) {
+						logger.debug("CustomServiceLevel not null"); 
 						ServiceLevelParser.Result parsedSlo = ServiceLevelParser.parse(csl);
 						guaranteeTerm.setServiceLevel(parsedSlo.getConstraint());
+					}else{
+						logger.debug("CustomServiceLevel is null"); 
 					}
 				}
 			}
@@ -421,6 +433,12 @@ public class ModelConversion implements IModelConverter {
 
 		return enforcementJobXML;
 	}
+	
+	@Override
+	public Penalty getPenaltyXML(IPenalty penalty) {
+		
+		return new Penalty(penalty);
+	}
 
 	public static class ServiceLevelParser {
 
@@ -467,7 +485,7 @@ public class ModelConversion implements IModelConverter {
 			String constraint = null;
 			
 			if (!constraintNode.isMissingNode()) {
-				constraint = constraintNode.getTextValue();
+				constraint = constraintNode.textValue();
 				if (constraint == null) {
 					constraint = constraintNode.toString();
 				}
@@ -495,7 +513,7 @@ public class ModelConversion implements IModelConverter {
 			try {
 				rootNode = mapper.readTree(qualifyingCondition);
 				JsonNode samplingperiodNode = rootNode.path("samplingperiodfactor");
-				logger.error("samplingperiodNode "+samplingperiodNode);
+				logger.debug("samplingperiodNode: "+samplingperiodNode);
 				
 				String samplingperiodfactor = textOrJson(samplingperiodNode);
 
@@ -530,7 +548,7 @@ public class ModelConversion implements IModelConverter {
 			String value = null;
 			
 			if (!samplingperiodNode.isMissingNode()) {
-				value = samplingperiodNode.getTextValue();
+				value = samplingperiodNode.textValue();
 				if (value == null) {
 					value = samplingperiodNode.toString();
 				}

@@ -158,7 +158,9 @@ public class ViolationRestEntity extends AbstractSLARest {
 			@QueryParam("providerId") String providerUuid,
 			@QueryParam("begin") DateParam begin, @QueryParam("end") DateParam end) throws InternalException{
 
-		logger.debug("StartOf  getViolations REQUEST for /violations/?agreementId=\"\"&guaranteeTerm=\"\"&providerUuid=\"\"&begin=\"\"&end");
+		logger.debug("StartOf  getViolations REQUEST for "
+				+ "/violations/?agreementId={}&guaranteeTerm={}&providerId={}&begin={}&end={}",
+				agreementId, guaranteeTerm, providerUuid, begin, end);
 
 		Date dBegin = (begin == null)? null : begin.getDate();
 		Date dEnd = (end == null)? null : end.getDate();

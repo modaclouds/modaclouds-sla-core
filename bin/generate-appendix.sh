@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 #
+# sla-core MUST be running with env var ENFORCEMENT_TEST=1
 #
 
 SLA_MANAGER_URL="http://localhost:8080/sla-service"
@@ -19,28 +20,62 @@ if [ "$0" != "bin/generate-appendix.sh" ]; then
 fi
 >&2 bin/restoreDatabase.sh
 
+debug() {
+	[[ -n $DEBUG ]] && echo "$*" >&2
+}
+
+
 function curl_cmd() {
 	in_case=1
 	CMD="/usr/bin/curl -u user:password ""$@"
+
+	[[ -n $DEBUG ]] && set -o xtrace
 	/usr/bin/curl --trace-ascii /tmp/curl.out -u user:password "$@" > /dev/null 2>&1
-	local code=$?
-	
-	return $code
+	local status=$?
+	[[ -n $DEBUG ]] && set +o xtrace
+	if [ "$?" != "0" ]; then
+		return "-1"
+	fi
+
+	debug "$code"
+
+	return $status
+}
+
+function assert() {
+	#$1 expected
+
+	local actual=$(cat /tmp/curl.out | grep -v "^..... HTTP\/1.1 100" | awk "/^.{5} HTTP\/1.1/ {print \$3;}")
+	debug "assert(expected:'$1' actual:'$actual')"
+	if [ -z "$expected" ]; then
+		exit 0
+	fi
+
+	out=$(echo "$actual" | grep "$1")
+	if [ "$?" = "0" ]; then
+		return $code
+	else
+		echo "ERROR: Expected: $1. Actual: $actual"
+		exit $code
+	fi
 }
 
 function curl_post() {
 	#
 	# $1: relative url
 	# $2: file to send
-	# $3: content type header
-	# $4: accept header
-	md_text "Content type: $3\n"
+	# $3: expected code (optional)
+	# $4: content type header (optional)
+	# $5: accept header (optional)
+	md_text "Content type: $4\n"
 
-	local type_header=${3:+-H Content-type:$3}
-	local accept_header=${4:+-H Accept:$4}
+	local expected=${3:-""}
+	local type_header=${4:+-H Content-type:$4}
+	local accept_header=${5:+-H Accept:$5}
 	local url="$SLA_MANAGER_URL/$1"
 	curl_cmd "-d@samples/appendix/$2" -X POST $type_header $accept_header "$url"
-	local code=$?
+
+	assert "$expected"
 
 	md_rest
 	return $code
@@ -49,15 +84,17 @@ function curl_post() {
 function curl_put() {
 	# $1: relative url
 	# $2: file to send
-	# $3: content type header
-	md_text "Content type: $3\n"
+	# $3: expected code (optional)
+	# $4: content type header (optional)
+	md_text "Content type: $4\n"
 
+	local expected=${3:-""}
 	local url="$SLA_MANAGER_URL/$1"
-	local file_param=${2:+-d@samples/appendix/$3}
-	local type_header=${3:+-H Content-type:$3}
+	local file_param=${2:+-d@samples/appendix/$2}
+	local type_header=${4:+-H Content-type:$3}
 	curl_cmd -X PUT $file_param $type_header "$url"
 	
-	local code=$?
+	assert "$expected"
 
 	md_rest
 	return $code
@@ -66,14 +103,16 @@ function curl_put() {
 function curl_get() {
 	# $1: relative url
 	# $2: query string (without ?)
-	# $3: accept header
+	# $3: expected code (optional)
+	# $4: accept header (optional)
 	md_text "Accept: $3\n"
 
+	local expected=${3:-""}
 	local url="$SLA_MANAGER_URL/$1?$2"
-	local accept_header=${3:+-H Accept:$3}
+	local accept_header=${4:+-H Accept:$4}
 	curl_cmd -X GET $accept_header "$url"
 	
-	local code=$?
+	assert "$expected"
 
 	md_rest
 	return $code
@@ -81,13 +120,15 @@ function curl_get() {
 
 function curl_delete() {
 	# $1: relative url
+	# $2: expected code (optional)
 	md_text "\n"
 
+	local expected=${2:-""}
 	local url="$SLA_MANAGER_URL/$1"
 	local accept_header="-H Accept:$XML"
 	curl_cmd -X DELETE $accept_header "$url"
 	
-	local code=$?
+	assert "$expected"
 
 	md_rest
 	return $code
@@ -148,98 +189,126 @@ md_title 2 "Providers" "providers"				###### PROVIDERS
 
 md_title 3 "Create a provider"					###
 
-curl_post "providers" "provider01.xml" "$XML" "$XML"
-curl_post "providers" "provider02.xml" "$XML" "$XML"
-curl_post "providers" "provider03.json" "$JSON" "$JSON"
+curl_post "providers" "provider01.xml" "201" "$XML" "$XML"
+curl_post "providers" "provider02.xml" "201" "$XML" "$XML"
+curl_post "providers" "provider03.json" "201" "$JSON" "$JSON"
 
 md_text "Provider exists."
-curl_post "providers" "provider02.xml" "$XML" "$XML"
+curl_post "providers" "provider02.xml" "409" "$XML" "$XML"
 
 md_title 3 "Get a provider"						###
-curl_get "providers/provider02" "" "$XML"
-curl_get "providers/provider02" "" "$JSON"
+curl_get "providers/provider02" "" "200" "$XML"
+curl_get "providers/provider02" "" "200" "$JSON"
 
 md_text "Provider not exists."
-curl_get "providers/notexists"  "" "$XML"
+curl_get "providers/notexists" "" "404"  "$XML"
 
 md_title 3 "Get all the providers"				###
-curl_get "providers" "" "$XML"
-curl_get "providers" "" "$JSON"
+curl_get "providers" "" "200" "$XML"
+curl_get "providers" "" "200" "$JSON"
 
 md_title 3 "Delete a provider"					###
-curl_delete "providers/provider03"
+curl_delete "providers/provider03" "200"
 
 md_text "Provider not exists"
-curl_delete "providers/notexists"
+curl_delete "providers/notexists" "404"
 
 
 md_title 2 "Templates" "templates"				###### TEMPLATES
 
 md_title 3 "Create a template"					###
-curl_post "templates" "template01.xml" "$XML" "$XML"
-curl_post "templates" "template02.json" "$JSON" "$JSON"
-curl_post "templates" "template02b.xml" "$XML" "$XML"
+curl_post "templates" "template01.xml" "201" "$XML" "$XML"
+curl_post "templates" "template02.json" "201" "$JSON" "$JSON"
+curl_post "templates" "template02b.xml" "201" "$XML" "$XML"
 
 md_text "Template exists."
-curl_post "templates" "template01.xml" "$XML" "$XML"
+curl_post "templates" "template01.xml" "409" "$XML" "$XML"
 
 md_text "Linked provider not exists."
-curl_post "templates" "template03.xml" "$XML" "$XML"
+curl_post "templates" "template03.xml" "409" "$XML" "$XML"
 
 md_title 3 "Get a template"						###
-curl_get "templates/template02" "" "$XML"
-curl_get "templates/template02" "" "$JSON"
+curl_get "templates/template02" "" "200" "$XML"
+curl_get "templates/template02" "" "200" "$JSON"
 
 md_text "Template not exists."
-curl_get "templates/notexists" "" "$XML"
+curl_get "templates/notexists" "" "404" "$XML"
 
 md_title 3 "Get all the templates"				###
-curl_get "templates" "" "$XML"
-curl_get "templates" "" "$JSON"
+curl_get "templates" "" "200" "$XML"
+curl_get "templates" "" "200" "$JSON"
 
 md_title 3 "Delete a template"					###
-curl_delete "templates/template02b"
+curl_delete "templates/template02b" "200"
 
 md_text "Template not exists"
-curl_delete "templates/notexists"
+curl_delete "templates/notexists" "404"
 
 
 md_title 2 "Agremeents" "agreements"			###### AGREEMENTS
 
 md_title 3 "Create an agreement"				###
-curl_post "agreements" "agreement01.xml" "$XML" "$XML"
-curl_post "agreements" "agreement02.json" "$JSON" "$JSON"
-curl_post "agreements" "agreement02b.xml" "$XML" "$XML"
+curl_post "agreements" "agreement01.xml" "201" "$XML" "$XML"
+curl_post "agreements" "agreement02.json" "201" "$JSON" "$JSON"
+curl_post "agreements" "agreement02b.xml" "201" "$XML" "$XML"
 
 md_text "Linked provider not exists."
-curl_post "agreements" "agreement03.xml" "$XML" "$XML"
+curl_post "agreements" "agreement03.xml" "409" "$XML" "$XML"
 md_text "Linked template not exists."
-curl_post "agreements" "agreement04.xml" "$XML" "$XML"
+curl_post "agreements" "agreement04.xml" "409" "$XML" "$XML"
 
 md_text "Agreement exists."
-curl_post "agreements" "agreement01.xml" "$XML" "$XML"
+curl_post "agreements" "agreement01.xml" "409" "$XML" "$XML"
 
 md_title 3 "Get an agreement"					###
-curl_get "agreements/agreement01" "" "$XML"
-curl_get "agreements/agreement01" "" "$JSON"
+curl_get "agreements/agreement01" "" "200" "$XML"
+curl_get "agreements/agreement01" "" "200" "$JSON"
 
 
 md_title 3 "Get all the agreements"				###
-curl_get "agreements" "" "$XML"
-curl_get "agreements" "" "$JSON"
+curl_get "agreements" "" "200" "$XML"
+curl_get "agreements" "" "200" "$JSON"
 
 md_title 3 "Get agreement status"				###
-curl_get "agreements/agreement02/guaranteestatus" "" "$XML"
-curl_get "agreements/agreement02/guaranteestatus" "" "$JSON"
+curl_get "agreements/agreement02/guaranteestatus" "" "200" "$XML"
+curl_get "agreements/agreement02/guaranteestatus" "" "200" "$JSON"
 
 
 md_title 3 "Delete an agreement"				###
-curl_delete "agreements/agreement02b"
+curl_delete "agreements/agreement02b" "200"
 
 md_text "Agreement not exists"
-curl_delete "agreements/notexists"
+curl_delete "agreements/notexists" "404"
 
-md_title 2 "Violations" "violations"			######
+md_title 3 "Get agreement status"				###
+curl_get "agreements/agreement02/guaranteestatus" "" "200" "$XML"
+curl_get "agreements/agreement02/guaranteestatus" "" "200" "$JSON"
+
+
+md_title 2 "Enforcement Jobs" "enforcements"	###### ENFORCEMENTS
+
+md_title 3 "Start enforcement job"				###
+curl_put "enforcements/agreement02/start" "" "202"
+
+md_title 3 "Stop enforcement job"				###
+curl_put "enforcements/agreement02/stop" "" "200"
+
+
+md_title 2 "Violations" "violations"			###### VIOLATIONS
+
+# Generate some violations and penalties
+curl_put "enforcements/agreement01/start" "" "202"
+curl_post "enforcement-test/agreement01" "metric01.json" "202" "$JSON"
+sleep 5
 
 md_title 3 "Get all the violations"				###
 
+curl_get "violations" "" "200" "$XML"
+curl_get "violations" "" "200" "$JSON"
+
+md_title 2 "Penalties" "penalties"				###### PENALTIES
+
+md_title 3 "Get all the penalties"				###
+
+curl_get "penalties" "" "200" "$XML"
+curl_get "penalties" "" "200" "$JSON"

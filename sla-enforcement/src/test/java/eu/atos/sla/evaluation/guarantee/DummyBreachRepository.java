@@ -46,7 +46,7 @@ public class DummyBreachRepository implements IBreachRepository {
 	}
 	
 	@Override
-	public List<IBreach> getByTimeRange(IAgreement agreement, String kpiName,
+	public List<IBreach> getBreachesByTimeRange(IAgreement agreement, String kpiName,
 			Date begin, Date end) {
 
 		if (metrics == null) {

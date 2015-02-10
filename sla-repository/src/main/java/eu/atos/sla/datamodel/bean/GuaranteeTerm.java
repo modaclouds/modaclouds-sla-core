@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Fetch;
 
 import eu.atos.sla.datamodel.IBusinessValueList;
+import eu.atos.sla.datamodel.ICompensation.IPenalty;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
 import eu.atos.sla.datamodel.IPolicy;
 import eu.atos.sla.datamodel.IViolation;
@@ -44,6 +45,7 @@ public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
 	private String kpiName;
 	private String serviceLevel;
 	private List<IViolation> violations;
+	private List<IPenalty> penalties;
 	private List<IPolicy> policies;
 	private GuaranteeTermStatusEnum status;
 	private IBusinessValueList businessValueList;
@@ -147,6 +149,18 @@ public class GuaranteeTerm implements IGuaranteeTerm, Serializable {
 	@Override
 	public void setViolations(List<IViolation> violations) {
 		this.violations = violations;
+	}
+
+	@Override
+	@Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
+	@OneToMany(targetEntity = Penalty.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "guarantee_term_id", referencedColumnName = "id", nullable = true)
+	public List<IPenalty> getPenalties() {
+		return penalties;
+	}
+
+	public void setPenalties(List<IPenalty> penalties) {
+		this.penalties = penalties;
 	}
 
 	@Override

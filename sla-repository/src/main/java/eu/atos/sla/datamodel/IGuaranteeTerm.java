@@ -3,6 +3,8 @@ package eu.atos.sla.datamodel;
 import java.util.Date;
 import java.util.List;
 
+import eu.atos.sla.datamodel.ICompensation.IPenalty;
+
 /**
  * A GuaranteeTerm in ws-agreement is defined as:
  * <pre>{@code
@@ -147,5 +149,10 @@ public interface IGuaranteeTerm {
 	 */	
 	public Integer getSamplingPeriodFactor() ;
 	public void setSamplingPeriodFactor(Integer samplingPeriodFactor) ;
+
+	/**
+	 * List of penalties that have been generated for this guarantee term
+	 */
+	List<IPenalty> getPenalties();
 	
 }

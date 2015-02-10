@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>eu.atos.sla</groupId>
@@ -12,12 +12,6 @@
 	<packaging>jar</packaging>  
 	<name>SLA Project Personalization</name>
 	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
 		<!-- import SLA projects -->
 		<dependency>
 			<groupId>eu.atos.sla</groupId>
@@ -37,9 +31,9 @@
 			<version>0.1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
-    <build>
+	<build>
 		<filters>
-			<filter>..\configuration.properties</filter>
+			<filter>../configuration.properties</filter>
 		</filters>
 		<resources>
 			<resource>
@@ -51,17 +45,11 @@
 				</includes>
 			</resource>
 		</resources>	
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <inherited>true</inherited>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

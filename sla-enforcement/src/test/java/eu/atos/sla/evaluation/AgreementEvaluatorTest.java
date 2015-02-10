@@ -26,7 +26,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
 public class AgreementEvaluatorTest {
 
 	@Autowired
-	IAgreementEvaluator agreementEval;
+	AgreementEvaluator agreementEval;
 	@Autowired
 	DummyBreachRepository breachRepository;
 	
@@ -76,11 +76,12 @@ public class AgreementEvaluatorTest {
 		return t;
 	}
 	
-	public IAgreementEvaluator getAgreementEval() {
+	public 
+	AgreementEvaluator getAgreementEval() {
 		return agreementEval;
 	}
 
-	public void setAgreementEval(IAgreementEvaluator agreementEval) {
+	public void setAgreementEval(AgreementEvaluator agreementEval) {
 		this.agreementEval = agreementEval;
 	}
 

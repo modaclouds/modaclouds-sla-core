@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.atos.sla.dao.IAgreementDAO;
@@ -28,15 +29,18 @@ import eu.atos.sla.monitoring.simple.SimpleMetricsTranslator;
 import eu.atos.sla.monitoring.simple.SimpleMetricsTranslator.SimpleMetricsReceiverData;
 import eu.atos.sla.parser.data.MonitoringMetric;
 
-//@Path("/metrics")
-//@Component
+@Path("/enforcement-test")
+@Component
 @Scope("request")
 @Transactional
 /**
  * Example REST class that receives metrics and enforces them.
  * 
- * To use this class in your implementation, uncomment Path and Component annotations. You can find 
- * a usage example in /samples/metricsreceiver.*
+ * This is intended to be used as an example of how to implement actual metrics receivers. 
+ * To use this class, the environment variable ENFORCEMENT_TEST must exist. This property
+ * is used in the appendix generation.
+ * 
+ * You can find a usage example in /samples/metricsreceiver.*
  * 
  * To adapt to your implementation, create a new class that define an appropriate MetricsTranslator 
  * in your sla-personalization/applicationContext and rewrite receiveMetrics accordingly.
@@ -45,6 +49,8 @@ import eu.atos.sla.parser.data.MonitoringMetric;
  *
  */
 public class MetricsReceiverRest extends AbstractSLARest {
+	private static final String ENFORCEMENT_TEST = "ENFORCEMENT_TEST";
+
 	private static Logger logger = LoggerFactory.getLogger(MetricsReceiverRest.class);
 
 	@Autowired
@@ -70,9 +76,16 @@ public class MetricsReceiverRest extends AbstractSLARest {
 			@PathParam("agreementId") String agreementId, 
 			final MonitoringMetric metric) {
 
+		if (System.getenv(ENFORCEMENT_TEST) == null) {
+			return buildResponse(HttpStatus.NOT_FOUND, 
+					"Verify server is running with " + ENFORCEMENT_TEST + " env var");
+		}
 		logger.debug("receiveMetrics(agreementId={} data={}", agreementId, metric.toString());
 		IAgreement agreement = agreementDao.getByAgreementId(agreementId);
 		
+		if (agreement == null) {
+			return buildResponse(HttpStatus.NOT_FOUND, "agreement " + agreementId + " not found");
+		}
 		SimpleMetricsReceiverData data = new SimpleMetricsReceiverData(
 				metric.getMetricKey(), 
 				new SimpleMetricsReceiverData.SimpleMetricValue(metric.getMetricValue(), metric.getDate()));

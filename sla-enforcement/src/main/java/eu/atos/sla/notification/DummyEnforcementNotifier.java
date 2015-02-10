@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
-import eu.atos.sla.evaluation.guarantee.IGuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
+import eu.atos.sla.evaluation.guarantee.GuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
 
 public class DummyEnforcementNotifier implements IAgreementEnforcementNotifier {
 	private static Logger logger = LoggerFactory.getLogger(DummyEnforcementNotifier.class);

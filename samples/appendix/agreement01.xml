@@ -47,17 +47,9 @@
 				</wsag:ServiceLevelObjective>
 				<wsag:BusinessValueList>
 					<wsag:Importance>3</wsag:Importance>
-					<wsag:Penalty>
-						<wsag:AssessmentInterval>
-							<wsag:Count>10</wsag:Count>
-						</wsag:AssessmentInterval>
-						<wsag:ValueUnit>EUR</wsag:ValueUnit>
-						<wsag:ValueExpression>99</wsag:ValueExpression>
-					</wsag:Penalty>
-					
-					<wsag:Reward></wsag:Reward>
-					<wsag:Preference></wsag:Preference>
-					<wsag:CustomBusinessValue></wsag:CustomBusinessValue>
+					<wsag:CustomBusinessValue>
+						<sla:Penalty type="discount" value="100" unit="euro"/>
+					</wsag:CustomBusinessValue>
 				</wsag:BusinessValueList>
 			</wsag:GuaranteeTerm>
 		</wsag:All>

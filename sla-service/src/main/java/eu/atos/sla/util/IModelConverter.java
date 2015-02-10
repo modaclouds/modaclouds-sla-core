@@ -1,11 +1,13 @@
 package eu.atos.sla.util;
 
 import eu.atos.sla.datamodel.IAgreement;
+import eu.atos.sla.datamodel.ICompensation.IPenalty;
 import eu.atos.sla.datamodel.IEnforcementJob;
 import eu.atos.sla.datamodel.IProvider;
 import eu.atos.sla.datamodel.ITemplate;
 import eu.atos.sla.datamodel.IViolation;
 import eu.atos.sla.parser.data.EnforcementJob;
+import eu.atos.sla.parser.data.Penalty;
 import eu.atos.sla.parser.data.Provider;
 import eu.atos.sla.parser.data.Violation;
 import eu.atos.sla.parser.data.wsag.Agreement;
@@ -29,6 +31,7 @@ public interface IModelConverter {
 	public Provider getProviderXML(IProvider provider);
 	
 	public Violation getViolationXML(IViolation violation);
-
 	
+	public Penalty getPenaltyXML(IPenalty penalty);
+
 }
