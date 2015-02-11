@@ -24,7 +24,7 @@ public interface IBreachRepository {
 	 * @param begin inclusive begin date.
 	 * @param end  inclusive end date.
 	 */
-	List<IBreach> getByTimeRange(IAgreement agreement, String kpiName, Date begin, Date end);
+	List<IBreach> getBreachesByTimeRange(IAgreement agreement, String kpiName, Date begin, Date end);
 	
 	/**
 	 * Persist in the repository a list of breaches.

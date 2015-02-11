@@ -18,7 +18,7 @@ import eu.atos.sla.evaluation.guarantee.DummyBusinessValuesEvaluator;
 import eu.atos.sla.evaluation.guarantee.GuaranteeTermEvaluator;
 import eu.atos.sla.evaluation.guarantee.IBusinessValuesEvaluator;
 import eu.atos.sla.evaluation.guarantee.PoliciedServiceLevelEvaluator;
-import eu.atos.sla.evaluation.guarantee.IGuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
+import eu.atos.sla.evaluation.guarantee.GuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
 import eu.atos.sla.monitoring.IMonitoringMetric;
 
 public class GuaranteeTermEvaluatorTest {

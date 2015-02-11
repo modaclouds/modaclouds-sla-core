@@ -18,7 +18,7 @@
 	<context:component-scan base-package="eu.atos.sla.enforcement" />
 
 	<bean id="constraintEvaluator" class="${enforcement.constraintEvaluator.class}"/>
-	<bean id="breachRepository" class="eu.atos.sla.evaluation.guarantee.BreachRepository"/>
+	<bean id="repository" class="eu.atos.sla.evaluation.guarantee.Repository"/>
 
 	<bean id="agreementEvaluator" class="eu.atos.sla.evaluation.AgreementEvaluator">
 		<property name="guaranteeTermEvaluator">
@@ -26,11 +26,13 @@
 				<property name="serviceLevelEvaluator">
 					<bean class="eu.atos.sla.evaluation.guarantee.PoliciedServiceLevelEvaluator">
 						<property name="constraintEvaluator" ref="constraintEvaluator"/>
-						<property name="breachRepository" ref="breachRepository"/>
+						<property name="breachRepository" ref="repository"/>
 					</bean>
 				</property>
 				<property name="businessEvaluator">
-					<bean class="eu.atos.sla.evaluation.guarantee.SimpleBusinessValuesEvaluator"/>
+					<bean class="eu.atos.sla.evaluation.guarantee.SimpleBusinessValuesEvaluator">
+						<property name="compensationRepository" ref="repository"/>
+					</bean>
 				</property>
 			</bean>
 		</property>

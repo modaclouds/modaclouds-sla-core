@@ -15,15 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.atos.sla.dao.IAgreementDAO;
 import eu.atos.sla.dao.IEnforcementJobDAO;
 import eu.atos.sla.dao.IGuaranteeTermDAO;
+import eu.atos.sla.dao.IPenaltyDAO;
 import eu.atos.sla.dao.IViolationDAO;
 import eu.atos.sla.datamodel.IAgreement;
+import eu.atos.sla.datamodel.ICompensation;
+import eu.atos.sla.datamodel.ICompensation.IPenalty;
+import eu.atos.sla.datamodel.ICompensation.IReward;
 import eu.atos.sla.datamodel.IEnforcementJob;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
 import eu.atos.sla.datamodel.IGuaranteeTerm.GuaranteeTermStatusEnum;
 import eu.atos.sla.datamodel.IViolation;
 import eu.atos.sla.datamodel.bean.Agreement;
 import eu.atos.sla.datamodel.bean.EnforcementJob;
-import eu.atos.sla.evaluation.guarantee.IGuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
+import eu.atos.sla.evaluation.guarantee.GuaranteeTermEvaluator.GuaranteeTermEvaluationResult;
 import eu.atos.sla.monitoring.IMonitoringMetric;
 
 /**
@@ -48,6 +52,9 @@ public class EnforcementService implements IEnforcementService {
 	@Autowired
 	IViolationDAO violationDAO;
 
+	@Autowired
+	IPenaltyDAO penaltyDAO;
+	
 	@Autowired
 	AgreementEnforcement agreementEnforcement;
 	
@@ -165,14 +172,20 @@ public class EnforcementService implements IEnforcementService {
 				violationDAO.save(violation);
 			}
 			
-//			for (@SuppressWarnings("unused") ICompensation compensation : gttermResult.getCompensations()) {
+			for (ICompensation compensation : gttermResult.getCompensations()) {
 				
-				/* 
-				 * TODO business violations modeling has not finished.
-				 */
-//				enforcedCompensationDAO.save(compensation);
-//				term.getCompensations().add(compensation);
-//			}
+				if (compensation instanceof IPenalty) {
+					IPenalty penalty = (IPenalty)compensation;
+					penaltyDAO.save(penalty);
+					dbTerm.getPenalties().add(penalty);
+				}
+				else if (compensation instanceof IReward) {
+					logger.warn("Saving a Reward is not implemented");
+				}
+				else {
+					throw new AssertionError("Unexpected compensation type: " + compensation.getClass().getName());
+				}
+			}
 			
 			dbTerm.setStatus( dbTerm.getViolations().size() > 0? 
 					GuaranteeTermStatusEnum.VIOLATED : GuaranteeTermStatusEnum.FULFILLED);
@@ -192,6 +205,9 @@ public class EnforcementService implements IEnforcementService {
 		logger.info("saved enforcement result(agreement=" + agreement.getAgreementId()+")");
 	}
 	
+	private void save(IPenalty penalty) {
+		
+	}
 	public void enforceReceivedMetrics(
 			IAgreement agreement, String guaranteeTermName, List<IMonitoringMetric> metrics) {
 		

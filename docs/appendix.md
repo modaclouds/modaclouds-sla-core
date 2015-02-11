@@ -23,7 +23,7 @@ Content type: application/xml
 	location: http://localhost:8080/sla-service/providers/provider01
 	Content-Type: application/xml
 	Content-Length: 254
-	Date: Thu, 06 Nov 2014 16:33:12 GMT
+	Date: Mon, 26 Jan 2015 12:21:29 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The provider has been stored successfully in
 	 the SLA Repository Database. It has location http://localhost:8
@@ -50,7 +50,7 @@ Content type: application/xml
 	location: http://localhost:8080/sla-service/providers/provider02
 	Content-Type: application/xml
 	Content-Length: 254
-	Date: Thu, 06 Nov 2014 16:33:12 GMT
+	Date: Mon, 26 Jan 2015 12:21:29 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The provider has been stored successfully in
 	 the SLA Repository Database. It has location http://localhost:8
@@ -76,7 +76,7 @@ Content type: application/json
 	location: http://localhost:8080/sla-service/providers/provider03
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:12 GMT
+	Date: Mon, 26 Jan 2015 12:21:29 GMT
 	c2
 	{"code":201,"message":"The provider has been stored successfully
 	 in the SLA Repository Database. It has location http://localhos
@@ -104,14 +104,14 @@ Content type: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 181
-	Date: Thu, 06 Nov 2014 16:33:13 GMT
+	Date: Mon, 26 Jan 2015 12:21:31 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Provider with id:provider02 or name:provider02
 	name already exists in the SLA Repository Database"/>
 
 ###Get a provider###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/providers/provider02?
 
@@ -125,13 +125,13 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 126
-	Date: Thu, 06 Nov 2014 16:33:13 GMT
+	Date: Mon, 26 Jan 2015 12:21:31 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><provider
 	><uuid>provider02</uuid><name>provider02name</name></provider>
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/providers/provider02?
 
@@ -145,14 +145,14 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:13 GMT
+	Date: Mon, 26 Jan 2015 12:21:31 GMT
 	2d
 	{"uuid":"provider02","name":"provider02name"}
 
 ---
 
 Provider not exists.
-Accept: application/xml
+Accept: 404
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/providers/notexists?
 
@@ -166,14 +166,14 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 156
-	Date: Thu, 06 Nov 2014 16:33:14 GMT
+	Date: Mon, 26 Jan 2015 12:21:32 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="404" message="There is no provider with uuid notexists in th
 	e SLA Repository Database"/>
 
 ###Get all the providers###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/providers?
 
@@ -187,7 +187,7 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 291
-	Date: Thu, 06 Nov 2014 16:33:14 GMT
+	Date: Mon, 26 Jan 2015 12:21:32 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><provider
 	s><provider><uuid>provider01</uuid><name>provider01name</name></
 	provider><provider><uuid>provider02</uuid><name>provider02name</
@@ -196,7 +196,7 @@ Accept: application/xml
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/providers?
 
@@ -210,7 +210,7 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:14 GMT
+	Date: Mon, 26 Jan 2015 12:21:33 GMT
 	8b
 	[{"uuid":"provider01","name":"provider01name"},{"uuid":"provider
 	02","name":"provider02name"},{"uuid":"provider03","name":"provid
@@ -232,7 +232,7 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:16 GMT
+	Date: Mon, 26 Jan 2015 12:21:33 GMT
 	3a
 	The provider with uuid provider03 was deleted successfully
 
@@ -253,7 +253,7 @@ Provider not exists
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:16 GMT
+	Date: Mon, 26 Jan 2015 12:21:34 GMT
 	9e
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>.<error c
 	ode="404" message="There is no provider with uuid notexists in t
@@ -280,7 +280,7 @@ Content type: application/xml
 	location: http://localhost:8080/sla-service/templates/template01
 	Content-Type: application/xml
 	Content-Length: 254
-	Date: Thu, 06 Nov 2014 16:33:16 GMT
+	Date: Mon, 26 Jan 2015 12:21:34 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The template has been stored successfully in
 	 the SLA Repository Database. It has location http://localhost:8
@@ -317,7 +317,7 @@ Content type: application/json
 	location: http://localhost:8080/sla-service/templates/template02
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:17 GMT
+	Date: Mon, 26 Jan 2015 12:21:35 GMT
 	c2
 	{"code":201,"message":"The template has been stored successfully
 	 in the SLA Repository Database. It has location http://localhos
@@ -344,7 +344,7 @@ Content type: application/xml
 	b
 	Content-Type: application/xml
 	Content-Length: 256
-	Date: Thu, 06 Nov 2014 16:33:17 GMT
+	Date: Mon, 26 Jan 2015 12:21:35 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The template has been stored successfully in
 	 the SLA Repository Database. It has location http://localhost:8
@@ -369,7 +369,7 @@ Content type: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 157
-	Date: Thu, 06 Nov 2014 16:33:17 GMT
+	Date: Mon, 26 Jan 2015 12:21:35 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Element with id:template01 already exists in t
 	he SLA Repository Database"/>
@@ -393,14 +393,14 @@ Content type: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 144
-	Date: Thu, 06 Nov 2014 16:33:18 GMT
+	Date: Mon, 26 Jan 2015 12:21:37 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Provider with UUID provider03 doesn't exist in
 	 the database"/>
 
 ###Get a template###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/templates/template02?
 
@@ -414,7 +414,7 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 1001
-	Date: Thu, 06 Nov 2014 16:33:18 GMT
+	Date: Mon, 26 Jan 2015 12:21:37 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><wsag:Tem
 	plate wsag:TemplateId="template02" xmlns:wsag="http://www.ggf.or
 	g/namespaces/ws-agreement" xmlns:sla="http://sla.atos.eu"><wsag:
@@ -434,7 +434,7 @@ Accept: application/xml
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/templates/template02?
 
@@ -447,25 +447,26 @@ Accept: application/json
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
-	Content-Length: 745
-	Date: Thu, 06 Nov 2014 16:33:18 GMT
+	Content-Length: 770
+	Date: Mon, 26 Jan 2015 12:21:37 GMT
 	{"templateId":"template02","context":{"agreementInitiator":"prov
 	ider02","agreementResponder":null,"serviceProvider":"AgreementIn
-	itiator","templateId":"template02","service":"service02","expira
-	tionTime":"2014-03-07T12:00:00CET"},"name":"ExampleTemplate","te
+	itiator","expirationTime":"2014-03-07T12:00:00CET","templateId":
+	"template02","service":"service02"},"name":"ExampleTemplate","te
 	rms":{"allTerms":{"serviceDescriptionTerm":{"name":null,"service
 	Name":null},"serviceProperties":[{"name":null,"serviceName":null
 	,"variableSet":null},{"name":null,"serviceName":null,"variableSe
 	t":null}],"guaranteeTerms":[{"name":"FastReaction","serviceScope
 	":{"serviceName":"GPS0001","value":"               http://www.gp
 	s.com/coordsservice/getcoords            "},"qualifyingCondition
-	":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"FastRespo
-	nseTime","customServiceLevel":null}}}]}}}
+	":null,"businessValueList":null,"serviceLevelObjetive":{"kpitarg
+	et":{"kpiName":"FastResponseTime","customServiceLevel":null}}}]}
+	}}
 
 ---
 
 Template not exists.
-Accept: application/xml
+Accept: 404
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/templates/notexists?
 
@@ -479,14 +480,14 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 154
-	Date: Thu, 06 Nov 2014 16:33:19 GMT
+	Date: Mon, 26 Jan 2015 12:21:38 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="404" message="There is no template with id notexists in the 
 	SLA Repository Database"/>
 
 ###Get all the templates###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/templates?
 
@@ -500,7 +501,7 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 6020
-	Date: Thu, 06 Nov 2014 16:33:19 GMT
+	Date: Mon, 26 Jan 2015 12:21:38 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><template
 	s><wsag:Template xmlns:wsag="http://www.ggf.org/namespaces/ws-ag
 	reement" xmlns:sla="http://sla.atos.eu" wsag:TemplateId="templat
@@ -599,7 +600,7 @@ Accept: application/xml
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/templates?
 
@@ -612,50 +613,56 @@ Accept: application/json
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
-	Content-Length: 2675
-	Date: Thu, 06 Nov 2014 16:33:19 GMT
+	Content-Length: 3010
+	Date: Mon, 26 Jan 2015 12:21:39 GMT
 	[{"templateId":"template01","context":{"agreementInitiator":null
 	,"agreementResponder":"provider01","serviceProvider":"AgreementR
-	esponder","templateId":null,"service":"service02","expirationTim
-	e":"2014-03-07T12:00:00CET"},"name":"ExampleTemplate01","terms":
+	esponder","expirationTime":"2014-03-07T12:00:00CET","templateId"
+	:null,"service":"service02"},"name":"ExampleTemplate01","terms":
 	{"allTerms":{"serviceDescriptionTerm":{"name":"SDTName2","servic
 	eName":"ServiceName"},"serviceProperties":[{"name":"NonFunctiona
 	l","serviceName":"ServiceName","variableSet":null}],"guaranteeTe
 	rms":[{"name":"GT_ResponseTime","serviceScope":{"serviceName":nu
-	ll,"value":"ServiceName"},"qualifyingCondition":null,"serviceLev
-	elObjetive":{"kpitarget":{"kpiName":"ResponseTime","customServic
-	eLevel":"{\"constraint\" : \"ResponseTime LT qos:ResponseTime\"}
-	"}}},{"name":"GT_Performance","serviceScope":{"serviceName":null
-	,"value":"ServiceName"},"qualifyingCondition":null,"serviceLevel
-	Objetive":{"kpitarget":{"kpiName":"Performance","customServiceLe
-	vel":"{\"constraint\" : \"Performance GT qos:Performance\"}"}}}]
-	}}},{"templateId":"template02","context":{"agreementInitiator":"
-	provider02","agreementResponder":null,"serviceProvider":"Agreeme
-	ntInitiator","templateId":"template02","service":"service02","ex
-	pirationTime":"2014-03-07T12:00:00CET"},"name":"ExampleTemplate"
-	,"terms":{"allTerms":{"serviceDescriptionTerm":{"name":null,"ser
-	viceName":null},"serviceProperties":[{"name":null,"serviceName":
-	null,"variableSet":null},{"name":null,"serviceName":null,"variab
-	leSet":null}],"guaranteeTerms":[{"name":"FastReaction","serviceS
-	cope":{"serviceName":"GPS0001","value":"               http://ww
-	w.gps.com/coordsservice/getcoords            "},"qualifyingCondi
-	tion":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"FastR
-	esponseTime","customServiceLevel":null}}}]}}},{"templateId":"tem
-	plate02b","context":{"agreementInitiator":null,"agreementRespond
-	er":"provider02","serviceProvider":"AgreementResponder","templat
-	eId":null,"service":"service02","expirationTime":"2014-03-07T12:
-	00:00CET"},"name":"ExampleTemplate02b","terms":{"allTerms":{"ser
-	viceDescriptionTerm":{"name":"SDTName2","serviceName":"ServiceNa
-	me"},"serviceProperties":[{"name":"NonFunctional","serviceName":
-	"ServiceName","variableSet":null}],"guaranteeTerms":[{"name":"GT
-	_ResponseTime","serviceScope":{"serviceName":null,"value":"Servi
-	ceName"},"qualifyingCondition":null,"serviceLevelObjetive":{"kpi
-	target":{"kpiName":"ResponseTime","customServiceLevel":"{\"const
-	raint\" : \"ResponseTime LT qos:ResponseTime\"}"}}},{"name":"GT_
-	Performance","serviceScope":{"serviceName":null,"value":"Service
-	Name"},"qualifyingCondition":null,"serviceLevelObjetive":{"kpita
-	rget":{"kpiName":"Performance","customServiceLevel":"{\"constrai
-	nt\" : \"Performance GT qos:Performance\"}"}}}]}}}]
+	ll,"value":"ServiceName"},"qualifyingCondition":null,"businessVa
+	lueList":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"Re
+	sponseTime","customServiceLevel":"{\"constraint\" : \"ResponseTi
+	me LT qos:ResponseTime\"}"}}},{"name":"GT_Performance","serviceS
+	cope":{"serviceName":null,"value":"ServiceName"},"qualifyingCond
+	ition":null,"businessValueList":{"customBusinessValue":[{"count"
+	:1,"duration":"1970-01-01T00:00:00.000+0000","penalties":[]}],"i
+	mportance":3},"serviceLevelObjetive":{"kpitarget":{"kpiName":"Pe
+	rformance","customServiceLevel":"{\"constraint\" : \"Performance
+	 GT qos:Performance\"}"}}}]}}},{"templateId":"template02","conte
+	xt":{"agreementInitiator":"provider02","agreementResponder":null
+	,"serviceProvider":"AgreementInitiator","expirationTime":"2014-0
+	3-07T12:00:00CET","templateId":"template02","service":"service02
+	"},"name":"ExampleTemplate","terms":{"allTerms":{"serviceDescrip
+	tionTerm":{"name":null,"serviceName":null},"serviceProperties":[
+	{"name":null,"serviceName":null,"variableSet":null},{"name":null
+	,"serviceName":null,"variableSet":null}],"guaranteeTerms":[{"nam
+	e":"FastReaction","serviceScope":{"serviceName":"GPS0001","value
+	":"               http://www.gps.com/coordsservice/getcoords    
+	        "},"qualifyingCondition":null,"businessValueList":null,"
+	serviceLevelObjetive":{"kpitarget":{"kpiName":"FastResponseTime"
+	,"customServiceLevel":null}}}]}}},{"templateId":"template02b","c
+	ontext":{"agreementInitiator":null,"agreementResponder":"provide
+	r02","serviceProvider":"AgreementResponder","expirationTime":"20
+	14-03-07T12:00:00CET","templateId":null,"service":"service02"},"
+	name":"ExampleTemplate02b","terms":{"allTerms":{"serviceDescript
+	ionTerm":{"name":"SDTName2","serviceName":"ServiceName"},"servic
+	eProperties":[{"name":"NonFunctional","serviceName":"ServiceName
+	","variableSet":null}],"guaranteeTerms":[{"name":"GT_ResponseTim
+	e","serviceScope":{"serviceName":null,"value":"ServiceName"},"qu
+	alifyingCondition":null,"businessValueList":null,"serviceLevelOb
+	jetive":{"kpitarget":{"kpiName":"ResponseTime","customServiceLev
+	el":"{\"constraint\" : \"ResponseTime LT qos:ResponseTime\"}"}}}
+	,{"name":"GT_Performance","serviceScope":{"serviceName":null,"va
+	lue":"ServiceName"},"qualifyingCondition":null,"businessValueLis
+	t":{"customBusinessValue":[{"count":1,"duration":"1970-01-01T00:
+	00:00.000+0000","penalties":[]}],"importance":3},"serviceLevelOb
+	jetive":{"kpitarget":{"kpiName":"Performance","customServiceLeve
+	l":"{\"constraint\" : \"Performance GT qos:Performance\"}"}}}]}}
+	}]
 
 ###Delete a template###
 
@@ -673,9 +680,9 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:21 GMT
-	35
-	Template with uuidtemplate02bwas deleted successfully
+	Date: Mon, 26 Jan 2015 12:21:39 GMT
+	37
+	Template with uuid template02b was deleted successfully
 
 ---
 
@@ -694,7 +701,7 @@ Template not exists
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:21 GMT
+	Date: Mon, 26 Jan 2015 12:21:40 GMT
 	9e
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>.<error c
 	ode="404" message="There is no template with uuid notexists in t
@@ -714,7 +721,7 @@ Content type: application/xml
 	Host: localhost:8080
 	Content-type:application/xml
 	Accept:application/xml
-	Content-Length: 2747
+	Content-Length: 2504
 
 	HTTP/1.1 201 Created
 	Server: Apache-Coyote/1.1
@@ -722,7 +729,7 @@ Content type: application/xml
 	01
 	Content-Type: application/xml
 	Content-Length: 258
-	Date: Thu, 06 Nov 2014 16:33:21 GMT
+	Date: Mon, 26 Jan 2015 12:21:40 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The agreement has been stored successfully i
 	n the SLA Repository Database. It has location http://localhost:
@@ -749,7 +756,7 @@ Content type: application/json
 	02
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:22 GMT
+	Date: Mon, 26 Jan 2015 12:21:42 GMT
 	c6
 	{"code":201,"message":"The agreement has been stored successfull
 	y in the SLA Repository Database. It has location http://localho
@@ -776,7 +783,7 @@ Content type: application/xml
 	02b
 	Content-Type: application/xml
 	Content-Length: 260
-	Date: Thu, 06 Nov 2014 16:33:22 GMT
+	Date: Mon, 26 Jan 2015 12:21:42 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><message 
 	code="201" message="The agreement has been stored successfully i
 	n the SLA Repository Database. It has location http://localhost:
@@ -802,7 +809,7 @@ Content type: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 150
-	Date: Thu, 06 Nov 2014 16:33:23 GMT
+	Date: Mon, 26 Jan 2015 12:21:43 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Provider with id:provider03 doesn't exist SLA 
 	Repository Database"/>
@@ -826,7 +833,7 @@ Content type: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 150
-	Date: Thu, 06 Nov 2014 16:33:23 GMT
+	Date: Mon, 26 Jan 2015 12:21:43 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Template with id:template04 doesn't exist SLA 
 	Repository Database"/>
@@ -844,20 +851,20 @@ Content type: application/xml
 	Host: localhost:8080
 	Content-type:application/xml
 	Accept:application/xml
-	Content-Length: 2747
+	Content-Length: 2504
 
 	HTTP/1.1 409 Conflict
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 160
-	Date: Thu, 06 Nov 2014 16:33:24 GMT
+	Date: Mon, 26 Jan 2015 12:21:44 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><error co
 	de="409" message="Agreement with id:agreement01 already exists i
 	n the SLA Repository Database"/>
 
 ###Get an agreement###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/agreements/agreement01?
 
@@ -870,8 +877,8 @@ Accept: application/xml
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
-	Content-Length: 2764
-	Date: Thu, 06 Nov 2014 16:33:24 GMT
+	Content-Length: 2521
+	Date: Mon, 26 Jan 2015 12:21:44 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><wsag:Agr
 	eement xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement".x
 	mlns:sla="http://sla.atos.eu" wsag:AgreementId="agreement01">.<w
@@ -908,18 +915,14 @@ Accept: application/xml
 	l>{"constraint" : "Performance GT 0.1"}</wsag:CustomServiceLevel
 	>.....</wsag:KPITarget>....</wsag:ServiceLevelObjective>....<wsa
 	g:BusinessValueList>.....<wsag:Importance>3</wsag:Importance>...
-	..<wsag:Penalty>......<wsag:AssessmentInterval>.......<wsag:Coun
-	t>10</wsag:Count>......</wsag:AssessmentInterval>......<wsag:Val
-	ueUnit>EUR</wsag:ValueUnit>......<wsag:ValueExpression>99</wsag:
-	ValueExpression>.....</wsag:Penalty>..........<wsag:Reward></wsa
-	g:Reward>.....<wsag:Preference></wsag:Preference>.....<wsag:Cust
-	omBusinessValue></wsag:CustomBusinessValue>....</wsag:BusinessVa
-	lueList>...</wsag:GuaranteeTerm>..</wsag:All>.</wsag:Terms></wsa
-	g:Agreement>
+	..<wsag:CustomBusinessValue>......<sla:Penalty type="discount" v
+	alue="100" unit="euro"/>.....</wsag:CustomBusinessValue>....</ws
+	ag:BusinessValueList>...</wsag:GuaranteeTerm>..</wsag:All>.</wsa
+	g:Terms></wsag:Agreement>
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/agreements/agreement01?
 
@@ -932,30 +935,34 @@ Accept: application/json
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
-	Content-Length: 1131
-	Date: Thu, 06 Nov 2014 16:33:24 GMT
+	Content-Length: 1349
+	Date: Mon, 26 Jan 2015 12:21:44 GMT
 	{"agreementId":"agreement01","name":"ExampleAgreement","context"
 	:{"agreementInitiator":"RandomClient","agreementResponder":"prov
-	ider01","serviceProvider":"AgreementResponder","templateId":"tem
-	plate01","service":"service01","expirationTime":"2014-03-07T12:0
-	0:00CET"},"terms":{"allTerms":{"serviceDescriptionTerm":{"name":
+	ider01","serviceProvider":"AgreementResponder","expirationTime":
+	"2014-03-07T12:00:00CET","templateId":"template01","service":"se
+	rvice01"},"terms":{"allTerms":{"serviceDescriptionTerm":{"name":
 	"SDTName2","serviceName":"ServiceName"},"serviceProperties":[{"n
 	ame":"NonFunctional","serviceName":"ServiceName","variableSet":{
 	"variables":[{"name":"ResponseTime","metric":"xs:double","locati
 	on":"qos:ResponseTime"},{"name":"Performance","metric":"xs:doubl
 	e","location":"qos:Performance"}]}}],"guaranteeTerms":[{"name":"
 	GT_ResponseTime","serviceScope":{"serviceName":"ServiceName","va
-	lue":"ScopeName1"},"qualifyingCondition":null,"serviceLevelObjet
-	ive":{"kpitarget":{"kpiName":"ResponseTime","customServiceLevel"
-	:"{\"constraint\" : \"ResponseTime LT 0.9\"}"}}},{"name":"GT_Per
-	formance","serviceScope":{"serviceName":"ServiceName","value":"S
-	copeName2"},"qualifyingCondition":null,"serviceLevelObjetive":{"
-	kpitarget":{"kpiName":"Performance","customServiceLevel":"{\"con
-	straint\" : \"Performance GT 0.1\"}"}}}]}}}
+	lue":"ScopeName1"},"qualifyingCondition":null,"businessValueList
+	":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"ResponseT
+	ime","customServiceLevel":"{\"constraint\" : \"ResponseTime LT 0
+	.9\"}"}}},{"name":"GT_Performance","serviceScope":{"serviceName"
+	:"ServiceName","value":"ScopeName2"},"qualifyingCondition":null,
+	"businessValueList":{"customBusinessValue":[{"count":1,"duration
+	":"1970-01-01T00:00:00.000+0000","penalties":[{"type":"discount"
+	,"expression":"","unit":"euro","validity":""}]}],"importance":3}
+	,"serviceLevelObjetive":{"kpitarget":{"kpiName":"Performance","c
+	ustomServiceLevel":"{\"constraint\" : \"Performance GT 0.1\"}"}}
+	}]}}}
 
 ###Get all the agreements###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/agreements?
 
@@ -968,8 +975,8 @@ Accept: application/xml
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
-	Content-Length: 8167
-	Date: Thu, 06 Nov 2014 16:33:26 GMT
+	Content-Length: 7924
+	Date: Mon, 26 Jan 2015 12:21:45 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><agreemen
 	ts><wsag:Agreement xmlns:wsag="http://www.ggf.org/namespaces/ws-
 	agreement".xmlns:sla="http://sla.atos.eu" wsag:AgreementId="agre
@@ -1006,102 +1013,98 @@ Accept: application/xml
 	mServiceLevel>{"constraint" : "Performance GT 0.1"}</wsag:Custom
 	ServiceLevel>.....</wsag:KPITarget>....</wsag:ServiceLevelObject
 	ive>....<wsag:BusinessValueList>.....<wsag:Importance>3</wsag:Im
-	portance>.....<wsag:Penalty>......<wsag:AssessmentInterval>.....
-	..<wsag:Count>10</wsag:Count>......</wsag:AssessmentInterval>...
-	...<wsag:ValueUnit>EUR</wsag:ValueUnit>......<wsag:ValueExpressi
-	on>99</wsag:ValueExpression>.....</wsag:Penalty>..........<wsag:
-	Reward></wsag:Reward>.....<wsag:Preference></wsag:Preference>...
-	..<wsag:CustomBusinessValue></wsag:CustomBusinessValue>....</wsa
-	g:BusinessValueList>...</wsag:GuaranteeTerm>..</wsag:All>.</wsag
-	:Terms></wsag:Agreement><wsag:Agreement wsag:AgreementId="agreem
-	ent02" xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement" x
-	mlns:sla="http://sla.atos.eu"><wsag:Name>ExampleAgreement</wsag:
-	Name><wsag:Context><wsag:AgreementInitiator>client-prueba</wsag:
-	AgreementInitiator><wsag:AgreementResponder>provider02</wsag:Agr
-	eementResponder><wsag:ServiceProvider>AgreementResponder</wsag:S
-	erviceProvider><wsag:ExpirationTime>2014-03-07T12:00:00CET</wsag
-	:ExpirationTime><wsag:TemplateId>template02</wsag:TemplateId><sl
-	a:Service>service02</sla:Service></wsag:Context><wsag:Terms><wsa
-	g:All><wsag:ServiceProperties wsag:Name="ServiceProperties" wsag
-	:ServiceName="ServiceName"><wsag:VariableSet><wsag:Variable wsag
-	:Name="metric1" wsag:Metric="xs:double"><wsag:Location>metric1</
-	wsag:Location></wsag:Variable><wsag:Variable wsag:Name="metric2"
-	 wsag:Metric="xs:double"><wsag:Location>metric2</wsag:Location><
-	/wsag:Variable><wsag:Variable wsag:Name="metric3" wsag:Metric="x
-	s:double"><wsag:Location>metric3</wsag:Location></wsag:Variable>
-	<wsag:Variable wsag:Name="metric4" wsag:Metric="xs:double"><wsag
-	:Location>metric4</wsag:Location></wsag:Variable></wsag:Variable
-	Set></wsag:ServiceProperties><wsag:GuaranteeTerm wsag:Name="GT_M
-	etric1"><wsag:ServiceScope wsag:ServiceName="ServiceName"></wsag
-	:ServiceScope><wsag:ServiceLevelObjective><wsag:KPITarget><wsag:
-	KPIName>metric1</wsag:KPIName><wsag:CustomServiceLevel>.......{"
-	constraint" : "metric1 BETWEEN (0.05, 1)"}......</wsag:CustomSer
-	viceLevel></wsag:KPITarget></wsag:ServiceLevelObjective></wsag:G
-	uaranteeTerm><wsag:GuaranteeTerm wsag:Name="GT_Metric2"><wsag:Se
-	rviceScope wsag:ServiceName="ServiceName"></wsag:ServiceScope><w
-	sag:ServiceLevelObjective><wsag:KPITarget><wsag:KPIName>metric2<
-	/wsag:KPIName><wsag:CustomServiceLevel>.......{"constraint" : "m
-	etric2 BETWEEN (0.1, 1)"}......</wsag:CustomServiceLevel></wsag:
-	KPITarget></wsag:ServiceLevelObjective></wsag:GuaranteeTerm><wsa
-	g:GuaranteeTerm wsag:Name="GT_Metric3"><wsag:ServiceScope wsag:S
-	erviceName="ServiceName"></wsag:ServiceScope><wsag:ServiceLevelO
-	bjective><wsag:KPITarget><wsag:KPIName>metric3</wsag:KPIName><ws
-	ag:CustomServiceLevel>.......{"constraint" : "metric3 BETWEEN (0
-	.15, 1)"}......</wsag:CustomServiceLevel></wsag:KPITarget></wsag
-	:ServiceLevelObjective></wsag:GuaranteeTerm><wsag:GuaranteeTerm 
-	wsag:Name="GT_Metric4"><wsag:ServiceScope wsag:ServiceName="Serv
-	iceName"></wsag:ServiceScope><wsag:ServiceLevelObjective><wsag:K
-	PITarget><wsag:KPIName>metric4</wsag:KPIName><wsag:CustomService
-	Level>.......{"constraint" : "metric4 BETWEEN (0.2, 1)"}......</
-	wsag:CustomServiceLevel></wsag:KPITarget></wsag:ServiceLevelObje
-	ctive></wsag:GuaranteeTerm></wsag:All></wsag:Terms></wsag:Agreem
-	ent><wsag:Agreement xmlns:wsag="http://www.ggf.org/namespaces/ws
-	-agreement".xmlns:sla="http://sla.atos.eu" wsag:AgreementId="agr
-	eement02b">.<wsag:Name>ExampleAgreement</wsag:Name>.<wsag:Contex
-	t>..<wsag:AgreementInitiator>RandomClient</wsag:AgreementInitiat
-	or>..<wsag:AgreementResponder>provider02</wsag:AgreementResponde
-	r>..<wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvid
-	er>..<wsag:ExpirationTime>2014-03-07T12:00:00+0100</wsag:Expirat
-	ionTime>..<wsag:TemplateId>template02</wsag:TemplateId>..<sla:Se
-	rvice>service02</sla:Service>.....</wsag:Context>.<wsag:Terms>..
-	<wsag:All>...<wsag:ServiceDescriptionTerm wsag:Name="SDTName1" w
-	sag:ServiceName="ServiceName">....DSL expression...</wsag:Servic
-	eDescriptionTerm>...<wsag:ServiceDescriptionTerm wsag:Name="SDTN
-	ame2" wsag:ServiceName="ServiceName">....DSL expression...</wsag
-	:ServiceDescriptionTerm>...<wsag:ServiceProperties wsag:Name="No
-	nFunctional" wsag:ServiceName="ServiceName">....<wsag:VariableSe
-	t>.....<wsag:Variable wsag:Name="ResponseTime" wsag:Metric="xs:d
-	ouble">......<wsag:Location>qos:ResponseTime</wsag:Location>....
-	.</wsag:Variable>.....<wsag:Variable wsag:Name="Performance" wsa
-	g:Metric="xs:double">......<wsag:Location>qos:Performance</wsag:
-	Location>.....</wsag:Variable>....</wsag:VariableSet>...</wsag:S
-	erviceProperties>...<wsag:GuaranteeTerm wsag:Name="GT_ResponseTi
-	me">....<wsag:ServiceScope wsag:ServiceName="ServiceName">ScopeN
-	ame1</wsag:ServiceScope>....<wsag:ServiceLevelObjective>.....<ws
-	ag:KPITarget>......<wsag:KPIName>ResponseTime</wsag:KPIName> <!-
-	-  same name as property for the moment -->......<wsag:CustomSer
-	viceLevel>{"constraint" : "ResponseTime LT 0.9"}</wsag:CustomSer
-	viceLevel>.....</wsag:KPITarget>....</wsag:ServiceLevelObjective
-	>...</wsag:GuaranteeTerm>...<wsag:GuaranteeTerm wsag:Name="GT_Pe
-	rformance">....<wsag:ServiceScope wsag:ServiceName="ServiceName"
-	>ScopeName2</wsag:ServiceScope>....<wsag:ServiceLevelObjective>.
-	....<wsag:KPITarget>......<wsag:KPIName>Performance</wsag:KPINam
-	e> <!--  same name as property for the moment -->......<wsag:Cus
-	tomServiceLevel>{"constraint" : "Performance GT 0.1"}</wsag:Cust
-	omServiceLevel>.....</wsag:KPITarget>....</wsag:ServiceLevelObje
-	ctive>....<wsag:BusinessValueList>.....<wsag:Importance>3</wsag:
-	Importance>.....<wsag:Penalty>......<wsag:AssessmentInterval>...
-	....<wsag:Count>10</wsag:Count>......</wsag:AssessmentInterval>.
-	.....<wsag:ValueUnit>EUR</wsag:ValueUnit>......<wsag:ValueExpres
-	sion>99</wsag:ValueExpression>.....</wsag:Penalty>..........<wsa
-	g:Reward></wsag:Reward>.....<wsag:Preference></wsag:Preference>.
-	....<wsag:CustomBusinessValue></wsag:CustomBusinessValue>....</w
-	sag:BusinessValueList>...</wsag:GuaranteeTerm>..</wsag:All>.</ws
-	ag:Terms></wsag:Agreement></agreements>
+	portance>.....<wsag:CustomBusinessValue>......<sla:Penalty type=
+	"discount" value="100" unit="euro"/>.....</wsag:CustomBusinessVa
+	lue>....</wsag:BusinessValueList>...</wsag:GuaranteeTerm>..</wsa
+	g:All>.</wsag:Terms></wsag:Agreement><wsag:Agreement wsag:Agreem
+	entId="agreement02" xmlns:wsag="http://www.ggf.org/namespaces/ws
+	-agreement" xmlns:sla="http://sla.atos.eu"><wsag:Name>ExampleAgr
+	eement</wsag:Name><wsag:Context><wsag:AgreementInitiator>client-
+	prueba</wsag:AgreementInitiator><wsag:AgreementResponder>provide
+	r02</wsag:AgreementResponder><wsag:ServiceProvider>AgreementResp
+	onder</wsag:ServiceProvider><wsag:ExpirationTime>2014-03-07T12:0
+	0:00CET</wsag:ExpirationTime><wsag:TemplateId>template02</wsag:T
+	emplateId><sla:Service>service02</sla:Service></wsag:Context><ws
+	ag:Terms><wsag:All><wsag:ServiceProperties wsag:Name="ServicePro
+	perties" wsag:ServiceName="ServiceName"><wsag:VariableSet><wsag:
+	Variable wsag:Name="metric1" wsag:Metric="xs:double"><wsag:Locat
+	ion>metric1</wsag:Location></wsag:Variable><wsag:Variable wsag:N
+	ame="metric2" wsag:Metric="xs:double"><wsag:Location>metric2</ws
+	ag:Location></wsag:Variable><wsag:Variable wsag:Name="metric3" w
+	sag:Metric="xs:double"><wsag:Location>metric3</wsag:Location></w
+	sag:Variable><wsag:Variable wsag:Name="metric4" wsag:Metric="xs:
+	double"><wsag:Location>metric4</wsag:Location></wsag:Variable></
+	wsag:VariableSet></wsag:ServiceProperties><wsag:GuaranteeTerm ws
+	ag:Name="GT_Metric1"><wsag:ServiceScope wsag:ServiceName="Servic
+	eName"></wsag:ServiceScope><wsag:ServiceLevelObjective><wsag:KPI
+	Target><wsag:KPIName>metric1</wsag:KPIName><wsag:CustomServiceLe
+	vel>.......{"constraint" : "metric1 BETWEEN (0.05, 1)"}......</w
+	sag:CustomServiceLevel></wsag:KPITarget></wsag:ServiceLevelObjec
+	tive></wsag:GuaranteeTerm><wsag:GuaranteeTerm wsag:Name="GT_Metr
+	ic2"><wsag:ServiceScope wsag:ServiceName="ServiceName"></wsag:Se
+	rviceScope><wsag:ServiceLevelObjective><wsag:KPITarget><wsag:KPI
+	Name>metric2</wsag:KPIName><wsag:CustomServiceLevel>.......{"con
+	straint" : "metric2 BETWEEN (0.1, 1)"}......</wsag:CustomService
+	Level></wsag:KPITarget></wsag:ServiceLevelObjective></wsag:Guara
+	nteeTerm><wsag:GuaranteeTerm wsag:Name="GT_Metric3"><wsag:Servic
+	eScope wsag:ServiceName="ServiceName"></wsag:ServiceScope><wsag:
+	ServiceLevelObjective><wsag:KPITarget><wsag:KPIName>metric3</wsa
+	g:KPIName><wsag:CustomServiceLevel>.......{"constraint" : "metri
+	c3 BETWEEN (0.15, 1)"}......</wsag:CustomServiceLevel></wsag:KPI
+	Target></wsag:ServiceLevelObjective></wsag:GuaranteeTerm><wsag:G
+	uaranteeTerm wsag:Name="GT_Metric4"><wsag:ServiceScope wsag:Serv
+	iceName="ServiceName"></wsag:ServiceScope><wsag:ServiceLevelObje
+	ctive><wsag:KPITarget><wsag:KPIName>metric4</wsag:KPIName><wsag:
+	CustomServiceLevel>.......{"constraint" : "metric4 BETWEEN (0.2,
+	 1)"}......</wsag:CustomServiceLevel></wsag:KPITarget></wsag:Ser
+	viceLevelObjective></wsag:GuaranteeTerm></wsag:All></wsag:Terms>
+	</wsag:Agreement><wsag:Agreement xmlns:wsag="http://www.ggf.org/
+	namespaces/ws-agreement".xmlns:sla="http://sla.atos.eu" wsag:Agr
+	eementId="agreement02b">.<wsag:Name>ExampleAgreement</wsag:Name>
+	.<wsag:Context>..<wsag:AgreementInitiator>RandomClient</wsag:Agr
+	eementInitiator>..<wsag:AgreementResponder>provider02</wsag:Agre
+	ementResponder>..<wsag:ServiceProvider>AgreementResponder</wsag:
+	ServiceProvider>..<wsag:ExpirationTime>2014-03-07T12:00:00+0100<
+	/wsag:ExpirationTime>..<wsag:TemplateId>template02</wsag:Templat
+	eId>..<sla:Service>service02</sla:Service>.....</wsag:Context>.<
+	wsag:Terms>..<wsag:All>...<wsag:ServiceDescriptionTerm wsag:Name
+	="SDTName1" wsag:ServiceName="ServiceName">....DSL expression...
+	</wsag:ServiceDescriptionTerm>...<wsag:ServiceDescriptionTerm ws
+	ag:Name="SDTName2" wsag:ServiceName="ServiceName">....DSL expres
+	sion...</wsag:ServiceDescriptionTerm>...<wsag:ServiceProperties 
+	wsag:Name="NonFunctional" wsag:ServiceName="ServiceName">....<ws
+	ag:VariableSet>.....<wsag:Variable wsag:Name="ResponseTime" wsag
+	:Metric="xs:double">......<wsag:Location>qos:ResponseTime</wsag:
+	Location>.....</wsag:Variable>.....<wsag:Variable wsag:Name="Per
+	formance" wsag:Metric="xs:double">......<wsag:Location>qos:Perfo
+	rmance</wsag:Location>.....</wsag:Variable>....</wsag:VariableSe
+	t>...</wsag:ServiceProperties>...<wsag:GuaranteeTerm wsag:Name="
+	GT_ResponseTime">....<wsag:ServiceScope wsag:ServiceName="Servic
+	eName">ScopeName1</wsag:ServiceScope>....<wsag:ServiceLevelObjec
+	tive>.....<wsag:KPITarget>......<wsag:KPIName>ResponseTime</wsag
+	:KPIName> <!--  same name as property for the moment -->......<w
+	sag:CustomServiceLevel>{"constraint" : "ResponseTime LT 0.9"}</w
+	sag:CustomServiceLevel>.....</wsag:KPITarget>....</wsag:ServiceL
+	evelObjective>...</wsag:GuaranteeTerm>...<wsag:GuaranteeTerm wsa
+	g:Name="GT_Performance">....<wsag:ServiceScope wsag:ServiceName=
+	"ServiceName">ScopeName2</wsag:ServiceScope>....<wsag:ServiceLev
+	elObjective>.....<wsag:KPITarget>......<wsag:KPIName>Performance
+	</wsag:KPIName> <!--  same name as property for the moment -->..
+	....<wsag:CustomServiceLevel>{"constraint" : "Performance GT 0.1
+	"}</wsag:CustomServiceLevel>.....</wsag:KPITarget>....</wsag:Ser
+	viceLevelObjective>....<wsag:BusinessValueList>.....<wsag:Import
+	ance>3</wsag:Importance>.....<wsag:Penalty>......<wsag:Assessmen
+	tInterval>.......<wsag:Count>10</wsag:Count>......</wsag:Assessm
+	entInterval>......<wsag:ValueUnit>EUR</wsag:ValueUnit>......<wsa
+	g:ValueExpression>99</wsag:ValueExpression>.....</wsag:Penalty>.
+	.........<wsag:Reward></wsag:Reward>.....<wsag:Preference></wsag
+	:Preference>.....<wsag:CustomBusinessValue></wsag:CustomBusiness
+	Value>....</wsag:BusinessValueList>...</wsag:GuaranteeTerm>..</w
+	sag:All>.</wsag:Terms></wsag:Agreement></agreements>
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/agreements?
 
@@ -1114,75 +1117,82 @@ Accept: application/json
 	HTTP/1.1 200 OK
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
-	Content-Length: 4005
-	Date: Thu, 06 Nov 2014 16:33:26 GMT
+	Content-Length: 4478
+	Date: Mon, 26 Jan 2015 12:21:45 GMT
 	[{"agreementId":"agreement01","name":"ExampleAgreement","context
 	":{"agreementInitiator":"RandomClient","agreementResponder":"pro
-	vider01","serviceProvider":"AgreementResponder","templateId":"te
-	mplate01","service":"service01","expirationTime":"2014-03-07T12:
-	00:00CET"},"terms":{"allTerms":{"serviceDescriptionTerm":{"name"
+	vider01","serviceProvider":"AgreementResponder","expirationTime"
+	:"2014-03-07T12:00:00CET","templateId":"template01","service":"s
+	ervice01"},"terms":{"allTerms":{"serviceDescriptionTerm":{"name"
 	:"SDTName2","serviceName":"ServiceName"},"serviceProperties":[{"
 	name":"NonFunctional","serviceName":"ServiceName","variableSet":
 	{"variables":[{"name":"ResponseTime","metric":"xs:double","locat
 	ion":"qos:ResponseTime"},{"name":"Performance","metric":"xs:doub
 	le","location":"qos:Performance"}]}}],"guaranteeTerms":[{"name":
 	"GT_ResponseTime","serviceScope":{"serviceName":"ServiceName","v
-	alue":"ScopeName1"},"qualifyingCondition":null,"serviceLevelObje
-	tive":{"kpitarget":{"kpiName":"ResponseTime","customServiceLevel
-	":"{\"constraint\" : \"ResponseTime LT 0.9\"}"}}},{"name":"GT_Pe
-	rformance","serviceScope":{"serviceName":"ServiceName","value":"
-	ScopeName2"},"qualifyingCondition":null,"serviceLevelObjetive":{
-	"kpitarget":{"kpiName":"Performance","customServiceLevel":"{\"co
-	nstraint\" : \"Performance GT 0.1\"}"}}}]}}},{"agreementId":"agr
-	eement02","name":"ExampleAgreement","context":{"agreementInitiat
-	or":"client-prueba","agreementResponder":"provider02","servicePr
-	ovider":"AgreementResponder","templateId":"template02","service"
-	:"service02","expirationTime":"2014-03-07T12:00:00CET"},"terms":
-	{"allTerms":{"serviceDescriptionTerm":null,"serviceProperties":[
-	{"name":"ServiceProperties","serviceName":"ServiceName","variabl
-	eSet":{"variables":[{"name":"metric1","metric":"xs:double","loca
-	tion":"metric1"},{"name":"metric2","metric":"xs:double","locatio
-	n":"metric2"},{"name":"metric3","metric":"xs:double","location":
-	"metric3"},{"name":"metric4","metric":"xs:double","location":"me
-	tric4"}]}}],"guaranteeTerms":[{"name":"GT_Metric1","serviceScope
-	":{"serviceName":"ServiceName","value":""},"qualifyingCondition"
-	:null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"metric1","
-	customServiceLevel":"\t\t\t\t\t\t\t{\"constraint\" : \"metric1 B
-	ETWEEN (0.05, 1)\"}\t\t\t\t\t\t"}}},{"name":"GT_Metric2","servic
-	eScope":{"serviceName":"ServiceName","value":""},"qualifyingCond
-	ition":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"metr
-	ic2","customServiceLevel":"\t\t\t\t\t\t\t{\"constraint\" : \"met
-	ric2 BETWEEN (0.1, 1)\"}\t\t\t\t\t\t"}}},{"name":"GT_Metric3","s
-	erviceScope":{"serviceName":"ServiceName","value":""},"qualifyin
-	gCondition":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":
-	"metric3","customServiceLevel":"\t\t\t\t\t\t\t{\"constraint\" : 
-	\"metric3 BETWEEN (0.15, 1)\"}\t\t\t\t\t\t"}}},{"name":"GT_Metri
-	c4","serviceScope":{"serviceName":"ServiceName","value":""},"qua
-	lifyingCondition":null,"serviceLevelObjetive":{"kpitarget":{"kpi
-	Name":"metric4","customServiceLevel":"\t\t\t\t\t\t\t{\"constrain
-	t\" : \"metric4 BETWEEN (0.2, 1)\"}\t\t\t\t\t\t"}}}]}}},{"agreem
-	entId":"agreement02b","name":"ExampleAgreement","context":{"agre
-	ementInitiator":"RandomClient","agreementResponder":"provider02"
-	,"serviceProvider":"AgreementResponder","templateId":"template02
-	","service":"service02","expirationTime":"2014-03-07T12:00:00CET
-	"},"terms":{"allTerms":{"serviceDescriptionTerm":{"name":"SDTNam
-	e2","serviceName":"ServiceName"},"serviceProperties":[{"name":"N
-	onFunctional","serviceName":"ServiceName","variableSet":{"variab
-	les":[{"name":"ResponseTime","metric":"xs:double","location":"qo
-	s:ResponseTime"},{"name":"Performance","metric":"xs:double","loc
-	ation":"qos:Performance"}]}}],"guaranteeTerms":[{"name":"GT_Resp
-	onseTime","serviceScope":{"serviceName":"ServiceName","value":"S
-	copeName1"},"qualifyingCondition":null,"serviceLevelObjetive":{"
-	kpitarget":{"kpiName":"ResponseTime","customServiceLevel":"{\"co
-	nstraint\" : \"ResponseTime LT 0.9\"}"}}},{"name":"GT_Performanc
-	e","serviceScope":{"serviceName":"ServiceName","value":"ScopeNam
-	e2"},"qualifyingCondition":null,"serviceLevelObjetive":{"kpitarg
-	et":{"kpiName":"Performance","customServiceLevel":"{\"constraint
-	\" : \"Performance GT 0.1\"}"}}}]}}}]
+	alue":"ScopeName1"},"qualifyingCondition":null,"businessValueLis
+	t":null,"serviceLevelObjetive":{"kpitarget":{"kpiName":"Response
+	Time","customServiceLevel":"{\"constraint\" : \"ResponseTime LT 
+	0.9\"}"}}},{"name":"GT_Performance","serviceScope":{"serviceName
+	":"ServiceName","value":"ScopeName2"},"qualifyingCondition":null
+	,"businessValueList":{"customBusinessValue":[{"count":1,"duratio
+	n":"1970-01-01T00:00:00.000+0000","penalties":[{"type":"discount
+	","expression":"","unit":"euro","validity":""}]}],"importance":3
+	},"serviceLevelObjetive":{"kpitarget":{"kpiName":"Performance","
+	customServiceLevel":"{\"constraint\" : \"Performance GT 0.1\"}"}
+	}}]}}},{"agreementId":"agreement02","name":"ExampleAgreement","c
+	ontext":{"agreementInitiator":"client-prueba","agreementResponde
+	r":"provider02","serviceProvider":"AgreementResponder","expirati
+	onTime":"2014-03-07T12:00:00CET","templateId":"template02","serv
+	ice":"service02"},"terms":{"allTerms":{"serviceDescriptionTerm":
+	null,"serviceProperties":[{"name":"ServiceProperties","serviceNa
+	me":"ServiceName","variableSet":{"variables":[{"name":"metric1",
+	"metric":"xs:double","location":"metric1"},{"name":"metric2","me
+	tric":"xs:double","location":"metric2"},{"name":"metric3","metri
+	c":"xs:double","location":"metric3"},{"name":"metric4","metric":
+	"xs:double","location":"metric4"}]}}],"guaranteeTerms":[{"name":
+	"GT_Metric1","serviceScope":{"serviceName":"ServiceName","value"
+	:""},"qualifyingCondition":null,"businessValueList":null,"servic
+	eLevelObjetive":{"kpitarget":{"kpiName":"metric1","customService
+	Level":"\t\t\t\t\t\t\t{\"constraint\" : \"metric1 BETWEEN (0.05,
+	 1)\"}\t\t\t\t\t\t"}}},{"name":"GT_Metric2","serviceScope":{"ser
+	viceName":"ServiceName","value":""},"qualifyingCondition":null,"
+	businessValueList":null,"serviceLevelObjetive":{"kpitarget":{"kp
+	iName":"metric2","customServiceLevel":"\t\t\t\t\t\t\t{\"constrai
+	nt\" : \"metric2 BETWEEN (0.1, 1)\"}\t\t\t\t\t\t"}}},{"name":"GT
+	_Metric3","serviceScope":{"serviceName":"ServiceName","value":""
+	},"qualifyingCondition":null,"businessValueList":null,"serviceLe
+	velObjetive":{"kpitarget":{"kpiName":"metric3","customServiceLev
+	el":"\t\t\t\t\t\t\t{\"constraint\" : \"metric3 BETWEEN (0.15, 1)
+	\"}\t\t\t\t\t\t"}}},{"name":"GT_Metric4","serviceScope":{"servic
+	eName":"ServiceName","value":""},"qualifyingCondition":null,"bus
+	inessValueList":null,"serviceLevelObjetive":{"kpitarget":{"kpiNa
+	me":"metric4","customServiceLevel":"\t\t\t\t\t\t\t{\"constraint\
+	" : \"metric4 BETWEEN (0.2, 1)\"}\t\t\t\t\t\t"}}}]}}},{"agreemen
+	tId":"agreement02b","name":"ExampleAgreement","context":{"agreem
+	entInitiator":"RandomClient","agreementResponder":"provider02","
+	serviceProvider":"AgreementResponder","expirationTime":"2014-03-
+	07T12:00:00CET","templateId":"template02","service":"service02"}
+	,"terms":{"allTerms":{"serviceDescriptionTerm":{"name":"SDTName2
+	","serviceName":"ServiceName"},"serviceProperties":[{"name":"Non
+	Functional","serviceName":"ServiceName","variableSet":{"variable
+	s":[{"name":"ResponseTime","metric":"xs:double","location":"qos:
+	ResponseTime"},{"name":"Performance","metric":"xs:double","locat
+	ion":"qos:Performance"}]}}],"guaranteeTerms":[{"name":"GT_Respon
+	seTime","serviceScope":{"serviceName":"ServiceName","value":"Sco
+	peName1"},"qualifyingCondition":null,"businessValueList":null,"s
+	erviceLevelObjetive":{"kpitarget":{"kpiName":"ResponseTime","cus
+	tomServiceLevel":"{\"constraint\" : \"ResponseTime LT 0.9\"}"}}}
+	,{"name":"GT_Performance","serviceScope":{"serviceName":"Service
+	Name","value":"ScopeName2"},"qualifyingCondition":null,"business
+	ValueList":{"customBusinessValue":[{"count":1,"duration":"1970-0
+	1-01T00:00:00.000+0000","penalties":[]}],"importance":3},"servic
+	eLevelObjetive":{"kpitarget":{"kpiName":"Performance","customSer
+	viceLevel":"{\"constraint\" : \"Performance GT 0.1\"}"}}}]}}}]
 
 ###Get agreement status###
 
-Accept: application/xml
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/agreements/agreement02/guaranteestatus?
 
@@ -1197,7 +1207,7 @@ Accept: application/xml
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Content-Length: 391
-	Date: Thu, 06 Nov 2014 16:33:27 GMT
+	Date: Mon, 26 Jan 2015 12:21:46 GMT
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><guarante
 	estatus AgreementId="agreement02" value="NON_DETERMINED"><guaran
 	teetermstatus name="GT_Metric1" value="NON_DETERMINED"/><guarant
@@ -1208,7 +1218,7 @@ Accept: application/xml
 
 ---
 
-Accept: application/json
+Accept: 200
 
 	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/agreements/agreement02/guaranteestatus?
 
@@ -1223,13 +1233,13 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/json
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:27 GMT
-	113
-	{"AgreementId":"agreement02","guaranteestatus":"NON_DETERMINED",
-	"guaranteeterms":[{"name":"GT_Metric1","status":"NON_DETERMINED"
-	},{"name":"GT_Metric2","status":"NON_DETERMINED"},{"name":"GT_Me
-	tric3","status":"NON_DETERMINED"},{"name":"GT_Metric4","status":
-	"NON_DETERMINED"}]}
+	Date: Mon, 26 Jan 2015 12:21:46 GMT
+	10a
+	{"value":"NON_DETERMINED","AgreementId":"agreement02","guarantee
+	termstatus":[{"name":"GT_Metric1","value":"NON_DETERMINED"},{"na
+	me":"GT_Metric2","value":"NON_DETERMINED"},{"name":"GT_Metric3",
+	"value":"NON_DETERMINED"},{"name":"GT_Metric4","value":"NON_DETE
+	RMINED"}]}
 
 ###Delete an agreement###
 
@@ -1247,7 +1257,7 @@ Accept: application/json
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:27 GMT
+	Date: Mon, 26 Jan 2015 12:21:47 GMT
 	4f
 	The agreement id agreement02bwith it's enforcement job was succe
 	ssfully deleted
@@ -1269,13 +1279,242 @@ Agreement not exists
 	Server: Apache-Coyote/1.1
 	Content-Type: application/xml
 	Transfer-Encoding: chunked
-	Date: Thu, 06 Nov 2014 16:33:28 GMT
+	Date: Mon, 26 Jan 2015 12:21:47 GMT
 	9d
 	<?xml version="1.0" encoding="UTF-8" standalone="yes"?>.<error c
 	ode="404" message="There is no agreement with id notexists in th
 	e SLA Repository Database"/>.
 
+###Get agreement status###
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/agreements/agreement02/guaranteestatus?
+
+	GET /sla-service/agreements/agreement02/guaranteestatus? HTTP/1.
+	1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/xml
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/xml
+	Content-Length: 391
+	Date: Mon, 26 Jan 2015 12:21:47 GMT
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><guarante
+	estatus AgreementId="agreement02" value="NON_DETERMINED"><guaran
+	teetermstatus name="GT_Metric1" value="NON_DETERMINED"/><guarant
+	eetermstatus name="GT_Metric2" value="NON_DETERMINED"/><guarante
+	etermstatus name="GT_Metric3" value="NON_DETERMINED"/><guarantee
+	termstatus name="GT_Metric4" value="NON_DETERMINED"/></guarantee
+	status>
+
+---
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/agreements/agreement02/guaranteestatus?
+
+	GET /sla-service/agreements/agreement02/guaranteestatus? HTTP/1.
+	1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/json
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/json
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:49 GMT
+	10a
+	{"value":"NON_DETERMINED","AgreementId":"agreement02","guarantee
+	termstatus":[{"name":"GT_Metric1","value":"NON_DETERMINED"},{"na
+	me":"GT_Metric2","value":"NON_DETERMINED"},{"name":"GT_Metric3",
+	"value":"NON_DETERMINED"},{"name":"GT_Metric4","value":"NON_DETE
+	RMINED"}]}
+
+##Enforcement Jobs<a name="enforcements"></a>##
+
+###Start enforcement job###
+
+Content type: 
+
+	$ /usr/bin/curl -u user:password -X PUT http://localhost:8080/sla-service/enforcements/agreement02/start
+
+	PUT /sla-service/enforcements/agreement02/start HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept: */*
+
+	HTTP/1.1 202 Accepted
+	Server: Apache-Coyote/1.1
+	Content-Type: text/plain
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:49 GMT
+	3f
+	The enforcement job with agreement-uuid agreement02 has started
+
+###Stop enforcement job###
+
+Content type: 
+
+	$ /usr/bin/curl -u user:password -X PUT http://localhost:8080/sla-service/enforcements/agreement02/stop
+
+	PUT /sla-service/enforcements/agreement02/stop HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept: */*
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: text/plain
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:49 GMT
+	3f
+	The enforcement job with agreement-uuid agreement02 has stopped
+
 ##Violations<a name="violations"></a>##
 
+Content type: 
+
+	$ /usr/bin/curl -u user:password -X PUT http://localhost:8080/sla-service/enforcements/agreement01/start
+
+	PUT /sla-service/enforcements/agreement01/start HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept: */*
+
+	HTTP/1.1 202 Accepted
+	Server: Apache-Coyote/1.1
+	Content-Type: text/plain
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:51 GMT
+	3f
+	The enforcement job with agreement-uuid agreement01 has started
+
+---
+
+Content type: application/json
+
+	$ /usr/bin/curl -u user:password -d@samples/appendix/metric01.json -X POST -H Content-type:application/json http://localhost:8080/sla-service/enforcement-test/agreement01
+
+	POST /sla-service/enforcement-test/agreement01 HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept: */*
+	Content-type:application/json
+	Content-Length: 77
+	{."key": "Performance",."value": "0",."datetime": "2014-08-25T12
+	:54:00+0000"}
+
+	HTTP/1.1 202 Accepted
+	Server: Apache-Coyote/1.1
+	Content-Type: text/plain
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:51 GMT
+	10
+	Metrics received
+
 ###Get all the violations###
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/violations?
+
+	GET /sla-service/violations? HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/xml
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/xml
+	Content-Length: 387
+	Date: Mon, 26 Jan 2015 12:21:56 GMT
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><violatio
+	ns><violation><uuid>67c764e4-1272-4bdc-a2bd-affee26a2694</uuid><
+	contract_uuid>agreement01</contract_uuid><service_name>ServiceNa
+	me</service_name><service_scope>ScopeName2</service_scope><metri
+	c_name>Performance</metric_name><datetime>2014-08-25T14:54:00CES
+	T</datetime><actual_value>0</actual_value></violation></violatio
+	ns>
+
+---
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/violations?
+
+	GET /sla-service/violations? HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/json
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/json
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:56 GMT
+	dd
+	[{"uuid":"67c764e4-1272-4bdc-a2bd-affee26a2694","datetime":"2014
+	-08-25T14:54:00CEST","contract_uuid":"agreement01","service_name
+	":"ServiceName","service_scope":"ScopeName2","metric_name":"Perf
+	ormance","actual_value":"0"}]
+
+##Penalties<a name="penalties"></a>##
+
+###Get all the penalties###
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/xml http://localhost:8080/sla-service/penalties?
+
+	GET /sla-service/penalties? HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/xml
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/xml
+	Content-Length: 377
+	Date: Mon, 26 Jan 2015 12:21:56 GMT
+	<?xml version="1.0" encoding="UTF-8" standalone="yes"?><penaltie
+	s><penalty xmlns:sla="http://sla.atos.eu" xmlns:wsag="http://www
+	.ggf.org/namespaces/ws-agreement"><uuid>daa8c54c-5c52-4efe-8e4c-
+	a5b7f31cf3fb</uuid><agreement>agreement01</agreement><datetime>2
+	015-01-26T13:21:51CET</datetime><definition type="discount" expr
+	ession="" unit="euro" validity=""/></penalty></penalties>
+
+---
+
+Accept: 200
+
+	$ /usr/bin/curl -u user:password -X GET -H Accept:application/json http://localhost:8080/sla-service/penalties?
+
+	GET /sla-service/penalties? HTTP/1.1
+	Authorization: Basic dXNlcjpwYXNzd29yZA==
+	User-Agent: curl/7.38.0
+	Host: localhost:8080
+	Accept:application/json
+
+	HTTP/1.1 200 OK
+	Server: Apache-Coyote/1.1
+	Content-Type: application/json
+	Transfer-Encoding: chunked
+	Date: Mon, 26 Jan 2015 12:21:58 GMT
+	bc
+	[{"uuid":"daa8c54c-5c52-4efe-8e4c-a5b7f31cf3fb","datetime":"2015
+	-01-26T13:21:51CET","definition":{"type":"discount","expression"
+	:"","unit":"euro","validity":""},"agreement":"agreement01"}]
 

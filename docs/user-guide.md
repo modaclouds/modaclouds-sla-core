@@ -7,6 +7,7 @@
 * [Agreements](#agreements)
 * [Enforcement Jobs](#enforcement-jobs)
 * [Violations](#violations)
+* [Penalties](#penalties)
 
 ## <a name="rest">API Introduction</a> ##
 
@@ -27,7 +28,8 @@ The REST interface to the sla-core system has the following conventions:
   header (if specified). The request may have an Accept header, that will be used if the resource allows more than one 
   Content-type.
 * Updating an entity involves a PUT request, with the corresponding resource serialized in the body in the format 
-  specified in the content-type header. The return code is 200. 
+  specified in the content-type header. The return code is 200.
+* If a query has begin and/or end parameters, the following search is done: `begin <= entity date < end`
 
 ## <a name="operations">Generic operations</a> ##
 
@@ -782,6 +784,52 @@ Parameters:
 * providerId: if specified, search the violations raised by this provider.
 * begin: if specified, set a lower limit of date of violations to search,
 * end: if specified, set an upper limit of date of violations to search.
+
+Error message:
+
+* 404 when erroneous data is provided in the call 
+
+---
+
+## <a name="penalties">Penalties</a> ##
+
+* Penalties collection URI: /penalties
+* Penalty URI: /penalties/{uuid}
+
+A penalty is serialized in XML as:
+
+	<penalty xmlns:sla="http://sla.atos.eu" xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement">
+		<uuid>ec7fd8ec-d917-49a2-ad80-80ff9aa8269c</uuid>
+		<agreement>agreement-a</agreement>
+		<datetime>2015-01-21T18:42:00CET</datetime>
+		<definition type="discount" expression="35" unit="%" validity="P1D"/>
+	</penalty>	
+
+A penalty is serialized in JSON as:
+
+	{
+		"uuid":"bfc4bc66-d647-453a-b813-d130f6116daf",
+		"datetime":"2015-01-21T18:49:00CET",
+		"definition":{
+			"type":"discount",
+			"expression":"35",
+			"unit":"%",
+			"validity":"P1D"
+		},
+		"agreement":"agreement-a"
+	}
+
+###GET /penalties/{uuid}###
+Retrieves information from a penalty identified by the uuid.
+
+###GET /penalties{?agreementId,guaranteeTerm,begin,end}###
+
+Parameters:
+
+* agreementId: if specified, search the penalties of the agreement with this agreementId,
+* guaranteeTerm: if specified, search the penalties of the guarantee term with this name (GuaranteeTerm[@name]),
+* begin: if specified, set a lower limit of date of penalties to search,
+* end: if specified, set an upper limit of date of penalties to search.
 
 Error message:
 

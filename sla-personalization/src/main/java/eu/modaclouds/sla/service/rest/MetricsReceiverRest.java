@@ -26,7 +26,7 @@ import eu.atos.sla.enforcement.IEnforcementService;
 import eu.atos.sla.monitoring.IMonitoringMetric;
 
 @Path("/metrics")
-@Component
+@Component("modacloudsMetricsReceiverRest")
 @Scope("request")
 @Transactional
 public class MetricsReceiverRest extends AbstractSLARest {

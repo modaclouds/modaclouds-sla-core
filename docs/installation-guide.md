@@ -47,7 +47,7 @@ Create a user:
 
 	mysql> CREATE USER atossla@localhost IDENTIFIED BY '_atossla_';
 	mysql> GRANT ALL PRIVILEGES ON atossla.* TO atossla@localhost; -- * optional WITH GRANT OPTION;
-	
+
 From command prompt, create needed tables:
 
 	$ mvn test exec:java -f sla-repository/pom.xml

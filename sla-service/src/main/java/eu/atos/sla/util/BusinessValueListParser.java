@@ -91,6 +91,7 @@ public class BusinessValueListParser {
 	/*
 	 * this method parses CustomBusinessValue if jaxb deserialized it as a Node.
 	 */
+	@SuppressWarnings("unused")
 	private void parseCustomBusinessValuesOld(BusinessValueList bvlXml,
 			IBusinessValueList businessValueList) throws JAXBException {
 		if (bvlXml.getCustomBusinessValue() != null) {
