@@ -65,12 +65,12 @@
 		<property name="maxPoolSize" value="30" />
 		<property name="queueCapacity" value="1" />
 	</bean>	
-
+<!-- 
 	<bean id="notificationManager"	class="eu.atos.sla.notification.NotifierManager">
 		<property name="agreementEnforcementNotifier">
 			<bean class="${enforcement.notification.class}"/>
 		 </property>
 	</bean>	
-
+ -->
 
 </beans>

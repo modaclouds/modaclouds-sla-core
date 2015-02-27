@@ -19,9 +19,19 @@
 		<property name="locations">
 			<list>
 				<value>classpath:datasource.properties</value>
+				<value>classpath:modaclouds.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true"/>
 	</bean>
+
+	<bean id="notificationManager"	class="eu.atos.sla.notification.NotifierManager">
+		<property name="agreementEnforcementNotifier">
+			<bean class="eu.modaclouds.sla.notification.RestNotifier">
+				<constructor-arg value="http://localhost:8080/sla-service/accounting" />
+				<constructor-arg value="application/json" />
+			</bean>
+		 </property>
+	</bean>	
 
 </beans>

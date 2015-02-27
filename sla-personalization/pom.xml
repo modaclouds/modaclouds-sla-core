@@ -40,9 +40,21 @@
 		</dependency>
 
 		<dependency>
+			<groupId>it.polimi.modaclouds.qos-models</groupId>
+			<artifactId>qos-models</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey-version}</version>
 		</dependency>
 	</dependencies>
 	<build>

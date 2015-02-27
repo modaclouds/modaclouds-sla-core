@@ -29,7 +29,7 @@ import eu.atos.sla.monitoring.IMonitoringMetric;
 @Component("modacloudsMetricsReceiverRest")
 @Scope("request")
 @Transactional
-public class MetricsReceiverRest extends AbstractSLARest {
+public class MetricsReceiverRest extends eu.atos.sla.service.rest.AbstractSLARest {
 	private static Logger logger = LoggerFactory.getLogger(MetricsReceiverRest.class);
 
 	@Autowired
