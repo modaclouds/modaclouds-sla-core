@@ -11,7 +11,9 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.test.annotation.IfProfileValue;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import eu.atos.sla.datamodel.IAgreement;
 import eu.atos.sla.datamodel.IGuaranteeTerm;
@@ -35,6 +37,7 @@ import eu.modaclouds.sla.notification.RestNotifier.RestNotifierException;
  *  
  * @author rsosa
  */
+@RunWith(SpringJUnit4ClassRunner.class)
 @IfProfileValue(name="test-profile", value="IntegrationTest")
 public class RestNotifierTest {
 	private static final String ACCOUNTING_URL = "ACCOUNTING_URL";
