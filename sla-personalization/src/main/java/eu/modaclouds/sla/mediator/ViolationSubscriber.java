@@ -66,7 +66,7 @@ public class ViolationSubscriber {
 		}
 		
 		public ViolationSubscriber getSubscriber(IAgreement agreement) {
-			return new ViolationSubscriber(metricsBaseUrl, callbackBaseUrl, agreement);
+			return new ViolationSubscriber(metricsBaseUrl, callbackBaseUrl);
 		}
 	}
 	
@@ -84,16 +84,14 @@ public class ViolationSubscriber {
 
 	private final String metricsBaseUrl;
 	private final String callbackBaseUrl;
-	private final IAgreement agreement;
 	
 	public ViolationSubscriber(
-			String metricsBaseUrl, String callbackBaseUrl, IAgreement agreement) {
+			String metricsBaseUrl, String callbackBaseUrl) {
 		this.metricsBaseUrl = metricsBaseUrl;
 		this.callbackBaseUrl = callbackBaseUrl;
-		this.agreement = agreement;
 	}
 	
-	public void subscribeObserver() {
+	public void subscribeObserver(IAgreement agreement) {
 		logger.debug("Subscribing {}", agreement.getAgreementId());
 		
 		for (IGuaranteeTerm gt : agreement.getGuaranteeTerms()) {
@@ -108,7 +106,7 @@ public class ViolationSubscriber {
 			for (Action action : getActions(rule)) {
 				if (OUTPUT_METRIC.equals(action.getName())) {
 					for (Parameter param : action.getParameters()) {
-						process(gt, rule, action, param);
+						process(agreement, gt, rule, action, param);
 					}
 				}
 			}
@@ -149,7 +147,8 @@ public class ViolationSubscriber {
 		return violation;
 	}
 	
-	private void process(IGuaranteeTerm term, MonitoringRule rule, Action action, Parameter parameter) {
+	private void process(
+			IAgreement agreement, IGuaranteeTerm term, MonitoringRule rule, Action action, Parameter parameter) {
 		
 		logger.debug("Subscribing to rule[id='{}', actionName='{}', paramValue='{}']", 
 				rule.getId(), action.getName(), parameter.getValue());
@@ -161,7 +160,7 @@ public class ViolationSubscriber {
 		Client client = Client.create(config);
 		WebResource service = client.resource(UriBuilder.fromUri(url).build());
 			
-		String callbackUrl = getCallbackUrl(this.callbackBaseUrl, this.agreement, term);
+		String callbackUrl = getCallbackUrl(this.callbackBaseUrl, agreement, term);
 		
 		ClientResponse response = 
 				service.type(MediaType.TEXT_PLAIN).

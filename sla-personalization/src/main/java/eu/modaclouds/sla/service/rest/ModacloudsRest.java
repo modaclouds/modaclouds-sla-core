@@ -1,5 +1,7 @@
 package eu.modaclouds.sla.service.rest;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -44,33 +46,54 @@ public class ModacloudsRest extends AbstractSLARest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response startMasterAgreement(@Context UriInfo uriInfo, @PathParam("id") String agreementId) {
 		
-		logger.debug("Starting {}", agreementId);
+		logger.debug("Starting Master Agreement {}", agreementId);
 	
-		IAgreement agreement = agreementDAO.getByAgreementId(agreementId);
-		if (agreement == null) {
+		IAgreement master = agreementDAO.getByAgreementId(agreementId);
+		if (master == null) {
 			return buildResponse(HttpStatus.NOT_FOUND, "Agreement " + agreementId + " not found");
 		}
+		List<IAgreement> agreements = agreementDAO.getByMasterId(agreementId);
+		agreements.add(master);
+		
 		String slaUrl = getSlaUrl(this.slaUrl, uriInfo);
+		/* TODO: read supplied Monitoring Platform url from body of request */
 		String metricsUrl = getMetricsBaseUrl("", this.metricsUrl);
-		ViolationSubscriber subscriber = getSubscriber(agreement, slaUrl, metricsUrl);
-	
-		subscriber.subscribeObserver();
+		ViolationSubscriber subscriber = getSubscriber(slaUrl, metricsUrl);
+		for (IAgreement agreement : agreements) {
+			subscriber.subscribeObserver(agreement);
+		}
+		
 		return buildResponse(HttpStatus.ACCEPTED, "Agreement started");
 	}
 
-	private ViolationSubscriber getSubscriber(IAgreement agreement, String slaUrl, String metricsBaseUrl) {
-		return new ViolationSubscriber(metricsBaseUrl, slaUrl, agreement);
+	private ViolationSubscriber getSubscriber(String slaUrl, String metricsBaseUrl) {
+		return new ViolationSubscriber(metricsBaseUrl, slaUrl);
 	}
 	
+	/**
+	 * Returns base url of the sla core.
+	 * 
+	 * If the MODACLOUDS_SLA_URL env var is set, returns that value. Else, get the base url from the
+	 * context of the current REST call. This second value may be wrong because this base url must
+	 * be the value that the MonitoringPlatform needs to use to connect to the SLA Core.
+	 */
 	private String getSlaUrl(String envSlaUrl, UriInfo uriInfo) {
 		String baseUrl = uriInfo.getBaseUri().toString();
 		
+		if (envSlaUrl == null) {
+			envSlaUrl = "";
+		}
 		String result = ("".equals(envSlaUrl))? baseUrl : envSlaUrl;
 		logger.debug("getSlaUrl(env={}, supplied={}) = {}", envSlaUrl, baseUrl, result);
 		
 		return result;
 	}
 	
+	/**
+	 * Return base url of the metrics endpoint of the Monitoring Platform.
+	 * 
+	 * If an url is supplied in the request, use that value. Else, use MODACLOUDS_METRICS_URL env var is set.
+	 */
 	private String getMetricsBaseUrl(String suppliedBaseUrl, String envBaseUrl) {
 		
 		String result = ("".equals(suppliedBaseUrl))? envBaseUrl : suppliedBaseUrl;

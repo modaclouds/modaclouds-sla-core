@@ -100,4 +100,10 @@ public interface IAgreementDAO {
 	 */
 	public List<IAgreement> searchPerTemplateAndConsumer(String consumerId,	String templateUUID);
 
+	/**
+	 * Returns list of Agreement with a given master.
+	 * @param masterId agreement id of master.
+	 * @return list of Agreement with master equal to masterId
+	 */
+	public List<IAgreement> getByMasterId(String masterId);
 }

@@ -180,5 +180,14 @@ public class AgreementDAOJpa implements IAgreementDAO {
 			return null;
 		}
 	}
+
+	@Override
+	public List<IAgreement> getByMasterId(String masterId) {
+		TypedQuery<IAgreement> query = entityManager.createNamedQuery(
+				Agreement.QUERY_FIND_BY_MASTER_ID, IAgreement.class);
+		query.setParameter("masterId", masterId);
+		List<IAgreement> agreements = query.getResultList();
+		return agreements;
+	}
 	
 }
