@@ -150,4 +150,10 @@ public interface IAgreement {
 
 	public void setHasGTermToBeEvaluatedAtEndOfEnformcement(Boolean hasGTermToBeEvaluatedAtEndOfEnformcement);
 
+	/**
+	 * If not null, the enforcement of this agreement depends on agreement with id set to masterId.
+	 */
+	public String getMasterId();
+	
+	public void setMasterId(String masterId);
 }

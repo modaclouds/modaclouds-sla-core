@@ -52,6 +52,9 @@ public class Context {
 	@XmlElement(name = "Service", namespace="http://sla.atos.eu")
 	private String service;
 
+	@XmlElement(name = "Master")
+	private String master;
+	
 	public Context() {
 	}
 
@@ -103,4 +106,11 @@ public class Context {
 		this.service = service;
 	}
 
+	public String getMaster() {
+		return master;
+	}
+	
+	public void setMaster(String master) {
+		this.master = master;
+	}
 }

@@ -49,8 +49,11 @@ import eu.atos.sla.datamodel.ITemplate;
 				+ "AND (:templateId is null or a.template.uuid = :templateId) "
 				+ "AND (:active is null "
 				+ "    or (:active = true and a.expirationDate > current_timestamp()) "
-				+ "    or (:active = false and a.expirationDate <= current_timestamp()))") })
-
+				+ "    or (:active = false and a.expirationDate <= current_timestamp()))"),
+		@NamedQuery(name = Agreement.QUERY_FIND_BY_MASTER_ID, query = 
+				"SELECT p FROM Agreement p "
+				+ "where p.masterId = :masterId")
+})
 public class Agreement implements IAgreement, Serializable {
 	public final static String QUERY_FIND_ALL = "Agreement.findAll";
 	public final static String QUERY_FIND_ALL_AGREEMENTS = "Agreement.findAllAgreements";
@@ -61,6 +64,7 @@ public class Agreement implements IAgreement, Serializable {
 	public final static String QUERY_FIND_BY_TEMPLATEUUID = "Agreement.getByTemplateUUID";
 	public final static String QUERY_FIND_BY_TEMPLATEUUID_AND_CONSUMER = "Agreement.getByTemplateUUIDAndConsumer";
 	public final static String QUERY_SEARCH = "Agreement.search";
+	public final static String QUERY_FIND_BY_MASTER_ID = "Agreement.getByMasterId";
 
 	private static final long serialVersionUID = -5939038640423447257L;
 
@@ -77,6 +81,7 @@ public class Agreement implements IAgreement, Serializable {
 	private String serviceId;
 	private Boolean hasGTermToBeEvaluatedAtEndOfEnformcement;
 	private String name;
+	private String masterId;
 							
 	public Agreement() {
 	}
@@ -218,5 +223,12 @@ public class Agreement implements IAgreement, Serializable {
 		this.name = name;
 	}
 
+	@Column(name = "master_id")
+	public String getMasterId() {
+		return masterId;
+	}
 	
+	public void setMasterId(String masterId) {
+		this.masterId = masterId;
+	}
 }

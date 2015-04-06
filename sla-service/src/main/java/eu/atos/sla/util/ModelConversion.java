@@ -110,6 +110,11 @@ public class ModelConversion implements IModelConverter {
 		}else{
 			throw new ModelConversionException("Service is null, field must be informed");
 		}
+		
+		if (context.getMaster() != null) {
+			
+			agreement.setMasterId(context.getMaster());
+		}
 
 		if (context.getExpirationTime() != null) {
 
