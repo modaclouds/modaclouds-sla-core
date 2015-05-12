@@ -10,6 +10,9 @@
 	<packaging>war</packaging>
 	<name>SLA Service</name>
 
+	<properties>
+		<jetty-version>9.2.10.v20150310</jetty-version>
+	</properties>
 	<build>
 		<finalName>sla-service</finalName>
 		<filters>
@@ -61,27 +64,25 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
-			<!-- to copy the war file to tomcat dir-->
 			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.3</version>
 				<executions>
 					<execution>
-						<id>copy-war-file</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy-resources</goal>
+							<goal>copy</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${tomcat.directory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>${project.build.directory}</directory>
-									<includes>
-										<include>**/*.war</include>
-									</includes>
-								</resource>
-							</resources>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.eclipse.jetty</groupId>
+									<artifactId>jetty-runner</artifactId>
+									<version>${jetty-version}</version>
+									<destFileName>jetty-runner.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
@@ -316,6 +317,12 @@
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-personalization</artifactId>
 			<version>0.3.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlets</artifactId>
+			<version>${jetty-version}</version>
 		</dependency>
 
 		<!--
