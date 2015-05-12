@@ -106,7 +106,13 @@ public class Context {
 		this.service = service;
 	}
 
+	/**
+	 * Master of this agreement or empty string.
+	 */
 	public String getMaster() {
+		if (master == null) {
+			return "";
+		}
 		return master;
 	}
 	
