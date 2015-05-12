@@ -33,12 +33,13 @@ CREATE TABLE `agreement` (
   `text` longtext,
   `provider_id` bigint(20) NOT NULL,
   `template_id` bigint(20) NOT NULL,
+  `master_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_b3upn8jbq7ryrj26mpc5hccf3` (`agreement_id`),
   KEY `FK_hlyajkn6gfqd9vd9u2ne74dbf` (`provider_id`),
   KEY `FK_ob6aljvohdv1g1nckphj69974` (`template_id`),
-  CONSTRAINT `FK_ob6aljvohdv1g1nckphj69974` FOREIGN KEY (`template_id`) REFERENCES `template` (`id`),
-  CONSTRAINT `FK_hlyajkn6gfqd9vd9u2ne74dbf` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`id`)
+  CONSTRAINT `FK_hlyajkn6gfqd9vd9u2ne74dbf` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`id`),
+  CONSTRAINT `FK_ob6aljvohdv1g1nckphj69974` FOREIGN KEY (`template_id`) REFERENCES `template` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -203,7 +204,7 @@ CREATE TABLE `provider` (
   `uuid` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_cfgo93bl0v243co72ay26bs94` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -242,7 +243,7 @@ CREATE TABLE `template` (
   UNIQUE KEY `UK_m0a0t99pnntf75psmk1lptr3n` (`uuid`),
   KEY `FK_5p28ldeg0v7loq063g2s9gykx` (`provider_id`),
   CONSTRAINT `FK_5p28ldeg0v7loq063g2s9gykx` FOREIGN KEY (`provider_id`) REFERENCES `provider` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,4 +301,4 @@ CREATE TABLE `violation` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-01-21 12:51:26
+-- Dump completed on 2015-05-12 10:27:27
