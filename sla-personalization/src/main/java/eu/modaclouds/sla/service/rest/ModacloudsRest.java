@@ -35,10 +35,10 @@ public class ModacloudsRest extends AbstractSLARest {
 	@Autowired
 	private IAgreementDAO agreementDAO;
 
-	@Value("${MODACLOUDS_METRICS_URL}")
-	private String metricsUrl;
+	@Value("${MODACLOUDS_MONITORING_MANAGER_METRICS_URL}")
+	private String monitoringManagerUrl;
 	
-	@Value("${MODACLOUDS_SLA_URL}")
+	@Value("${MODACLOUDS_SLACORE_SLA_URL}")
 	private String slaUrl;
 	
 	@PUT
@@ -57,7 +57,7 @@ public class ModacloudsRest extends AbstractSLARest {
 		
 		String slaUrl = getSlaUrl(this.slaUrl, uriInfo);
 		/* TODO: read supplied Monitoring Platform url from body of request */
-		String metricsUrl = getMetricsBaseUrl("", this.metricsUrl);
+		String metricsUrl = getMetricsBaseUrl("", this.monitoringManagerUrl);
 		ViolationSubscriber subscriber = getSubscriber(slaUrl, metricsUrl);
 		for (IAgreement agreement : agreements) {
 			subscriber.subscribeObserver(agreement);
@@ -92,11 +92,13 @@ public class ModacloudsRest extends AbstractSLARest {
 	/**
 	 * Return base url of the metrics endpoint of the Monitoring Platform.
 	 * 
-	 * If an url is supplied in the request, use that value. Else, use MODACLOUDS_METRICS_URL env var is set.
+	 * If an url is supplied in the request, use that value + v1/metrics. 
+	 * Else, use MODACLOUDS_MONITORING_MANAGER_URL + v1/metrics if env var is set.
 	 */
 	private String getMetricsBaseUrl(String suppliedBaseUrl, String envBaseUrl) {
 		
 		String result = ("".equals(suppliedBaseUrl))? envBaseUrl : suppliedBaseUrl;
+		result += "/v1/metrics";
 		logger.debug("getMetricsBaseUrl(env={}, supplied={}) = {}", envBaseUrl, suppliedBaseUrl, result);
 		
 		return result;

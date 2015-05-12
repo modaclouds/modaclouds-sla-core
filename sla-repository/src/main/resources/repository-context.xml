@@ -17,10 +17,10 @@
 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="${DB_DRIVER}" />
-		<property name="url" value="${DB_URL}" />
-		<property name="username" value="${DB_USERNAME}" />
-		<property name="password" value="${DB_PASSWORD}" />
+		<property name="driverClassName" value="${MODACLOUDS_MYSQL_DRIVER}" />
+		<property name="url" value="${MODACLOUDS_MYSQL_URL}" />
+		<property name="username" value="${MODACLOUDS_MYSQL_USERNAME}" />
+		<property name="password" value="${MODACLOUDS_MYSQL_PASSWORD}" />
 	</bean>
 	
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -30,7 +30,7 @@
 
 	<bean id="jpaAdapter"
 		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-		p:database="MYSQL" p:showSql="${DB_SHOWSQL}"/>
+		p:database="MYSQL" p:showSql="${MODACLOUDS_MYSQL_SHOWSQL}"/>
 
 <!-- 
 	<bean id="pum"
