@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.atos.sla.dao.IAgreementDAO;
 import eu.atos.sla.datamodel.IAgreement;
+import eu.atos.sla.enforcement.IEnforcementService;
 import eu.atos.sla.service.rest.AbstractSLARest;
 import eu.modaclouds.sla.mediator.ViolationSubscriber;
 
@@ -35,10 +36,13 @@ public class ModacloudsRest extends AbstractSLARest {
 	@Autowired
 	private IAgreementDAO agreementDAO;
 
-	@Value("${MODACLOUDS_MONITORING_MANAGER_METRICS_URL}")
+	@Autowired
+	private IEnforcementService enforcementService;
+
+	@Value("${MODACLOUDS_MONITORING_MANAGER_URL}")
 	private String monitoringManagerUrl;
 	
-	@Value("${MODACLOUDS_SLACORE_SLA_URL}")
+	@Value("${MODACLOUDS_SLACORE_URL}")
 	private String slaUrl;
 	
 	@PUT
@@ -61,6 +65,7 @@ public class ModacloudsRest extends AbstractSLARest {
 		ViolationSubscriber subscriber = getSubscriber(slaUrl, metricsUrl);
 		for (IAgreement agreement : agreements) {
 			subscriber.subscribeObserver(agreement);
+			enforcementService.startEnforcement(agreement.getAgreementId());
 		}
 		
 		return buildResponse(HttpStatus.ACCEPTED, "Agreement started");

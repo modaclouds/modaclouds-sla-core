@@ -20,6 +20,15 @@ Read the [Developer Guide][2]
 
 Read the [Installation Guide][3]
 
+## Expected environment vars ##
+
+* MODACLOUDS_MONITORING_MANAGER_URL
+* MODACLOUDS_SLACORE_URL
+* MODACLOUDS_MYSQL_URL (= jdbc:mysql://${MODACLOUDS_MYSQL_IP}:${MODACLOUDS_MYSQL_PORT}/${MODACLOUDS_MYSQL_DB})
+* MODACLOUDS_MYSQL_USERNAME
+* MODACLOUDS_MYSQL_PASSWORD
+
+
 ##License##
 
 Licensed under the [Apache License, Version 2.0][8]

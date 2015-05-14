@@ -69,7 +69,10 @@ public class ScheduledEnforcementWorker implements InitializingBean, IScheduledE
 	
 	
 	@Override
-	@Scheduled(cron = "ENF{" + CRON + "}")
+	/*
+	 * This schedule is not necessary in MODAClouds.
+	 * @Scheduled(cron = "ENF{" + CRON + "}")
+	 */
 	public void spawnMonitors() {
 		Date since = computeOffset();
 		List<IEnforcementJob> nonExecuted = enforcementJobDAO.getNotExecuted(since);
