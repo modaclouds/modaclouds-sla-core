@@ -28,7 +28,7 @@ mv sla-service/target/$DESTFILE $DESTDIR
 echo "Resulting $DESTFILE is in $DESTDIR"
 
 MOSDIR="$DESTDIR/mos"
-MOSFILE=sla-core-distribution.tar.gz
+MOSFILE=distribution.tar.gz
 
 rm -Rf "$MOSDIR"
 mkdir "$MOSDIR"
@@ -40,10 +40,12 @@ mkdir "$MOSDIR/share"
 
 cp sla-service/target/dependency/jetty-runner.jar $MOSDIR/lib
 cp sla-service/target/sla-service.war $MOSDIR/lib
-cp dist/bin/restoreDatabase.sh $MOSDIR/bin
+cp dist/lib/distribution/bin/restoreDatabase.sh $MOSDIR/bin
 cp sla-repository/src/main/resources/sql/database.sql $MOSDIR/share
 cp sla-repository/src/main/resources/sql/atossla.sql $MOSDIR/share/schema.sql
 
 tar -cvzf $DESTDIR/$MOSFILE -C $MOSDIR .
 
-echo "mOS package $MOSFILE is in $DESTDIR"
+cp dist/bin/service-run.bash $DESTDIR
+
+echo "mOS package $MOSFILE and wrapper script are in $DESTDIR"
