@@ -10,7 +10,7 @@
 	<context:component-scan base-package="eu.modaclouds.sla"/>
 	<context:annotation-config/>
 	
-	<bean class="eu.modaclouds.sla.service.rest.ModacloudsTranslator">
+	<bean class="eu.modaclouds.sla.service.rest.Tower4CloudsTranslator">
 		<constructor-arg ref="constraintEvaluator" />
 	</bean>
 

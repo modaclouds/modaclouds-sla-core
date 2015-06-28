@@ -16,33 +16,39 @@ value = sys.argv[2]
 millis = int(round(time.time() * 1000))
 
 inner = {
-    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#metric" : [
+    "http://www.modaclouds.eu/model#metric" : [
         {
           "type" : "literal" ,
           "value" : stream
         }
     ],
-    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#timestamp" : [
+    "http://www.modaclouds.eu/model#timestamp" : [
       {
         "type" : "literal" ,
         "value" : millis,
         "datatype" : "http://www.w3.org/2001/XMLSchema#integer"
       }
     ],
-    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#value" : [
+    "http://www.modaclouds.eu/model#value" : [
       {
         "type" : "literal" ,
         "value" : value,
         "datatype" : "http://www.w3.org/2001/XMLSchema#double"
       }
     ] ,
-    "http://www.modaclouds.eu/rdfs/1.0/monitoringdata#resourceId" : [
+    "http://www.modaclouds.eu/model#resourceId" : [
       {
         "type" : "literal" ,
         "value" : "resource",
         "datatype" : "http://www.w3.org/2001/XMLSchema#string"
       }
-    ]
+    ],
+    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" : [ {
+      "type" : "uri" ,
+      "value" : "http://www.modaclouds.eu/model#MonitoringDatum"
+    }
+     ]
+
 }
 root = {vid : inner}
 

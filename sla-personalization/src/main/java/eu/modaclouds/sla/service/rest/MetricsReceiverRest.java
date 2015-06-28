@@ -39,7 +39,7 @@ public class MetricsReceiverRest extends eu.atos.sla.service.rest.AbstractSLARes
 	private IAgreementDAO agreementDao;
 	
 	@Autowired
-	private ModacloudsTranslator translator;
+	private Tower4CloudsTranslator translator;
 	
 	@GET
 	public Response getRoot() {

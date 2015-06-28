@@ -161,11 +161,12 @@ public class ViolationSubscriber {
 		WebResource service = client.resource(UriBuilder.fromUri(url).build());
 			
 		String callbackUrl = getCallbackUrl(this.callbackBaseUrl, agreement, term);
+		String body = String.format("{ \"callbackUrl\" : \"%s\", \"format\" : \"RDF/JSON\" }", callbackUrl);
 		
 		ClientResponse response = 
-				service.type(MediaType.TEXT_PLAIN).
-				accept(MediaType.TEXT_PLAIN).
-				post(ClientResponse.class, callbackUrl);
+				service.type(MediaType.APPLICATION_JSON).
+				accept(MediaType.APPLICATION_JSON).
+				post(ClientResponse.class, body);
 		
 		logger.debug("{} POST {}\n{}", response.getStatus(), url, response.getEntity(String.class));
 		if (!isOk(response)) {
@@ -206,7 +207,7 @@ public class ViolationSubscriber {
 	}
 
 	private String getPostUrl(Parameter parameter) {
-		return String.format("%s/%s/observers", metricsBaseUrl, parameter.getValue().toLowerCase());
+		return String.format("%s/%s/observers", metricsBaseUrl, parameter.getValue());
 	}
 
 	public String getMetricsBaseUrl() {
