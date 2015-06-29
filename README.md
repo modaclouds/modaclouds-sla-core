@@ -28,6 +28,14 @@ Read the [Installation Guide][3]
 * MODACLOUDS_MYSQL_USERNAME
 * MODACLOUDS_MYSQL_PASSWORD
 
+## Change List ##
+
+v0.3.0:
+
+* Handling of master/slaves agreements
+* Several modifications to be mOS-guidelines compliant
+* Generation of mOS package
+
 
 ##License##
 
