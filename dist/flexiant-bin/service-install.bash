@@ -10,7 +10,7 @@
 #   * jre is installed
 #   * mysql run as root does not need pwd
 #
-VERSION=0.3.0
+VERSION=0.4.0
 
 PACKAGE_ROOT="/opt/modaclouds-services-sla-core-$VERSION"
 DIST_ROOT="$PACKAGE_ROOT/lib/distribution"
