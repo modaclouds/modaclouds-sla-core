@@ -24,7 +24,7 @@ fi
 #Retrieve the distribution archive
 #
 TMPFILE=$(mktemp --tmpdir slacoredist.XXXXXXXX)
-wget -O $TMPFILE "ftp://ftp.modaclouds.eu/public/distribution/sla-core/$VERSION/sla-core-distribution.tar.gz"
+wget -O $TMPFILE "ftp://ftp.modaclouds.eu/public/distributions/sla-core/$VERSION/distribution.tar.gz"
 
 #
 # Unpack
