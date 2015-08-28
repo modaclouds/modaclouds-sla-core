@@ -30,6 +30,10 @@ Read the [Installation Guide][3]
 
 ## Change List ##
 
+v0.4.2:
+
+* Fixed wrong callback url for T4C 
+
 v0.4.1:
 
 * Removed public endpoints in wrapper script

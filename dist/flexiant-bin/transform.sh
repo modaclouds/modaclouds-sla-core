@@ -22,7 +22,7 @@ function sed_var() {
 }
 
 IP=127.0.0.1
-VERSION=0.7.0.13
+VERSION=0.7.0.16
 
 sed -i -e's|^.*getent.*$|if test -n ""; then|' "$OUTPUT"
 sed_var TOWER4CLOUDS_MANAGER_ENDPOINT_IP
