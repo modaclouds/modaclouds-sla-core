@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>eu.modaclouds.sla.core</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.4.1</version>
+		<version>0.4.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>sla-tools</artifactId>
 	<packaging>jar</packaging>
@@ -40,13 +40,13 @@
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-enforcement</artifactId>
-			<version>0.4.1</version>
+			<version>0.4.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository</artifactId>
-			<version>0.4.1</version>
+			<version>0.4.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
