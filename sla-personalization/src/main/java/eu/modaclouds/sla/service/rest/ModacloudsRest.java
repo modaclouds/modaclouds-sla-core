@@ -72,7 +72,7 @@ public class ModacloudsRest extends AbstractSLARest {
 	}
 
 	private ViolationSubscriber getSubscriber(String slaUrl, String metricsBaseUrl) {
-		return new ViolationSubscriber(metricsBaseUrl, slaUrl);
+		return new ViolationSubscriber(metricsBaseUrl, slaUrl + "/metrics");
 	}
 	
 	/**
