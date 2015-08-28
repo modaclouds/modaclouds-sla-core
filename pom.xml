@@ -4,7 +4,7 @@
 	<groupId>eu.modaclouds.sla.core</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.4.1-SNAPSHOT</version>
+	<version>0.4.1</version>
 	<name>SLA parent</name>
 
 	<modules>

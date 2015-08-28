@@ -30,6 +30,14 @@ Read the [Installation Guide][3]
 
 ## Change List ##
 
+v0.4.1:
+
+* Removed public endpoints in wrapper script
+
+v0.4.0:
+
+* T4C support
+
 v0.3.0:
 
 * Handling of master/slaves agreements
