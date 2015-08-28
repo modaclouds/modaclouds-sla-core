@@ -53,6 +53,6 @@ echo "mOS package $MOSFILE and wrapper script are in $DESTDIR"
 echo "
 Execute the following commands to upload distribution:
 $ lftp ftp.modaclouds.eu -u $MODACLOUDS_FTP_CREDENTIALS -e "cd public/distributions/sla-core"
-> mkdir -f $version
-> cd $version
+> mkdir -f \$version
+> cd \$version
 > put dist/target/distribution.tar.gz dist/target/service-run.bash"
