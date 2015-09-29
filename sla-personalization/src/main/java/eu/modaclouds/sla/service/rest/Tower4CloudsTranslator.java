@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Atos
+ * Copyright 2015 Atos
  * Contact: Atos <roman.sosa@atos.net>
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
