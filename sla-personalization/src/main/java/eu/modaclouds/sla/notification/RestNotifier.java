@@ -56,7 +56,6 @@ public class RestNotifier implements IAgreementEnforcementNotifier {
 	private final WebResource resource;
 	
 	
-	
 	public RestNotifier(String url, String contentType) {
 		this(url, contentType, "", "");
 	}
@@ -64,11 +63,18 @@ public class RestNotifier implements IAgreementEnforcementNotifier {
 	public RestNotifier(String url, String contentType, String authUser, String authPassword) {
 		this.url = url;
 		headersMap.add("Content-type", contentType);
-		this.client = getClient(authUser, authPassword);
-		resource = client.resource(UriBuilder.fromUri(url).build());
+
+		if (url == null || "".equals(url)) {
+			this.client = null;
+			this.resource = null;
+		}
+		else {
+			this.client = getClient(authUser, authPassword);
+			this.resource = client.resource(UriBuilder.fromUri(url).build());
+		}
 	}
 
-	public static Client getClient(String user, String password) {
+	private Client getClient(String user, String password) {
 		ClientConfig config;
 		Client client;
 
@@ -88,6 +94,10 @@ public class RestNotifier implements IAgreementEnforcementNotifier {
 			IAgreement agreement,
 			Map<IGuaranteeTerm, GuaranteeTermEvaluationResult> guaranteeTermEvaluationMap) {
 
+		if (this.resource == null) {
+			return;
+		}
+		
 		List<Object> data = new ArrayList<Object>();
 		for (GuaranteeTermEvaluationResult o : guaranteeTermEvaluationMap.values()) {
 			for (ICompensation compensation : o.getCompensations()) {

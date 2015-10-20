@@ -79,4 +79,13 @@ public class Penalty  {
 	public eu.atos.sla.parser.data.wsag.custom.Penalty getDefinition() {
 		return definition;
 	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("Penalty [uuid=%s, agreementId=%s, datetime=%s, definition=%s]",
+						uuid, agreementId, datetime, definition);
+	}
+	
+	
 }

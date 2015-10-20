@@ -28,10 +28,16 @@
 	<bean id="notificationManager"	class="eu.atos.sla.notification.NotifierManager">
 		<property name="agreementEnforcementNotifier">
 			<bean class="eu.modaclouds.sla.notification.RestNotifier">
-				<constructor-arg value="http://localhost:8080/sla-service/accounting" />
+				<constructor-arg value="${MODACLOUDS_ACCOUNTING_URL}" />
 				<constructor-arg value="application/json" />
 			</bean>
 		 </property>
-	</bean>	
-
+	</bean>
+	
+	<bean id="mailSender" class="eu.modaclouds.sla.notification.MailSender">
+		<constructor-arg value="smtp.gmail.com:587"/>
+		<constructor-arg value="${MODACLOUDS_MAIL_FROM}"/>
+		<constructor-arg value="${MODACLOUDS_MAIL_USER}"/>
+		<constructor-arg value="${MODACLOUDS_MAIL_PWD}"/>
+	</bean>
 </beans>

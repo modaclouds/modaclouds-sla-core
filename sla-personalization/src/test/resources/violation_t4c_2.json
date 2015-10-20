@@ -1,0 +1,37 @@
+{
+ "4c11483a-9714-4799-a5e5-b526a451dc69": {
+  "http://www.modaclouds.eu/model#metric": [
+   {
+    "type": "literal",
+    "value": "ResponseTimeLogin_login_violated"
+   }
+  ],
+  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [
+   {
+    "type": "uri",
+    "value": "http://www.modaclouds.eu/model#MonitoringDatum"
+   }
+  ],
+  "http://www.modaclouds.eu/model#timestamp": [
+   {
+    "datatype": "http://www.w3.org/2001/XMLSchema#integer",
+    "type": "literal",
+    "value": 1445347746987
+   }
+  ],
+  "http://www.modaclouds.eu/model#value": [
+   {
+    "datatype": "http://www.w3.org/2001/XMLSchema#double",
+    "type": "literal",
+    "value": "2500"
+   }
+  ],
+  "http://www.modaclouds.eu/model#resourceId": [
+   {
+    "datatype": "http://www.w3.org/2001/XMLSchema#string",
+    "type": "literal",
+    "value": "resource"
+   }
+  ]
+ }
+}
