@@ -43,6 +43,7 @@ cp sla-service/target/sla-service.war $MOSDIR/lib
 cp dist/lib/distribution/bin/restoreDatabase.sh $MOSDIR/bin
 cp sla-repository/src/main/resources/sql/database.sql $MOSDIR/share
 cp sla-repository/src/main/resources/sql/atossla.sql $MOSDIR/share/schema.sql
+cp sla-service/target/classes/version.properties $MOSDIR/etc
 
 tar -cvzf $DESTDIR/$MOSFILE -C $MOSDIR .
 
