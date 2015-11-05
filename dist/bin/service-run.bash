@@ -36,6 +36,8 @@ _variable_defaults=(
 		_MYSQL_USERNAME='@{definitions:environment:MYSQL_USERNAME}'
 		_MYSQL_PASSWORD='@{definitions:environment:MYSQL_PASSWORD}'
 
+		_ACCOUNTING_URL=''
+
 		_JAVA_HOME='@{definitions:environment:JAVA_HOME}'
 		_PATH='@{definitions:environment:PATH}'
 		_TMPDIR='@{definitions:environment:TMPDIR}'
@@ -69,6 +71,8 @@ _variable_overrides=(
 		_MYSQL_DATABASE="${MODACLOUDS_MYSQL_DATABASE:-${_MYSQL_DATABASE}}"
 		_MYSQL_USERNAME="${MODACLOUDS_MYSQL_USERNAME:-${_MYSQL_USERNAME}}"
 		_MYSQL_PASSWORD="${MODACLOUDS_MYSQL_PASSWORD:-${_MYSQL_PASSWORD}}"
+
+		_ACCOUNTING_URL="${MODACLOUDS_ACCOUNTING_URL:-${_ACCOUNTING_URL}}"
 		
 		_TMPDIR="${MODACLOUDS_SLACORE_TMPDIR:-${_TMPDIR}}"
 )
@@ -112,6 +116,13 @@ _environment+=(
 		MODACLOUDS_MYSQL_PASSWORD="${_MYSQL_PASSWORD}"
 		
 )
+
+if [ -n "$_ACCOUNTING_URL" ]; then
+	_environment+=(
+		MODACLOUDS_ACCOUNTING_URL="${_ACCOUNTING_URL}"
+	)
+fi
+
 _JAVA_TMPDIR="${_TMPDIR}/tmp"
 
 printf '[--]\n' >&2
@@ -127,6 +138,30 @@ printf '[ii]   * java tmp dir: `%s`;\n' "${_JAVA_TMPDIR}" >&2
 printf '[ii]   * bin dir: `%s`;\n' "${_BIN}" >&2
 printf '[ii]   * lib dir: `%s`;\n' "${_LIB}" >&2
 printf '[--]\n' >&2
+
+
+function run_mysql() {
+	printf '[ii] Executing mysql command: `%s`\n' "$1" >&2
+	mysql --host ${_MYSQL_ENDPOINT_IP} --port ${_MYSQL_ENDPOINT_PORT} \
+		-u "${_MYSQL_USERNAME}" -p"${_MYSQL_PASSWORD}" -e "$1" >&2
+	return $?
+}
+
+# create database and grant permissions to user (assumes connecting user exists and has all privileges permissions)
+printf '[ii] Checking database `%s` exists\n' "${_MYSQL_DATABASE}" >&2
+if ! run_mysql "use ${_MYSQL_DATABASE}"; then
+	printf '[ii] Creating database\n' >&2
+	run_mysql "CREATE DATABASE IF NOT EXISTS ${_MYSQL_DATABASE}"
+	if [ $? -eq 0 ]; then
+		printf '[ii] Database created\n' >&2
+	else
+		printf '[ee] Error creating database\n' >&2
+		exit 1
+	fi
+else
+	printf '[ii] Database exists\n' >&2
+fi
+
 
 printf '[ii] starting sla core...\n' >&2
 printf '[--]\n' >&2
