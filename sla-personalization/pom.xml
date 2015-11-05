@@ -23,7 +23,7 @@
 	<parent>
 		<groupId>eu.modaclouds.sla.core</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.4.3-SNAPSHOT</version>
+		<version>0.5.0</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>sla-personalization</artifactId>
@@ -42,19 +42,19 @@
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-enforcement</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-tools</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>

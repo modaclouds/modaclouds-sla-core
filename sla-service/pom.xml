@@ -22,7 +22,7 @@
 	<parent>
 		<groupId>eu.modaclouds.sla.core</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.4.3-SNAPSHOT</version>
+		<version>0.5.0</version>
 	</parent>
 	<artifactId>sla-service</artifactId>
 	<packaging>war</packaging>
@@ -297,12 +297,12 @@
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-enforcement</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-enforcement</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -310,31 +310,31 @@
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-repository</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-tools</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-tools</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>eu.modaclouds.sla.core</groupId>
 			<artifactId>sla-personalization</artifactId>
-			<version>0.4.3-SNAPSHOT</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>

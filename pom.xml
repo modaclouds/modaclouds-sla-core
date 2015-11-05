@@ -22,7 +22,7 @@
 	<groupId>eu.modaclouds.sla.core</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>0.4.3-SNAPSHOT</version>
+	<version>0.5.0</version>
 	<name>SLA parent</name>
 
 	<modules>
